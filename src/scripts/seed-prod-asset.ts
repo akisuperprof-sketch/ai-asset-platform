@@ -1,53 +1,59 @@
+import "dotenv/config";
 import { adminClient } from "../lib/supabase";
+import { checkFileExists } from "../lib/r2";
 
 /**
- * SUKASHI 初の実運用アセット登録スクリプト
+ * SUKASHI 本番用テストアセット (おにぎり) 投入スクリプト
  * 
  * 実行方法:
- * npx ts-node src/scripts/seed-prod-asset.ts
+ * npx tsx src/scripts/seed-prod-asset.ts
  */
 
-async function seedFirstAsset() {
-  if (!adminClient) {
-    console.error("❌ SUPABASE_SERVICE_ROLE_KEY が設定されていません。");
+const testAsset = {
+  slug: "onigiri-salted-rice-ball-001",
+  title: "塩おにぎり (背景透過)",
+  description: "日本の伝統的なシンプルな塩おにぎり。AI生成による高品質な背景透過素材。",
+  category: "日本の食",
+  tags: ["おにぎり", "和食", "軽食", "白米"],
+  image_url: "", // Storageパスから自動生成されるため空でもOK
+  thumbnail_url: "", 
+  storage_key: "food/onigiri-salted-rice-ball-001.png",
+  file_size: "1.2MB",
+  width: 2048,
+  height: 2048,
+  license_type: "free",
+  legal_status: "clean",
+  review_status: "approved",
+  published_at: new Date().toISOString(),
+};
+
+async function seed() {
+  console.log("🚀 SUKASHI 本番テストデータの投入を開始します...");
+
+  // 1. ファイル存在確認 (Supabase Storage または R2)
+  console.log(`🔍 ストレージ内のファイルを確認中: ${testAsset.storage_key}...`);
+  const exists = await checkFileExists(testAsset.storage_key);
+
+  if (!exists) {
+    console.error(`❌ エラー: ストレージにファイルが見つかりません。`);
+    console.log(`   (Supabase Storage のバケットに 「${testAsset.storage_key}」 をアップロードしてから実行してください)`);
     return;
   }
+  console.log("✅ ファイル存在確認 OK");
 
-  const asset = {
-    slug: "onigiri-salted-rice-ball-001",
-    title: "塩むすび（三角形・海苔なし）",
-    description: "日本の伝統的な塩むすび。シンプルながら米の粒立ちが美しい、AI生成の背景透過素材です。和食のデザインやアイコンに最適です。",
-    category: "日本の食",
-    tags: ["おにぎり", "和食", "米", "シンプル", "白米"],
-    image_url: `${process.env.R2_PUBLIC_BASE_URL}/food/onigiri-salted-rice-ball-001.png`,
-    thumbnail_url: `${process.env.R2_PUBLIC_BASE_URL}/food/onigiri-salted-rice-ball-001-thumb.webp`,
-    storage_key: "food/onigiri-salted-rice-ball-001.png",
-    file_size: "1.2 MB",
-    width: 2048,
-    height: 2048,
-    license_type: "free",
-    is_ai_generated: true,
-    legal_status: "clean",
-    review_status: "approved",
-    published_at: new Date().toISOString(),
-  };
-
-  console.log("🚀 実運用アセットの登録を開始します...");
-
-  const { data, error } = await adminClient
+  // 2. DB 登録
+  console.log("📝 データベースに登録中...");
+  const { data, error } = await adminClient!
     .from("assets")
-    .upsert(asset, { onConflict: 'slug' })
+    .upsert([testAsset], { onConflict: "slug" })
     .select();
 
   if (error) {
     console.error("❌ 登録失敗:", error.message);
   } else {
-    console.log("✅ 登録成功！");
-    console.log("Asset ID:", data[0].id);
-    console.log("Title:", data[0].title);
-    console.log("Storage Key:", data[0].storage_key);
-    console.log("Public URL:", data[0].image_url);
+    console.log("✨ 登録成功!");
+    console.log("ID:", data[0].id);
   }
 }
 
-seedFirstAsset();
+seed();

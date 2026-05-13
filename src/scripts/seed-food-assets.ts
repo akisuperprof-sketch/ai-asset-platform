@@ -1,183 +1,140 @@
+import "dotenv/config";
 import { adminClient } from "../lib/supabase";
-import { S3Client, HeadObjectCommand } from "@aws-sdk/client-s3";
+import { checkFileExists } from "../lib/r2";
 
 /**
-  * SUKASHI 日本の食カテゴリー 10件投入スクリプト (安全チェック付き)
-  */
+ * 日本の食カテゴリー 10件投入スクリプト (Supabase Storage対応)
+ */
 
 const foodAssets = [
   {
-    slug: "tonkotsu-ramen-special-001",
-    title: "博多豚骨ラーメン（味玉・チャーシュー増し）",
-    description: "濃厚な白濁スープが特徴の博多豚骨ラーメン。トッピングまで精密に再現された、背景透過済みの高品質素材です。",
+    slug: "onigiri-salted-rice-ball-001",
+    title: "塩おにぎり",
     category: "日本の食",
-    tags: ["ラーメン", "和食", "麺類", "豚骨", "ランチ"],
-    image_url: "food/tonkotsu-ramen-special-001.png",
-    storage_key: "food/tonkotsu-ramen-special-001.png",
-    width: 2048, height: 2048, fileSize: "1.8 MB"
+    storage_key: "food/onigiri-salted-rice-ball-001.png",
+    tags: ["おにぎり", "和食"],
+    legal_status: "clean",
+    review_status: "approved",
+    published_at: new Date().toISOString(),
   },
   {
-    slug: "tempura-moriawase-gold-001",
-    title: "海老と季節野菜の天ぷら盛り合わせ",
-    description: "サクサクの衣が美しい天ぷらの盛り合わせ。エビ、カボチャ、大葉など、和食デザインに欠かせない一品です。",
+    slug: "sushi-tuna-nigiri-001",
+    title: "マグロ握り寿司",
     category: "日本の食",
-    tags: ["天ぷら", "和食", "エビ", "和食", "高級"],
-    image_url: "food/tempura-moriawase-gold-001.png",
-    storage_key: "food/tempura-moriawase-gold-001.png",
-    width: 2048, height: 2048, fileSize: "2.1 MB"
+    storage_key: "food/sushi-tuna-nigiri-001.png",
+    tags: ["寿司", "マグロ"],
+    legal_status: "clean",
+    review_status: "approved",
+    published_at: new Date().toISOString(),
   },
   {
-    slug: "taiyaki-classic-red-bean-001",
-    title: "たい焼き（つぶあん・天然物）",
-    description: "日本の定番スイーツ、たい焼き。香ばしい焼き色と立体感のある質感が特徴。食べ歩きや和菓子のデザインに。",
+    slug: "ramen-shoyu-001",
+    title: "醤油ラーメン",
     category: "日本の食",
-    tags: ["たい焼き", "和菓子", "スイーツ", "日本", "おやつ"],
-    image_url: "food/taiyaki-classic-red-bean-001.png",
-    storage_key: "food/taiyaki-classic-red-bean-001.png",
-    width: 2048, height: 2048, fileSize: "1.1 MB"
+    storage_key: "food/ramen-shoyu-001.png",
+    tags: ["ラーメン", "麺類"],
+    legal_status: "clean",
+    review_status: "approved",
+    published_at: new Date().toISOString(),
   },
   {
-    slug: "miso-soup-tofu-wakame-001",
-    title: "お味噌汁（豆腐とわかめ）",
-    description: "日本の食卓の象徴、お味噌汁。お椀の質感と湯気が立ち上がるような温かみを感じさせる透過素材です。",
+    slug: "tempura-shrimp-001",
+    title: "海老の天ぷら",
     category: "日本の食",
-    tags: ["味噌汁", "和食", "家庭料理", "朝食", "スープ"],
-    image_url: "food/miso-soup-tofu-wakame-001.png",
-    storage_key: "food/miso-soup-tofu-wakame-001.png",
-    width: 2048, height: 2048, fileSize: "0.9 MB"
+    storage_key: "food/tempura-shrimp-001.png",
+    tags: ["天ぷら", "海老"],
+    legal_status: "clean",
+    review_status: "approved",
+    published_at: new Date().toISOString(),
   },
   {
-    slug: "matcha-wagashi-set-001",
-    title: "抹茶と季節の練り切りセット",
-    description: "茶道の世界を表現した抹茶と和菓子のセット。落ち着いた和の雰囲気を演出するデザインパーツです。",
+    slug: "takoyaki-6pcs-001",
+    title: "たこ焼き (6個入り)",
     category: "日本の食",
-    tags: ["抹茶", "和菓子", "茶道", "日本文化", "伝統"],
-    image_url: "food/matcha-wagashi-set-001.png",
-    storage_key: "food/matcha-wagashi-set-001.png",
-    width: 2048, height: 2048, fileSize: "1.3 MB"
+    storage_key: "food/takoyaki-6pcs-001.png",
+    tags: ["たこ焼き", "屋台"],
+    legal_status: "clean",
+    review_status: "approved",
+    published_at: new Date().toISOString(),
   },
   {
-    slug: "salmon-nigiri-sushi-pair-001",
-    title: "サーモン握り寿司（二貫セット）",
-    description: "脂の乗ったサーモンの握り寿司。鮮やかな色合いが食欲をそそる、メニュー作成に最適な透過画像です。",
+    slug: "soba-zaru-001",
+    title: "ざるそば",
     category: "日本の食",
-    tags: ["寿司", "サーモン", "和食", "魚", "新鮮"],
-    image_url: "food/salmon-nigiri-sushi-pair-001.png",
-    storage_key: "food/salmon-nigiri-sushi-pair-001.png",
-    width: 2048, height: 2048, fileSize: "1.4 MB"
+    storage_key: "food/soba-zaru-001.png",
+    tags: ["そば", "和食"],
+    legal_status: "clean",
+    review_status: "approved",
+    published_at: new Date().toISOString(),
   },
   {
-    slug: "takoyaki-osaka-style-8pcs-001",
-    title: "大阪名物 たこ焼き（8個入り・ソースマヨ）",
-    description: "外はカリッと、中はトロッとしたたこ焼き。青のりや削り節までリアルに再現した、B級グルメの王道素材。",
+    slug: "miso-soup-tofu-001",
+    title: "豆腐とわかめの味噌汁",
     category: "日本の食",
-    tags: ["たこ焼き", "屋台", "大阪", "B級グルメ", "おやつ"],
-    image_url: "food/takoyaki-osaka-style-8pcs-001.png",
-    storage_key: "food/takoyaki-osaka-style-8pcs-001.png",
-    width: 2048, height: 2048, fileSize: "1.9 MB"
+    storage_key: "food/miso-soup-tofu-001.png",
+    tags: ["味噌汁", "和食"],
+    legal_status: "clean",
+    review_status: "approved",
+    published_at: new Date().toISOString(),
   },
   {
-    slug: "gyudon-standard-size-001",
-    title: "牛丼（並盛り・紅生姜添え）",
-    description: "日本のファストフード、牛丼。甘辛く煮た牛肉とタマネギ、彩りの紅生姜がアクセント。日常的な食のデザインに。",
+    slug: "yakitori-negima-001",
+    title: "焼き鳥 (ねぎま)",
     category: "日本の食",
-    tags: ["牛丼", "和食", "肉料理", "どんぶり", "ランチ"],
-    image_url: "food/gyudon-standard-size-001.png",
-    storage_key: "food/gyudon-standard-size-001.png",
-    width: 2048, height: 2048, fileSize: "1.6 MB"
+    storage_key: "food/yakitori-negima-001.png",
+    tags: ["焼き鳥", "鶏肉"],
+    legal_status: "clean",
+    review_status: "approved",
+    published_at: new Date().toISOString(),
   },
   {
-    slug: "unagi-jyu-premium-001",
-    title: "特上 うな重（肝吸い付き）",
-    description: "ふっくらと焼き上げたうなぎの蒲焼を贅沢に乗せたうな重。タレの艶感と香ばしさが伝わる最高級素材です。",
+    slug: "matcha-tea-cup-001",
+    title: "お抹茶 (茶碗入り)",
     category: "日本の食",
-    tags: ["うなぎ", "和食", "高級", "スタミナ", "どんぶり"],
-    image_url: "food/unagi-jyu-premium-001.png",
-    storage_key: "food/unagi-jyu-premium-001.png",
-    width: 2048, height: 2048, fileSize: "2.3 MB"
+    storage_key: "food/matcha-tea-cup-001.png",
+    tags: ["抹茶", "日本茶"],
+    legal_status: "clean",
+    review_status: "approved",
+    published_at: new Date().toISOString(),
   },
   {
-    slug: "yakitori-moriawase-5pcs-001",
-    title: "焼き鳥 盛り合わせ（5本・タレと塩）",
-    description: "居酒屋の定番、焼き鳥の盛り合わせ。ねぎま、つくね、レバーなど。お酒の席や日本の夜の文化を象徴するパーツ。",
+    slug: "dango-three-color-001",
+    title: "三色団子",
     category: "日本の食",
-    tags: ["焼き鳥", "居酒屋", "和食", "肉料理", "おつまみ"],
-    image_url: "food/yakitori-moriawase-5pcs-001.png",
-    storage_key: "food/yakitori-moriawase-5pcs-001.png",
-    width: 2048, height: 2048, fileSize: "1.7 MB"
-  }
+    storage_key: "food/dango-three-color-001.png",
+    tags: ["団子", "和菓子"],
+    legal_status: "clean",
+    review_status: "approved",
+    published_at: new Date().toISOString(),
+  },
 ];
 
-const r2Client = new S3Client({
-  region: "auto",
-  endpoint: process.env.R2_ENDPOINT || "",
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
-  },
-});
+async function seedBulk() {
+  console.log(`🚀 「日本の食」カテゴリー ${foodAssets.length}件の投入を開始します...`);
 
-async function checkFileExists(key: string): Promise<boolean> {
-  try {
-    const command = new HeadObjectCommand({
-      Bucket: process.env.R2_BUCKET_NAME,
-      Key: key,
-    });
-    await r2Client.send(command);
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
-
-async function seedFoodAssets() {
-  if (!adminClient || !process.env.R2_ACCESS_KEY_ID) {
-    console.error("❌ 環境変数が設定されていません。.env.local を確認してください。");
-    return;
-  }
-
-  const publicBaseUrl = process.env.R2_PUBLIC_BASE_URL || "";
-  const missingFiles: string[] = [];
-  const validAssets: any[] = [];
-
-  console.log(`🔍 R2上の実ファイル存在チェックを開始します...`);
-
+  const results = [];
   for (const asset of foodAssets) {
+    console.log(`🔍 チェック中: ${asset.storage_key}`);
     const exists = await checkFileExists(asset.storage_key);
+    
     if (exists) {
-      validAssets.push({
-        ...asset,
-        image_url: `${publicBaseUrl}/${asset.image_url}`,
-        thumbnail_url: `${publicBaseUrl}/${asset.image_url.replace('.png', '-thumb.webp')}`,
-        is_ai_generated: true,
-        legal_status: 'clean',
-        review_status: 'approved',
-        published_at: new Date().toISOString(),
-      });
+      const { data, error } = await adminClient!
+        .from("assets")
+        .upsert([asset], { onConflict: "slug" })
+        .select();
+      
+      if (!error) {
+        console.log(`✅ 登録完了: ${asset.title}`);
+        results.push(data[0]);
+      } else {
+        console.error(`❌ 失敗: ${asset.title}`, error.message);
+      }
     } else {
-      missingFiles.push(asset.storage_key);
+      console.warn(`⚠️  スキップ (ファイルなし): ${asset.storage_key}`);
     }
   }
 
-  if (missingFiles.length > 0) {
-    console.error("❌ 以下のファイルがR2に見つかりません。DB登録を中断します:");
-    missingFiles.forEach(f => console.error(`   - ${f}`));
-    console.log(`\n💡 ${validAssets.length} 件は準備OKですが、整合性を保つため投入を中止しました。`);
-    return;
-  }
-
-  console.log(`🚀 「日本の食」カテゴリー ${validAssets.length} 件の登録を開始します...`);
-
-  const { data, error } = await adminClient
-    .from("assets")
-    .upsert(validAssets, { onConflict: 'slug' })
-    .select();
-
-  if (error) {
-    console.error("❌ 登録失敗:", error.message);
-  } else {
-    console.log(`✅ 登録完了！ ${data.length} 件のアセットを投入しました。`);
-  }
+  console.log(`\n✨ 投入完了: ${results.length}/${foodAssets.length} 件`);
 }
 
-seedFoodAssets();
+seedBulk();
