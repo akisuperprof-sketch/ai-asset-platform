@@ -1,16 +1,16 @@
-import "dotenv/config";
-import { adminClient } from "../lib/supabase";
-import { getDownloadUrl, checkFileExists } from "../lib/r2";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
 
 /**
  * SUKASHI 疎通確認ツール (Supabase Storage対応版)
- * 
- * 実行方法:
- * npx tsx src/scripts/verify-sukashi.ts
  */
 
 async function verify() {
   console.log("🔍 SUKASHI 疎通確認を開始します...");
+
+  // 環境変数ロード後の動的インポート
+  const { adminClient } = await import("../lib/supabase");
+  const { getDownloadUrl, checkFileExists } = await import("../lib/r2");
 
   // 1. 環境変数チェック
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {

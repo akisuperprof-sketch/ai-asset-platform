@@ -1,7 +1,6 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { DownloadButton } from "@/components/download/DownloadButton";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { ChevronLeft, Share2, Heart, Info, Tag, Layers } from "lucide-react";
+import { ChevronLeft, Share2, Heart, Info, Tag, Layers, ShieldCheck, Zap } from "lucide-react";
 import Link from "next/link";
 import { getAssetById } from "@/lib/assets";
 import { redirect } from "next/navigation";
@@ -21,105 +20,140 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
     <div className="min-h-screen bg-black">
       <Navbar />
 
-      <main className="pt-32 pb-20 px-4 max-w-7xl mx-auto">
-        {/* Breadcrumbs */}
-        <div className="flex items-center gap-4 mb-8 text-sm text-secondary">
-          <Link href="/" className="hover:text-white flex items-center gap-1">
-            <ChevronLeft className="w-4 h-4" />
-            トップ
-          </Link>
-          <span>/</span>
-          <Link href={`/category/${item.category}`} className="hover:text-white">
-            {item.category}
-          </Link>
-          <span>/</span>
-          <span className="text-white truncate">{item.title}</span>
+      <main className="pt-40 pb-32 px-4 max-w-7xl mx-auto">
+        {/* Breadcrumbs & Actions */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+          <div className="flex items-center gap-4 text-sm text-secondary">
+            <Link href="/" className="hover:text-white flex items-center gap-1 transition-colors">
+              <ChevronLeft className="w-4 h-4" />
+              トップに戻る
+            </Link>
+            <span className="opacity-20">/</span>
+            <span className="text-ai-cyan font-bold uppercase tracking-widest text-[10px]">{item.category}</span>
+            <span className="opacity-20">/</span>
+            <span className="text-white font-medium truncate max-w-[200px]">{item.title}</span>
+          </div>
+          
+          <div className="flex gap-3">
+            <button className="glass px-6 py-2 rounded-full flex items-center gap-2 text-xs font-bold hover:bg-white/10 transition-all">
+              <Heart className="w-4 h-4" />
+              お気に入り
+            </button>
+            <button className="glass px-6 py-2 rounded-full flex items-center gap-2 text-xs font-bold hover:bg-white/10 transition-all">
+              <Share2 className="w-4 h-4" />
+              共有
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-12 gap-8">
-          {/* Left Column: Image Preview */}
-          <div className="col-span-12 lg:col-span-8 space-y-6">
-            <GlassCard className="!p-0 h-[600px] flex items-center justify-center bg-[url('/grid-pattern.svg')] bg-repeat relative">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+        <div className="grid grid-cols-12 gap-12">
+          {/* Left Column: Image Preview Area */}
+          <div className="col-span-12 lg:col-span-8 space-y-10">
+            <div className="glass-card rounded-[32px] h-[600px] flex items-center justify-center relative overflow-hidden bg-black group">
+              {/* Animated Background Elements */}
+              <div className="absolute inset-0 bg-checkerboard opacity-[0.05]" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 z-10" />
+              <div className="scanline opacity-30" />
+              
               <img 
                 src={item.imageUrl} 
                 alt={item.title}
-                className="max-w-[90%] max-h-[90%] object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.8)]" 
+                className="relative z-20 max-w-[85%] max-h-[85%] object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.9)] transition-transform duration-700 group-hover:scale-105" 
               />
               
-              <div className="absolute bottom-6 left-6 right-6 flex justify-between items-center z-10">
-                <div className="flex gap-2">
-                  <button className="glass p-3 rounded-full hover:bg-white/10 transition-colors">
-                    <Heart className="w-5 h-5 text-white" />
-                  </button>
-                  <button className="glass p-3 rounded-full hover:bg-white/10 transition-colors">
-                    <Share2 className="w-5 h-5 text-white" />
-                  </button>
-                </div>
-                <div className="text-[10px] uppercase tracking-widest text-ai-cyan bg-black/40 px-3 py-1 rounded-full border border-ai-cyan/30">
-                  High Resolution Asset
+              {/* Transparency Badge */}
+              <div className="absolute bottom-10 left-10 z-30 flex items-center gap-3">
+                <div className="bg-white/10 backdrop-blur-xl border border-white/10 p-4 rounded-2xl flex items-center gap-3">
+                  <div className="w-10 h-10 bg-checkerboard border border-white/20 rounded-lg" />
+                  <div>
+                    <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">Background</p>
+                    <p className="text-sm text-white font-bold">Transparent PNG</p>
+                  </div>
                 </div>
               </div>
-            </GlassCard>
 
-            <div className="glass p-8 rounded-apple">
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <Info className="w-5 h-5 text-ai-purple" />
-                素材について
+              <div className="absolute top-10 right-10 z-30">
+                <div className="flex items-center gap-2 text-[10px] bg-ai-purple text-white px-4 py-2 rounded-full uppercase tracking-[0.2em] font-bold shadow-2xl">
+                  <Zap className="w-3 h-3" />
+                  Premium AI Asset
+                </div>
+              </div>
+            </div>
+
+            <div className="glass-card p-10 rounded-[32px]">
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                <Info className="w-6 h-6 text-ai-cyan" />
+                アセットの詳細
               </h2>
-              <p className="text-secondary leading-relaxed mb-6">
+              <p className="text-secondary text-lg leading-relaxed mb-10 max-w-3xl">
                 {item.description}
               </p>
               
-              <div className="flex flex-wrap gap-2">
-                {item.tags.map(tag => (
-                  <Link key={tag} href={`/search?q=${tag}`} className="text-xs bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full border border-white/10 transition-colors">
-                    #{tag}
-                  </Link>
-                ))}
+              <div className="space-y-4">
+                <p className="text-xs text-white/40 uppercase tracking-widest font-bold">関連タグ</p>
+                <div className="flex flex-wrap gap-3">
+                  {item.tags.map(tag => (
+                    <Link 
+                      key={tag} 
+                      href={`/?q=${tag}`} 
+                      className="text-sm bg-white/5 hover:bg-white/10 hover:border-white/20 px-6 py-2.5 rounded-full border border-white/5 transition-all text-secondary hover:text-white"
+                    >
+                      #{tag}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Download & Metadata */}
-          <div className="col-span-12 lg:col-span-4 space-y-6">
-            <div className="glass p-8 rounded-apple space-y-8 sticky top-32">
+          {/* Right Column: Information & Controls */}
+          <div className="col-span-12 lg:col-span-4 space-y-8">
+            <div className="glass-card p-10 rounded-[32px] space-y-10 sticky top-32">
               <div>
-                <h1 className="text-2xl font-bold mb-2 leading-tight">{item.title}</h1>
-                <p className="text-ai-purple text-sm font-medium">{item.category}</p>
-              </div>
-
-              <DownloadButton assetId={item.id} title={item.title} />
-
-              <div className="space-y-4 pt-4 border-t border-white/10">
-                <div className="flex justify-between items-center text-sm">
-                  <div className="flex items-center gap-2 text-secondary">
-                    <Layers className="w-4 h-4" />
-                    ファイルサイズ
-                  </div>
-                  <span className="font-medium">{displaySize}</span>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-3 h-3 rounded-full bg-ai-gradient" />
+                  <p className="text-xs text-ai-purple font-bold uppercase tracking-[0.2em]">{item.category}</p>
                 </div>
-                <div className="flex justify-between items-center text-sm">
-                  <div className="flex items-center gap-2 text-secondary">
-                    <Tag className="w-4 h-4" />
-                    解像度
-                  </div>
-                  <span className="font-medium">{item.width} x {item.height} px</span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <div className="flex items-center gap-2 text-secondary">
-                    <div className="w-4 h-4 rounded-sm bg-success/20 flex items-center justify-center text-[10px] text-success font-bold">L</div>
-                    ライセンス
-                  </div>
-                  <span className="text-success font-medium">商用利用可 (無料)</span>
+                <h1 className="text-4xl font-bold mb-4 leading-tight tracking-tight">{item.title}</h1>
+                <div className="flex items-center gap-2 text-success text-sm font-bold bg-success/5 border border-success/10 px-4 py-2 rounded-xl w-fit">
+                  <ShieldCheck className="w-4 h-4" />
+                  商用利用ライセンス：無料
                 </div>
               </div>
 
-              {/* Sidebar Ad Placeholder */}
-              <div className="w-full h-40 bg-ai-gradient/5 border border-ai-purple/20 rounded-apple flex flex-col items-center justify-center p-6 text-center group transition-all hover:border-ai-purple/50">
-                <p className="text-[10px] text-ai-purple/60 uppercase mb-2">Featured Partner</p>
-                <p className="text-xs font-medium group-hover:text-ai-cyan transition-colors">AIデザインツールPro 期間限定 30% OFF</p>
-                <button className="mt-4 text-[10px] border border-ai-purple/30 px-4 py-1 rounded-full">詳しく見る</button>
+              <div className="space-y-6">
+                <DownloadButton assetId={item.id} title={item.title} />
+                <p className="text-[10px] text-center text-secondary">
+                  ダウンロードすると<a href="#" className="underline hover:text-white">利用規約</a>に同意したことになります。
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 pt-10 border-t border-white/5">
+                <div className="glass bg-white/[0.02] p-4 rounded-2xl">
+                  <p className="text-[10px] text-secondary uppercase tracking-widest mb-1">形式</p>
+                  <p className="text-base font-bold">PNG (背景透過)</p>
+                </div>
+                <div className="glass bg-white/[0.02] p-4 rounded-2xl">
+                  <p className="text-[10px] text-secondary uppercase tracking-widest mb-1">サイズ</p>
+                  <p className="text-base font-bold">{displaySize}</p>
+                </div>
+                <div className="glass bg-white/[0.02] p-4 rounded-2xl col-span-2">
+                  <p className="text-[10px] text-secondary uppercase tracking-widest mb-1">解像度</p>
+                  <p className="text-base font-bold">{item.width} x {item.height} px</p>
+                </div>
+              </div>
+
+              {/* Sidebar Ad with Premium Look */}
+              <div className="relative overflow-hidden group rounded-[22px] cursor-pointer">
+                <div className="absolute inset-0 bg-ai-gradient opacity-10 group-hover:opacity-20 transition-opacity" />
+                <div className="relative glass border-white/5 p-6 flex flex-col items-center text-center">
+                  <p className="text-[9px] text-ai-purple font-bold uppercase tracking-widest mb-3">Sponsored Partner</p>
+                  <p className="text-sm font-bold text-white mb-2 leading-snug">AI背景生成ツールで<br />デザインを次へ</p>
+                  <p className="text-[10px] text-secondary mb-4">月額 ¥980 から始められます</p>
+                  <button className="w-full py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-bold border border-white/10 transition-all">
+                    詳細を見る
+                  </button>
+                </div>
               </div>
             </div>
           </div>

@@ -1,6 +1,5 @@
-import "dotenv/config";
-import { adminClient } from "../lib/supabase";
-import { checkFileExists } from "../lib/r2";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
 
 /**
  * SUKASHI 本番用テストアセット (おにぎり) 投入スクリプト
@@ -29,6 +28,10 @@ const testAsset = {
 
 async function seed() {
   console.log("🚀 SUKASHI 本番テストデータの投入を開始します...");
+  
+  // 動的インポート
+  const { adminClient } = await import("../lib/supabase");
+  const { checkFileExists } = await import("../lib/r2");
 
   // 1. ファイル存在確認 (Supabase Storage または R2)
   console.log(`🔍 ストレージ内のファイルを確認中: ${testAsset.storage_key}...`);
@@ -43,7 +46,12 @@ async function seed() {
 
   // 2. DB 登録
   console.log("📝 データベースに登録中...");
-  const { data, error } = await adminClient!
+  if (!adminClient) {
+    console.error("❌ adminClient が初期化されていません。環境変数を確認してください。");
+    return;
+  }
+
+  const { data, error } = await adminClient
     .from("assets")
     .upsert([testAsset], { onConflict: "slug" })
     .select();

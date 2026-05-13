@@ -1,6 +1,5 @@
-import "dotenv/config";
-import { adminClient } from "../lib/supabase";
-import { checkFileExists } from "../lib/r2";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
 
 /**
  * 日本の食カテゴリー 10件投入スクリプト (Supabase Storage対応)
@@ -112,13 +111,22 @@ const foodAssets = [
 async function seedBulk() {
   console.log(`🚀 「日本の食」カテゴリー ${foodAssets.length}件の投入を開始します...`);
 
+  // 動的インポート
+  const { adminClient } = await import("../lib/supabase");
+  const { checkFileExists } = await import("../lib/r2");
+
+  if (!adminClient) {
+    console.error("❌ adminClient が初期化されていません。");
+    return;
+  }
+
   const results = [];
   for (const asset of foodAssets) {
     console.log(`🔍 チェック中: ${asset.storage_key}`);
     const exists = await checkFileExists(asset.storage_key);
     
     if (exists) {
-      const { data, error } = await adminClient!
+      const { data, error } = await adminClient
         .from("assets")
         .upsert([asset], { onConflict: "slug" })
         .select();
