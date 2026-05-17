@@ -1,45 +1,58 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Cpu, Menu, User } from "lucide-react";
+import { Zap, Search, Menu, Globe, MessageCircle } from "lucide-react";
+import Link from "next/link";
 
 export function Navbar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-4 pt-6">
-      <motion.div
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="max-w-7xl mx-auto glass rounded-full px-6 py-3 flex items-center justify-between"
-      >
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-ai-gradient rounded-xl flex items-center justify-center shadow-lg shadow-ai-purple/30">
-            <Cpu className="text-white w-6 h-6" />
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className="fixed top-0 left-0 right-0 z-50 px-6 py-6"
+    >
+      <div className="max-w-7xl mx-auto glass rounded-full px-8 py-3 flex items-center justify-between border-white/10 shadow-2xl backdrop-blur-3xl">
+        <div className="flex items-center gap-12">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="hidden sm:block group-hover:opacity-80 transition-opacity">
+              <img src="/brand/logo-horizontal.svg" alt="SUKASHI AssetNinja logo" className="h-8 md:h-10 w-auto" />
+            </div>
+            <div className="block sm:hidden group-hover:opacity-80 transition-opacity">
+              <img src="/brand/logo-square.svg" alt="SUKASHI AssetNinja logo" className="h-8 w-auto rounded-lg" />
+            </div>
+          </Link>
+
+          <div className="hidden lg:flex items-center gap-8">
+            <Link href="/#assets" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">素材を探す</Link>
+            <Link href="/#categories" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">カテゴリ</Link>
+            <Link href="/coming-soon" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">新着素材</Link>
+            <Link href="/coming-soon" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">人気素材</Link>
+            <Link href="/coming-soon" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">AI生成について</Link>
           </div>
-          <span className="text-xl font-bold tracking-tighter text-white">
-            SUKASHI
-          </span>
         </div>
 
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-secondary">
-          <a href="#" className="hover:text-white transition-colors">ホーム</a>
-          <a href="#" className="hover:text-white transition-colors">カテゴリー</a>
-          <a href="#" className="hover:text-white transition-colors">ランキング</a>
-          <a href="#" className="hover:text-white transition-colors">API利用</a>
-        </div>
+        <div className="flex items-center gap-6">
+          <Link href="/coming-soon" className="text-secondary hover:text-white transition-colors">
+            <Search className="w-5 h-5" />
+          </Link>
+          
+          <div className="hidden md:flex items-center gap-4">
+            <Link href="/coming-soon" className="text-[11px] font-black text-white uppercase tracking-widest hover:text-ai-cyan transition-colors">
+              ログイン
+            </Link>
+            <Link 
+              href="/coming-soon" 
+              className="bg-ai-gradient px-8 py-3 rounded-full text-[11px] font-black text-white uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-ai-purple/20"
+            >
+              無料で登録
+            </Link>
+          </div>
 
-        <div className="flex items-center gap-4">
-          <button className="hidden md:flex items-center gap-2 text-sm text-secondary hover:text-white transition-colors">
-            <User className="w-4 h-4" />
-            ログイン
-          </button>
-          <button className="p-2 md:hidden">
-            <Menu className="w-6 h-6 text-white" />
-          </button>
-          <button className="bg-white text-black px-6 py-2 rounded-full text-sm font-bold hover:bg-white/90 transition-colors">
-            無料登録
+          <button className="lg:hidden text-white">
+            <Menu className="w-6 h-6" />
           </button>
         </div>
-      </motion.div>
-    </nav>
+      </div>
+    </motion.nav>
   );
 }

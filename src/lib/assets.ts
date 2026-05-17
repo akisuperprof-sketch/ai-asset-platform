@@ -58,6 +58,7 @@ function mapAsset(dbAsset: any): Asset {
     licenseType: dbAsset.license_type || "free",
     reviewStatus: dbAsset.review_status || "approved",
     legalStatus: dbAsset.legal_status || "clean",
+    publishedAt: dbAsset.published_at,
   };
 }
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, Loader2, CheckCircle, ShieldCheck } from "lucide-react";
+import { NinjaDownloadSuccess } from "@/components/brand/NinjaDownloadSuccess";
 
 export function DownloadButton({ assetId, title }: { assetId: string, title: string }) {
   const [status, setStatus] = useState<"idle" | "preparing" | "ready" | "downloading" | "done">("idle");
@@ -19,6 +20,9 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
       return () => clearTimeout(timer);
     } else if (status === "preparing" && countdown === 0) {
       setStatus("ready");
+    } else if (status === "done") {
+      const timer = setTimeout(() => setStatus("idle"), 3000);
+      return () => clearTimeout(timer);
     }
   }, [status, countdown]);
 
@@ -120,6 +124,7 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
             <button onClick={() => setStatus("idle")} className="text-xs text-ai-blue hover:underline">
               もう一度ダウンロードする
             </button>
+            <NinjaDownloadSuccess />
           </motion.div>
         )}
       </AnimatePresence>

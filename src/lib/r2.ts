@@ -30,26 +30,14 @@ const r2Client = new S3Client({
  * 素材のダウンロード用署名付きURLを生成する
  */
 export async function getDownloadUrl(key: string) {
-  // 1. R2 が正しく設定されている場合は R2 を優先 (プレースホルダーは無視)
-  const isR2Configured = 
-    r2AccessKeyId && !r2AccessKeyId.includes("your-") &&
-    r2Endpoint && !r2Endpoint.includes("your-") &&
-    r2BucketName && !r2BucketName.includes("your-");
-
+  // R2 logic is disabled as per production requirements (Supabase Storage is used)
+  /*
   if (isR2Configured) {
-    try {
-      const command = new GetObjectCommand({
-        Bucket: r2BucketName,
-        Key: key,
-      });
-      return await getSignedUrl(r2Client, command, { expiresIn });
-    } catch (error) {
-      console.error("R2 Error (getDownloadUrl):", error);
-      throw new Error("Failed to generate R2 storage link");
-    }
+    ...
   }
+  */
 
-  // 2. R2 が未設定またはデフォルト値の場合は Supabase Storage を使用 (初期MVP)
+  // 2. Supabase Storage を使用 (初期MVP)
   if (adminClient) {
     try {
       const { data, error } = await adminClient.storage
@@ -72,22 +60,12 @@ export async function getDownloadUrl(key: string) {
  * ストレージ内にファイルが存在するか確認する
  */
 export async function checkFileExists(key: string): Promise<boolean> {
-  // 1. R2 優先チェック (プレースホルダー無視)
-  const isR2Configured = 
-    r2AccessKeyId && !r2AccessKeyId.includes("your-") &&
-    r2Endpoint && !r2Endpoint.includes("your-") &&
-    r2BucketName && !r2BucketName.includes("your-");
-
+  // R2 logic is disabled
+  /*
   if (isR2Configured) {
-    try {
-      const { S3Client, HeadObjectCommand } = await import("@aws-sdk/client-s3");
-      const command = new HeadObjectCommand({ Bucket: r2BucketName, Key: key });
-      await r2Client.send(command);
-      return true;
-    } catch {
-      return false;
-    }
+    ...
   }
+  */
 
   // 2. Supabase Storage チェック
   if (adminClient) {

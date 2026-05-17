@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.env*.local
+
+# Explicit explicit exclusions for safety
+.env.local
+.env.local.backup
+.env.vercel

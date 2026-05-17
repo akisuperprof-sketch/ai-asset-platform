@@ -15,6 +15,7 @@ export interface Asset {
   licenseType: "free" | "pro" | "cc0";
   reviewStatus: "pending" | "approved" | "rejected";
   legalStatus: "checked" | "risky" | "clean";
+  publishedAt?: string;
 }
 
 export interface Category {

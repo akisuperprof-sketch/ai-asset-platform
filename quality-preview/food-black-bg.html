@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>SUKASHI Asset Quality Preview - Food</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f0f0; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .asset-name { font-weight: bold; margin-bottom: 10px; font-size: 14px; color: #333; }
+        .preview-box { height: 200px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .preview-box img { max-width: 90%; max-height: 90%; object-fit: contain; }
+        
+        .white { background: #ffffff; border: 1px solid #ddd; }
+        .black { background: #000000; }
+        .checker { 
+            background-image: 
+                linear-gradient(45deg, #ccc 25%, transparent 25%), 
+                linear-gradient(-45deg, #ccc 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #ccc 75%), 
+                linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        
+        .tabs { display: flex; gap: 5px; margin-bottom: 5px; }
+        .tab { padding: 4px 8px; cursor: pointer; font-size: 11px; border: 1px solid #ccc; border-radius: 4px; }
+        .label { font-size: 12px; color: #666; margin-top: 4px; }
+    </style>
+</head>
+<body>
+    <h1>SUKASHI Asset Quality Preview (rembg + Alpha Matting)</h1>
+    <p>黒背景での「白フチ（フリンジ）」や、切り抜き精度を確認してください。</p>
+    
+    <div class="grid" id="asset-grid"></div>
+
+    <script>
+        const assets = [
+            'ramen-tonkotsu-bowl-001.png',
+            'sushi-assorted-platter-001.png',
+            'tempura-shrimp-001.png',
+            'taiyaki-red-bean-001.png',
+            'miso-soup-bowl-001.png',
+            'matcha-tea-set-001.png',
+            'takoyaki-plate-001.png',
+            'gyudon-beef-bowl-001.png',
+            'unagi-rice-box-001.png',
+            'yakitori-skewers-001.png'
+        ];
+
+        const container = document.getElementById('asset-grid');
+
+        assets.forEach(name => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="asset-name">${name}</div>
+                <div class="preview-box black" id="preview-${name}">
+                    <img src="../import-ready/food/${name}" alt="${name}">
+                </div>
+                <div class="tabs">
+                    <span class="tab" onclick="changeBg('${name}', 'black')">Black</span>
+                    <span class="tab" onclick="changeBg('${name}', 'white')">White</span>
+                    <span class="tab" onclick="changeBg('${name}', 'checker')">Checker</span>
+                </div>
+                <div class="label">Path: /import-ready/food/${name}</div>
+            `;
+            container.appendChild(card);
+        });
+
+        function changeBg(name, type) {
+            const box = document.getElementById(`preview-${name}`);
+            box.className = `preview-box ${type}`;
+        }
+    </script>
+</body>
+</html>

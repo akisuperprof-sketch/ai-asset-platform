@@ -3,6 +3,28 @@ import { AssetCard } from "@/components/assets/AssetCard";
 import { ChevronLeft, Filter, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { searchAssets } from "@/lib/assets";
+import { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const categoryName = decodeURIComponent(slug);
+
+  const title = `${categoryName}のPNG素材（透過）一覧｜商用利用OK｜AssetNinja`;
+  const description = `${categoryName}の商用利用可能な透過PNG素材一覧です。AssetNinjaなら日本発の高品質AIアセットが無料でダウンロード可能。Webデザインや資料作成にすぐ使えます。`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+    },
+    alternates: {
+      canonical: `https://ai-asset-platform.vercel.app/category/${encodeURIComponent(categoryName)}`
+    }
+  };
+}
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -34,14 +56,14 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           </div>
 
           <div className="flex gap-4">
-            <button className="glass flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium hover:bg-white/10 transition-colors">
+            <Link href="/coming-soon" className="glass flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium hover:bg-white/10 transition-colors">
               <Filter className="w-4 h-4" />
               フィルター
-            </button>
-            <button className="glass flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium hover:bg-white/10 transition-colors">
+            </Link>
+            <Link href="/coming-soon" className="glass flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium hover:bg-white/10 transition-colors">
               <SlidersHorizontal className="w-4 h-4" />
               並び替え
-            </button>
+            </Link>
           </div>
         </div>
 

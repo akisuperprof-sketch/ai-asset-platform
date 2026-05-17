@@ -1,159 +1,114 @@
-"use client";
-
-import { useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { HeroSection } from "@/components/layout/HeroSection";
 import { AssetGrid } from "@/components/assets/AssetGrid";
 import { CategorySection } from "@/components/layout/CategorySection";
-import { searchAssets } from "@/lib/assets";
-import { Asset } from "@/types";
+import { getAssets, searchAssets } from "@/lib/assets";
+import { Zap, MessageCircle, Globe, ShieldCheck, Mail, Play, Camera } from "lucide-react";
 
-function HomeContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "すべて");
-  const [assets, setAssets] = useState<Asset[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Fetch assets from Supabase (or fallback)
-  useEffect(() => {
-    const fetchAssets = async () => {
-      setIsLoading(true);
-      const data = await searchAssets(searchQuery, selectedCategory);
-      setAssets(data);
-      setIsLoading(false);
-    };
-
-    fetchAssets();
-  }, [searchQuery, selectedCategory]);
-
-  // Sync state to URL
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    
-    if (searchQuery) {
-      params.set("q", searchQuery);
-    } else {
-      params.delete("q");
-    }
-
-    if (selectedCategory !== "すべて") {
-      params.set("category", selectedCategory);
-    } else {
-      params.delete("category");
-    }
-
-    const query = params.toString();
-    const url = query ? `${pathname}?${query}` : pathname;
-    
-    router.replace(url, { scroll: false });
-  }, [searchQuery, selectedCategory, pathname, router, searchParams]);
-
-  // Handle Tag clicks from other components (if they use standard links)
-  useEffect(() => {
-    const q = searchParams.get("q") || "";
-    const cat = searchParams.get("category") || "すべて";
-    setSearchQuery(q);
-    setSelectedCategory(cat);
-  }, [searchParams]);
+export default async function Home({ searchParams }: { searchParams: Promise<{ q?: string; cat?: string }> }) {
+  const { q, cat } = await searchParams;
+  const currentCategory = cat || "すべて";
+  const assets = q || cat ? await searchAssets(q || "", currentCategory) : await getAssets();
 
   return (
-    <div className="min-h-screen bg-black overflow-x-hidden">
+    <div className="min-h-screen bg-black text-white selection:bg-ai-purple/30">
       <Navbar />
       
-      <HeroSection onSearch={setSearchQuery} initialQuery={searchQuery} />
-      
-      <main className="relative z-10 space-y-10">
-        <AssetGrid 
-          assets={assets}
-          isLoading={isLoading}
-          searchQuery={searchQuery} 
-          category={selectedCategory} 
-          onCategoryChange={setSelectedCategory} 
-          onSearchChange={setSearchQuery}
-        />
+      <main>
+        <HeroSection />
+        <CategorySection />
         
-        <CategorySection onTagClick={setSearchQuery} />
-        
-        {/* Ad Placeholder Section (Premium look) */}
-        <section className="max-w-7xl mx-auto px-4 py-20">
-          <div className="w-full h-40 glass border-dashed border-ai-purple/30 rounded-apple flex flex-col items-center justify-center text-secondary text-sm italic group hover:border-ai-purple transition-all">
-            <span className="text-[10px] uppercase tracking-[0.2em] mb-2 text-ai-purple/60">Sponsored</span>
-            <p className="text-white font-medium not-italic">Premium Creative Tools for Professionals</p>
-          </div>
-        </section>
-
-        {/* Footer Links (SEO) */}
-        <footer className="bg-white/5 border-t border-white/10 pt-20 pb-10 px-4 mt-20">
-          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-10">
-            <div className="col-span-2">
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-8 h-8 bg-ai-gradient rounded-lg" />
-                <span className="font-bold tracking-tighter">SUKASHI</span>
-              </div>
-              <p className="text-secondary text-sm leading-relaxed max-w-xs">
-                日本最大のAI背景透過アセットプラットフォーム。
-                クリエイターの想像力を形にするための、最高品質の素材を無料で提供します。
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-bold mb-6 text-sm">カテゴリー</h4>
-              <ul className="space-y-4 text-xs text-secondary">
-                <li><a href="#" className="hover:text-ai-cyan">日本の食</a></li>
-                <li><a href="#" className="hover:text-ai-cyan">医療・歯科</a></li>
-                <li><a href="#" className="hover:text-ai-cyan">事務用品</a></li>
-                <li><a href="#" className="hover:text-ai-cyan">年中行事</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold mb-6 text-sm">プラットフォーム</h4>
-              <ul className="space-y-4 text-xs text-secondary">
-                <li><a href="#" className="hover:text-ai-cyan">利用規約</a></li>
-                <li><a href="#" className="hover:text-ai-cyan">ライセンス</a></li>
-                <li><a href="#" className="hover:text-ai-cyan">APIドキュメント</a></li>
-                <li><a href="#" className="hover:text-ai-cyan">お問い合わせ</a></li>
-              </ul>
-            </div>
-
-            <div className="col-span-2">
-              <h4 className="font-bold mb-6 text-sm">最新情報を受け取る</h4>
-              <p className="text-xs text-secondary mb-4">新着アセットの通知を週に一度お届けします。</p>
-              <div className="flex gap-2">
-                <input type="email" placeholder="メールアドレス" className="bg-white/5 border border-white/10 rounded-full px-4 py-2 flex-1 text-xs outline-none focus:border-ai-purple transition-colors" />
-                <button className="bg-white text-black px-6 py-2 rounded-full text-xs font-bold hover:bg-white/90 transition-all">購読</button>
-              </div>
-            </div>
-          </div>
-          
-          <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex justify-between items-center text-[10px] text-secondary">
-            <p>© 2026 SUKASHI. All rights reserved.</p>
-            <div className="flex gap-6">
-              <a href="#" className="hover:text-white">Twitter</a>
-              <a href="#" className="hover:text-white">Discord</a>
-            </div>
-          </div>
-        </footer>
+        <div id="assets">
+          <AssetGrid 
+            assets={assets} 
+            searchQuery={q}
+            category={currentCategory}
+          />
+        </div>
       </main>
 
-      {/* Global Background Elements */}
-      <div className="fixed top-0 left-0 w-full h-full pointer-events-none -z-10">
-        <div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-ai-purple/5 blur-[150px] rounded-full animate-pulse-slow" />
-        <div className="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] bg-ai-blue/5 blur-[150px] rounded-full animate-pulse-slow" />
-      </div>
+      <footer className="bg-ninja-black pt-32 pb-12 px-6 border-t border-white/5">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-12 gap-12 mb-24">
+            <div className="col-span-12 lg:col-span-4">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-10 h-10 bg-ai-gradient rounded-xl flex items-center justify-center">
+                  <Zap className="w-6 h-6 text-white fill-white" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xl font-black tracking-tighter">SUKASHI</span>
+                  <span className="text-[10px] font-black text-ai-cyan tracking-[0.2em] uppercase">AssetNinja</span>
+                </div>
+              </div>
+              <p className="text-secondary text-sm leading-relaxed mb-10 max-w-sm">
+                AIで生成された高品質なPNG素材を無料でダウンロードできるプラットフォーム。
+                日本の文化とクリエイティビティを世界へ。
+              </p>
+              <div className="flex gap-6">
+                {[MessageCircle, Camera, Play].map((Icon, i) => (
+                  <button key={i} className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:bg-white hover:text-black transition-all border-white/5">
+                    <Icon className="w-5 h-5" />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="col-span-12 lg:col-span-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+                <div>
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white mb-8">サービス</h4>
+                  <ul className="space-y-4 text-secondary text-sm font-bold">
+                    <li><a href="#" className="hover:text-white transition-colors">素材を探す</a></li>
+                    <li><a href="#" className="hover:text-white transition-colors">カテゴリ一覧</a></li>
+                    <li><a href="#" className="hover:text-white transition-colors">新着素材</a></li>
+                    <li><a href="#" className="hover:text-white transition-colors">人気素材</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white mb-8">サポート</h4>
+                  <ul className="space-y-4 text-secondary text-sm font-bold">
+                    <li><a href="#" className="hover:text-white transition-colors">ご利用ガイド</a></li>
+                    <li><a href="#" className="hover:text-white transition-colors">よくある質問</a></li>
+                    <li><a href="#" className="hover:text-white transition-colors">お問い合わせ</a></li>
+                    <li><a href="#" className="hover:text-white transition-colors">規約・ポリシー</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white mb-8">会社情報</h4>
+                  <ul className="space-y-4 text-secondary text-sm font-bold">
+                    <li><a href="#" className="hover:text-white transition-colors">SUKASHIについて</a></li>
+                    <li><a href="#" className="hover:text-white transition-colors">プライバシーポリシー</a></li>
+                    <li><a href="#" className="hover:text-white transition-colors">利用規約</a></li>
+                    <li><a href="#" className="hover:text-white transition-colors">特定商取引法に基づく表記</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white mb-8">最新情報を受け取る</h4>
+                  <p className="text-secondary text-xs mb-6 font-medium">新しい素材や機能のアップデート情報をお届けします。</p>
+                  <div className="flex gap-2">
+                    <input type="text" placeholder="メールアドレスを入力" className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 text-xs focus:outline-none focus:border-ai-purple transition-all" />
+                    <button className="bg-ai-gradient px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 shadow-lg shadow-ai-purple/20">
+                      登録する
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="text-[10px] text-secondary font-black tracking-widest uppercase">
+              © 2024 SUKASHI / AssetNinja. All rights reserved.
+            </p>
+            <div className="flex gap-8 text-[10px] text-secondary font-black uppercase tracking-widest">
+              <a href="#" className="hover:text-white">Privacy</a>
+              <a href="#" className="hover:text-white">Terms</a>
+              <a href="#" className="hover:text-white">Cookies</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
 
-export default function Home() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-black" />}>
-      <HomeContent />
-    </Suspense>
-  );
-}

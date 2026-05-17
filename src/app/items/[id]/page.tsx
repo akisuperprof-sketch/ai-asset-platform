@@ -1,164 +1,271 @@
+import { getAssetById, getAssets } from "@/lib/assets";
 import { Navbar } from "@/components/layout/Navbar";
+import { AssetCard } from "@/components/assets/AssetCard";
+import { 
+  ShieldCheck, 
+  Tag, 
+  Clock, 
+  Maximize2, 
+  Heart,
+  FileCode,
+  Box,
+  Bookmark,
+  Zap
+} from "lucide-react";
 import { DownloadButton } from "@/components/download/DownloadButton";
-import { ChevronLeft, Share2, Heart, Info, Tag, Layers, ShieldCheck, Zap } from "lucide-react";
+import { Metadata } from "next";
 import Link from "next/link";
-import { getAssetById } from "@/lib/assets";
-import { redirect } from "next/navigation";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const asset = await getAssetById(id);
+  
+  if (!asset) return { title: "Asset Not Found" };
+
+  const title = `${asset.title} PNG素材（透過）｜商用利用OK｜AssetNinja`;
+  const description = asset.description || `${asset.title}の透過PNG素材です。商用利用可能な日本発の高品質AIアセット。背景切り抜き済みでWebデザインや資料作成にすぐ使えます。`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [asset.imageUrl],
+      type: "website",
+    },
+    alternates: {
+      canonical: `https://ai-asset-platform.vercel.app/items/${id}`
+    }
+  };
+}
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const item = await getAssetById(id);
+  const asset = await getAssetById(id);
+  const allAssets = await getAssets();
 
-  if (!item) {
-    redirect("/");
+  if (!asset) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-black mb-4">Asset Not Found</h1>
+          <Link href="/" className="text-ai-cyan hover:underline font-bold uppercase tracking-widest text-xs">
+            ホームへ戻る
+          </Link>
+        </div>
+      </div>
+    );
   }
 
-  // fileSize fallback
-  const displaySize = item.fileSize || "1.0 MB";
-
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black text-white selection:bg-ai-purple/30">
       <Navbar />
 
-      <main className="pt-40 pb-32 px-4 max-w-7xl mx-auto">
-        {/* Breadcrumbs & Actions */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-          <div className="flex items-center gap-4 text-sm text-secondary">
-            <Link href="/" className="hover:text-white flex items-center gap-1 transition-colors">
-              <ChevronLeft className="w-4 h-4" />
-              トップに戻る
-            </Link>
-            <span className="opacity-20">/</span>
-            <span className="text-ai-cyan font-bold uppercase tracking-widest text-[10px]">{item.category}</span>
-            <span className="opacity-20">/</span>
-            <span className="text-white font-medium truncate max-w-[200px]">{item.title}</span>
-          </div>
-          
-          <div className="flex gap-3">
-            <button className="glass px-6 py-2 rounded-full flex items-center gap-2 text-xs font-bold hover:bg-white/10 transition-all">
-              <Heart className="w-4 h-4" />
-              お気に入り
-            </button>
-            <button className="glass px-6 py-2 rounded-full flex items-center gap-2 text-xs font-bold hover:bg-white/10 transition-all">
-              <Share2 className="w-4 h-4" />
-              共有
-            </button>
-          </div>
+      <main className="max-w-7xl mx-auto px-6 pt-32 pb-32">
+        {/* Breadcrumbs */}
+        <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-secondary mb-12">
+          <Link href="/" className="hover:text-white transition-colors">ホーム</Link>
+          <span className="text-white/20">/</span>
+          <Link href={`/category/${asset.category}`} className="hover:text-white transition-colors">{asset.category}</Link>
+          <span className="text-white/20">/</span>
+          <span className="text-white">{asset.title}</span>
         </div>
 
-        <div className="grid grid-cols-12 gap-12">
-          {/* Left Column: Image Preview Area */}
-          <div className="col-span-12 lg:col-span-8 space-y-10">
-            <div className="glass-card rounded-[32px] h-[600px] flex items-center justify-center relative overflow-hidden bg-black group">
-              {/* Animated Background Elements */}
-              <div className="absolute inset-0 bg-checkerboard opacity-[0.05]" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 z-10" />
-              <div className="scanline opacity-30" />
-              
-              <img 
-                src={item.imageUrl} 
-                alt={item.title}
-                className="relative z-20 max-w-[85%] max-h-[85%] object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.9)] transition-transform duration-700 group-hover:scale-105" 
-              />
-              
-              {/* Transparency Badge */}
-              <div className="absolute bottom-10 left-10 z-30 flex items-center gap-3">
-                <div className="bg-white/10 backdrop-blur-xl border border-white/10 p-4 rounded-2xl flex items-center gap-3">
-                  <div className="w-10 h-10 bg-checkerboard border border-white/20 rounded-lg" />
-                  <div>
-                    <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">Background</p>
-                    <p className="text-sm text-white font-bold">Transparent PNG</p>
+        {/* Robust Layout Container */}
+        <div className="flex flex-col lg:flex-row gap-12 items-start">
+          
+          {/* Left Side: Previews (Main content) */}
+          <div className="w-full lg:w-2/3 space-y-8">
+            <div className="relative">
+              {/* Main Preview Container */}
+              <div className="aspect-square glass-card rounded-[40px] overflow-hidden flex items-center justify-center relative p-12 lg:p-20 bg-[#0a0a0a]">
+                {/* Checkerboard for Transparency */}
+                <div className="absolute inset-0 bg-checkerboard opacity-20" />
+                
+                {/* Cinematic Lighting */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-ai-purple/10 via-transparent to-ai-cyan/10 pointer-events-none" />
+                
+                <img 
+                  src={asset.imageUrl} 
+                  alt={`${asset.title}の透過PNG素材`} 
+                  className="relative z-20 max-w-full max-h-full object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.8)]"
+                />
+
+                {/* Floating View Controls */}
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30">
+                  <div className="glass px-6 py-3 rounded-full flex items-center gap-6 text-xs font-black">
+                    <span className="text-ai-cyan">100% SCALE</span>
+                    <div className="w-px h-4 bg-white/10" />
+                    <Link href="/coming-soon" className="hover:text-ai-cyan transition-colors">
+                      <Maximize2 className="w-4 h-4" />
+                    </Link>
                   </div>
                 </div>
-              </div>
 
-              <div className="absolute top-10 right-10 z-30">
-                <div className="flex items-center gap-2 text-[10px] bg-ai-purple text-white px-4 py-2 rounded-full uppercase tracking-[0.2em] font-bold shadow-2xl">
-                  <Zap className="w-3 h-3" />
-                  Premium AI Asset
-                </div>
-              </div>
-            </div>
-
-            <div className="glass-card p-10 rounded-[32px]">
-              <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                <Info className="w-6 h-6 text-ai-cyan" />
-                アセットの詳細
-              </h2>
-              <p className="text-secondary text-lg leading-relaxed mb-10 max-w-3xl">
-                {item.description}
-              </p>
-              
-              <div className="space-y-4">
-                <p className="text-xs text-white/40 uppercase tracking-widest font-bold">関連タグ</p>
-                <div className="flex flex-wrap gap-3">
-                  {item.tags.map(tag => (
-                    <Link 
-                      key={tag} 
-                      href={`/?q=${tag}`} 
-                      className="text-sm bg-white/5 hover:bg-white/10 hover:border-white/20 px-6 py-2.5 rounded-full border border-white/5 transition-all text-secondary hover:text-white"
-                    >
-                      #{tag}
+                {/* Thumbnails (Floating on the left) */}
+                <div className="absolute left-6 top-6 hidden sm:flex flex-col gap-3 z-40">
+                  {[1, 2, 3].map((i) => (
+                    <Link key={i} href="/coming-soon" className="w-16 h-16 glass rounded-2xl border-white/10 p-2 cursor-pointer hover:border-ai-purple transition-all bg-black/40 backdrop-blur-xl">
+                      <img src={asset.imageUrl} className="w-full h-full object-contain opacity-50 hover:opacity-100 transition-opacity" alt="thumb" />
                     </Link>
                   ))}
                 </div>
+
+                {/* Floating Action (Like) */}
+                <div className="absolute right-6 top-6 z-40">
+                  <Link href="/coming-soon" className="w-14 h-14 glass rounded-2xl border-white/10 flex items-center justify-center hover:bg-white/10 transition-all text-white/40 hover:text-red-500">
+                    <Heart className="w-6 h-6" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Related Tags */}
+            <div className="pt-4">
+              <div className="flex items-center gap-3 mb-6">
+                <Tag className="w-4 h-4 text-ai-cyan" />
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-secondary">
+                  Associated Senses
+                </h3>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {asset.tags.map(tag => (
+                  <Link key={tag} href={`/?q=${encodeURIComponent(tag)}`} className="glass px-6 py-3 rounded-xl text-[11px] font-bold hover:bg-white hover:text-black transition-all">
+                    #{tag}
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Right Column: Information & Controls */}
-          <div className="col-span-12 lg:col-span-4 space-y-8">
-            <div className="glass-card p-10 rounded-[32px] space-y-10 sticky top-32">
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-3 h-3 rounded-full bg-ai-gradient" />
-                  <p className="text-xs text-ai-purple font-bold uppercase tracking-[0.2em]">{item.category}</p>
-                </div>
-                <h1 className="text-4xl font-bold mb-4 leading-tight tracking-tight">{item.title}</h1>
-                <div className="flex items-center gap-2 text-success text-sm font-bold bg-success/5 border border-success/10 px-4 py-2 rounded-xl w-fit">
-                  <ShieldCheck className="w-4 h-4" />
-                  商用利用ライセンス：無料
-                </div>
+          {/* Right Side: Sidebar Metadata */}
+          <div className="w-full lg:w-1/3 space-y-10">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-2 h-2 rounded-full bg-ai-purple animate-pulse" />
+                <span className="text-[10px] font-black text-ai-purple uppercase tracking-[0.3em]">{asset.category}</span>
               </div>
+              <h1 className="text-4xl lg:text-5xl font-black mb-6 leading-tight tracking-tighter">
+                {asset.title}
+              </h1>
+              <p className="text-secondary text-lg leading-relaxed font-medium">
+                {asset.description}
+              </p>
+            </div>
 
-              <div className="space-y-6">
-                <DownloadButton assetId={item.id} title={item.title} />
-                <p className="text-[10px] text-center text-secondary">
-                  ダウンロードすると<a href="#" className="underline hover:text-white">利用規約</a>に同意したことになります。
-                </p>
-              </div>
+            {/* Metadata Grid */}
+            <div className="glass-card p-8 rounded-[32px] space-y-6">
+              {[
+                { icon: ShieldCheck, label: "ライセンス", value: asset.isCommercialOk ? "商用利用OK (クレジット不要)" : "限定的利用" },
+                { icon: Box, label: "解像度", value: `${asset.width} x ${asset.height} px` },
+                { icon: FileCode, label: "ファイル形式", value: "PNG (背景透過済み)" },
+                { icon: Bookmark, label: "ファイルサイズ", value: asset.fileSize || "1.2 MB" },
+                { icon: Clock, label: "ライセンスタイプ", value: asset.licenseType.toUpperCase() },
+              ].map((meta, i) => (
+                <div key={i} className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-secondary">
+                    <meta.icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-secondary uppercase tracking-widest mb-1">{meta.label}</p>
+                    <p className="text-sm font-bold text-white">{meta.value}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-10 border-t border-white/5">
-                <div className="glass bg-white/[0.02] p-4 rounded-2xl">
-                  <p className="text-[10px] text-secondary uppercase tracking-widest mb-1">形式</p>
-                  <p className="text-base font-bold">PNG (背景透過)</p>
-                </div>
-                <div className="glass bg-white/[0.02] p-4 rounded-2xl">
-                  <p className="text-[10px] text-secondary uppercase tracking-widest mb-1">サイズ</p>
-                  <p className="text-base font-bold">{displaySize}</p>
-                </div>
-                <div className="glass bg-white/[0.02] p-4 rounded-2xl col-span-2">
-                  <p className="text-[10px] text-secondary uppercase tracking-widest mb-1">解像度</p>
-                  <p className="text-base font-bold">{item.width} x {item.height} px</p>
-                </div>
-              </div>
+            {/* Action Buttons */}
+            <div className="space-y-4">
+              <DownloadButton assetId={asset.id} title={asset.title} />
+              <Link href="/coming-soon" className="w-full h-16 glass rounded-[20px] flex items-center justify-center gap-3 text-white/50 font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-white/10 transition-all border-white/5">
+                <Bookmark className="w-4 h-4" />
+                コレクションに追加
+              </Link>
+            </div>
 
-              {/* Sidebar Ad with Premium Look */}
-              <div className="relative overflow-hidden group rounded-[22px] cursor-pointer">
-                <div className="absolute inset-0 bg-ai-gradient opacity-10 group-hover:opacity-20 transition-opacity" />
-                <div className="relative glass border-white/5 p-6 flex flex-col items-center text-center">
-                  <p className="text-[9px] text-ai-purple font-bold uppercase tracking-widest mb-3">Sponsored Partner</p>
-                  <p className="text-sm font-bold text-white mb-2 leading-snug">AI背景生成ツールで<br />デザインを次へ</p>
-                  <p className="text-[10px] text-secondary mb-4">月額 ¥980 から始められます</p>
-                  <button className="w-full py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-bold border border-white/10 transition-all">
-                    詳細を見る
-                  </button>
-                </div>
+            {/* Rights Clearance Box */}
+            <div className="glass p-8 rounded-[32px] border-ai-cyan/20 bg-ai-cyan/5">
+              <div className="flex items-center gap-3 mb-4">
+                <Zap className="w-5 h-5 text-ai-cyan" />
+                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-ai-cyan">Rights-Clear PNG</h4>
               </div>
+              <p className="text-[11px] text-secondary leading-relaxed font-medium">
+                このアセットはSUKASHI AIによって生成され、商用プロジェクトでの自由な利用が保証されています。
+              </p>
             </div>
           </div>
         </div>
+
+        {/* Related Assets Section */}
+        <div className="mt-32">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-black">関連する透過PNG素材</h2>
+            <Link href={`/category/${asset.category}`} className="text-ai-cyan text-sm font-bold hover:underline uppercase tracking-widest">
+              もっと見る →
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {allAssets
+              .filter(a => a.category === asset.category && a.id !== asset.id)
+              .slice(0, 4)
+              .map((relatedAsset) => (
+                <AssetCard key={relatedAsset.id} asset={relatedAsset} />
+              ))}
+          </div>
+        </div>
       </main>
+
+
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ImageObject",
+            "contentUrl": asset.imageUrl,
+            "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "acquireLicensePage": `https://ai-asset-platform.vercel.app/items/${id}`,
+            "creator": {
+              "@type": "Organization",
+              "name": "AssetNinja"
+            },
+            "description": asset.description || `${asset.title}の高品質な背景透過PNG素材です。`,
+            "name": `${asset.title}の透過PNG素材`
+          })
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "ホーム",
+                "item": "https://ai-asset-platform.vercel.app/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": asset.category,
+                "item": `https://ai-asset-platform.vercel.app/category/${asset.category}`
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": asset.title,
+                "item": `https://ai-asset-platform.vercel.app/items/${id}`
+              }
+            ]
+          })
+        }}
+      />
     </div>
   );
 }
+

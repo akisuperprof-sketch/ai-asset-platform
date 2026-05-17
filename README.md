@@ -36,8 +36,24 @@ cp .env.local.template .env.local
 npx -y tsx src/scripts/check-env.ts
 ```
 
-## 環境変数セットアップ
-実運用には `.env.local` の作成が必要です。以下の表を参考に値を設定してください。
+## 環境変数セットアップと保護
+実運用には `.env.local` の手動作成が必要です。以下の表を参考に値を設定してください。
+
+> [!WARNING]
+> **`vercel env pull .env.local` は絶対に使用しないでください。**
+> ローカルの秘密情報が消失する事故が発生します。
+> Vercelからpullする場合は、必ず以下のコマンド（npm script）を使用してください。
+> ```bash
+> npm run env:pull
+> ```
+
+> [!TIP]
+> **【重要】バックアップの作成**
+> `.env.local` に実値を入力し、`npm run env:check` がすべてOKになった直後に、必ずバックアップを作成してください。
+> ```bash
+> npm run env:backup
+> ```
+> これにより、万が一上書きされた場合でも即座に復旧可能になります。
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase Settings > API | DB接続先URL | **公開可** |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase Settings > API | クライアント用Anonキー | **公開可** |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase Settings > API | サーバー用管理キー | **秘密** (絶対非公開) |
@@ -67,12 +83,18 @@ npx -y tsx src/scripts/check-env.ts
 
 1. **ビルドチェック**: `npm run build`
 2. **変数チェック**: `npx tsx src/scripts/check-env.ts` (すべてOKになるまで)
-3. **接続検証**: `npx tsx src/scripts/verify-sukashi.ts` (DB/R2接続の健全性確認)
-4. **1件目登録**: `npx tsx src/scripts/seed-prod-asset.ts` (テスト用おにぎりの登録)
-5. **ブラウザ確認**: `npm run dev` で起動し、おにぎり素材が表示・検索されるか確認。
+3. **接続検証**: `npx tsx src/scripts/verify-sukashi.ts` (DB/Storage接続の健全性確認)
+4. **素材の投入 (rembg 済み 10件)**:
+   ```bash
+   # Dry-run で品質と重複を確認
+   npx tsx src/scripts/import-assets.ts --category=food --dry-run
+   
+   # 本番投入
+   npx tsx src/scripts/import-assets.ts --category=food
+   ```
+5. **ブラウザ確認**: `npm run dev` で起動し、トップページや `/category/food` に素材が表示されるか確認。
 6. **DL確認**: 詳細ページでダウンロードを実行し、実ファイルが保存されるか確認。
-7. **ログ確認**: Supabaseの `download_logs` にレコードが作成されているか確認。
-8. **一括投入**: 上記がすべて成功したら `npx tsx src/scripts/seed-food-assets.ts` を実行。
+7. **ログ確認**: Supabase の `download_logs` にレコードが作成されているか確認。
 
 ## ⚠️ 安全上の注意
 - **検証成功前の大量投入禁止**: 必ず1件目の疎通を確認してから10件投入へ進んでください。
@@ -84,6 +106,35 @@ npx -y tsx src/scripts/check-env.ts
 現在、`test-assets/` ディレクトリ内に疎通確認用のダミー画像（おにぎり）が生成されています。これらは表示・ダウンロード・ログ記録の動作テストを目的としたものであり、**本番用の高品質素材ではありません。**
 
 疎通確認完了後、本番素材を Supabase Storage にアップロードして運用を開始してください。
+
+## 🎨 PNG品質・登録ガイドライン (Phase 2)
+高品質な素材ライブラリを維持するため、以下の基準を厳守してください。
+
+### 1. 技術仕様
+- **背景**: 完全に透過されていること（エッジの残留物なし）。
+- **解像度**: 1024x1024 px 以上推奨（最大2048x2048 px）。
+- **配置**: 中央配置、上下左右に 10〜15% の適切な余白。
+- **ファイルサイズ**: 1枚あたり 10MB 以下。
+
+### 2. ビジュアル品質
+- **コントラスト**: 黒背景、白背景のどちらに置いても輪郭が鮮明であること。
+- **著作権/商標**: ロゴ、特定のブランド名、読み取れる文字が含まれていないこと。
+- **肖像権**: 人物の顔、特定可能な個人が含まれていないこと。
+- **建造物**: 著作権のある著名な現代建築物がメインではないこと。
+
+### 3. 量産インポート Pipeline
+素材を一括投入するには以下の手順を実行します。
+
+1. **配置**: `/import-ready/[カテゴリー名]/` フォルダに透過PNGを配置。
+2. **検証 (Dry Run)**: 
+   ```bash
+   npx tsx src/scripts/import-assets.ts --dry-run
+   ```
+3. **本投入**:
+   ```bash
+   npx tsx src/scripts/import-assets.ts --category=food
+   ```
+   *注意: `--category` オプションで特定のフォルダのみを対象にできます。*
 
 ---
 © 2026 SUKASHI. All rights reserved.
