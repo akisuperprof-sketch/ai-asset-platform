@@ -9,9 +9,9 @@ export function Navbar() {
     <motion.nav 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="fixed top-0 left-0 right-0 z-50 px-6 py-6"
+      className="fixed top-0 left-0 right-0 z-50 px-6 py-4"
     >
-      <div className="max-w-7xl mx-auto glass rounded-full px-8 py-3 flex items-center justify-between border-white/10 shadow-2xl backdrop-blur-3xl">
+      <div className="max-w-7xl mx-auto glass rounded-full px-6 py-2.5 flex items-center justify-between border-white/10 shadow-2xl backdrop-blur-3xl">
         <div className="flex items-center gap-12">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="hidden sm:block group-hover:opacity-80 transition-opacity">
