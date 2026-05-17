@@ -5,8 +5,11 @@ import { Search, Zap, ShieldCheck, Globe, Download, MousePointer2 } from "lucide
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import Image from "next/image";
+
 export function HeroSection({ onSearch }: { onSearch?: (query: string) => void }) {
   const [query, setQuery] = useState("");
+  const [imgError, setImgError] = useState(false);
   const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -48,9 +51,12 @@ export function HeroSection({ onSearch }: { onSearch?: (query: string) => void }
               </div>
 
               {/* Huge Typography */}
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white leading-[0.9] tracking-tighter mb-6 lg:mb-8 drop-shadow-2xl">
-                AI <span className="bg-ai-gradient bg-clip-text text-transparent [-webkit-background-clip:text]">TRANSPARENT</span><br />
-                ASSETS FROM JAPAN
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white leading-[0.9] tracking-tighter mb-6 lg:mb-8 drop-shadow-2xl flex flex-col gap-2 lg:gap-4">
+                <span className="flex items-center gap-2 lg:gap-4">
+                  AI <span className="bg-ai-gradient bg-clip-text text-transparent">ASSETS</span>
+                  <span className="text-amber-400 font-serif font-light opacity-90 drop-shadow-[0_0_15px_rgba(251,191,36,0.6)]">✦</span>
+                </span>
+                <span>FROM JAPAN</span>
               </h1>
 
               {/* Description */}
@@ -160,14 +166,29 @@ export function HeroSection({ onSearch }: { onSearch?: (query: string) => void }
                 <img src="/brand/icon-shuriken.svg" alt="Shuriken" className="w-16 h-16 lg:w-24 lg:h-24" />
               </motion.div>
 
-              {/* Main Ninja Character */}
-              <motion.img 
-                src="/brand/ninja-char-1.png"
-                alt="AssetNinja Mascot"
+              {/* Main Ninja Character (Next.js Image) */}
+              <motion.div
                 animate={{ y: [0, -20, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="w-full h-full object-contain max-w-[80%] max-h-[80%] drop-shadow-[0_0_50px_rgba(0,255,255,0.2)] z-10"
-              />
+                className="relative w-full h-full max-w-[80%] max-h-[80%] z-10 flex items-center justify-center drop-shadow-[0_0_50px_rgba(0,255,255,0.3)] opacity-95"
+              >
+                {!imgError ? (
+                  <Image 
+                    src="/brand/ninja-mascot.webp"
+                    alt="Cyber Ninja Mascot"
+                    fill
+                    sizes="(max-width: 768px) 80vw, (max-width: 1200px) 50vw, 40vw"
+                    className="object-contain"
+                    priority
+                    onError={() => setImgError(true)}
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center gap-4">
+                    <img src="/brand/icon-shuriken.svg" alt="Loading" className="w-24 h-24 opacity-30 animate-spin" style={{ animationDuration: '3s' }} />
+                    <span className="text-[10px] text-ai-cyan font-black tracking-widest uppercase">Stealth Mode</span>
+                  </div>
+                )}
+              </motion.div>
 
               {/* Floating Asset UI Concept */}
               <motion.div

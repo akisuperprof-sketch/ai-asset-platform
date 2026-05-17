@@ -34,13 +34,19 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
       const data = await response.json();
       
       if (data.url) {
-        // Trigger download via window.location or hidden link
+        // 実際の画像をBlobとして取得し、確実にダウンロードさせる（別タブ表示を防止）
+        const imgResponse = await fetch(data.url);
+        const blob = await imgResponse.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+
         const link = document.createElement('a');
-        link.href = data.url;
-        link.setAttribute('download', `${title}.png`);
+        link.href = blobUrl;
+        link.download = `${data.title || title || 'assetninja-download'}.png`;
         document.body.appendChild(link);
         link.click();
         link.remove();
+        
+        window.URL.revokeObjectURL(blobUrl);
         
         setStatus("done");
       } else {
