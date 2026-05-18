@@ -4,11 +4,27 @@ import { AssetGrid } from "@/components/assets/AssetGrid";
 import { CategorySection } from "@/components/layout/CategorySection";
 import { getAssets, searchAssets } from "@/lib/assets";
 import { Zap, MessageCircle, Globe, ShieldCheck, Mail, Play, Camera } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ q?: string; cat?: string }> }) {
   const { q, cat } = await searchParams;
   const currentCategory = cat || "すべて";
   const assets = q || cat ? await searchAssets(q || "", currentCategory) : await getAssets();
+
+  // Query actual asset count dynamically from Supabase
+  let assetCount = 31;
+  try {
+    const { count } = await supabase
+      .from("assets")
+      .select("id", { count: "exact", head: true })
+      .eq("review_status", "approved")
+      .eq("legal_status", "clean");
+    if (count !== null) {
+      assetCount = count;
+    }
+  } catch (e) {
+    console.error("Error fetching dynamic count:", e);
+  }
 
   const isHome = !q && !cat;
 
@@ -19,7 +35,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
       <main>
         {/* On home page, HeroSection takes the full viewport. On search, we might still show it, but maybe smaller? Let's just keep it as is, but it's 100vh. Actually, the user says 'トップページ全体を 100vh に収める'. If it's a search page, we let it scroll. */}
         {isHome ? (
-          <HeroSection />
+          <HeroSection initialCount={assetCount} />
         ) : (
           <div className="pt-32 px-6 max-w-7xl mx-auto mb-12">
             <h1 className="text-4xl font-black text-white mb-4">

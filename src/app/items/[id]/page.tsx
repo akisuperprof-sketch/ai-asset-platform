@@ -13,9 +13,10 @@ import {
   Zap
 } from "lucide-react";
 import { DownloadButton } from "@/components/download/DownloadButton";
+import { AssetPreviewContainer } from "@/components/assets/AssetPreviewContainer";
 import { Metadata } from "next";
 import Link from "next/link";
-
+// ...
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const asset = await getAssetById(id);
@@ -77,49 +78,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           
           {/* Left Side: Previews (Main content) */}
           <div className="w-full lg:w-2/3 space-y-8">
-            <div className="relative">
-              {/* Main Preview Container */}
-              <div className="aspect-square glass-card rounded-[40px] overflow-hidden flex items-center justify-center relative p-12 lg:p-20 bg-[#0a0a0a]">
-                {/* Checkerboard for Transparency */}
-                <div className="absolute inset-0 bg-checkerboard opacity-20" />
-                
-                {/* Cinematic Lighting */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-ai-purple/10 via-transparent to-ai-cyan/10 pointer-events-none" />
-                
-                <img 
-                  src={asset.imageUrl} 
-                  alt={`${asset.title}の透過PNG素材`} 
-                  className="relative z-20 max-w-full max-h-full object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.8)]"
-                />
-
-                {/* Floating View Controls */}
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30">
-                  <div className="glass px-6 py-3 rounded-full flex items-center gap-6 text-xs font-black">
-                    <span className="text-ai-cyan">100% SCALE</span>
-                    <div className="w-px h-4 bg-white/10" />
-                    <Link href="/coming-soon" className="hover:text-ai-cyan transition-colors">
-                      <Maximize2 className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Thumbnails (Floating on the left) */}
-                <div className="absolute left-6 top-6 hidden sm:flex flex-col gap-3 z-40">
-                  {[1, 2, 3].map((i) => (
-                    <Link key={i} href="/coming-soon" className="w-16 h-16 glass rounded-2xl border-white/10 p-2 cursor-pointer hover:border-ai-purple transition-all bg-black/40 backdrop-blur-xl">
-                      <img src={asset.imageUrl} className="w-full h-full object-contain opacity-50 hover:opacity-100 transition-opacity" alt="thumb" />
-                    </Link>
-                  ))}
-                </div>
-
-                {/* Floating Action (Like) */}
-                <div className="absolute right-6 top-6 z-40">
-                  <Link href="/coming-soon" className="w-14 h-14 glass rounded-2xl border-white/10 flex items-center justify-center hover:bg-white/10 transition-all text-white/40 hover:text-red-500">
-                    <Heart className="w-6 h-6" />
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <AssetPreviewContainer imageUrl={asset.imageUrl} title={asset.title} />
 
             {/* Related Tags */}
             <div className="pt-4">

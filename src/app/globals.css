@@ -78,3 +78,97 @@ body {
     background: var(--background-image-ai-gradient);
   }
 }
+
+/* --- PREMIUM INTERACTIVE MOTIONS --- */
+@keyframes grid-drift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 60px 60px;
+  }
+}
+
+@keyframes slow-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slow-reverse-spin {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(1deg);
+  }
+}
+
+@keyframes aura-pulse {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(1);
+    filter: blur(150px) brightness(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(1.08);
+    filter: blur(155px) brightness(1.2);
+  }
+}
+
+@keyframes shimmer-gold {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-grid-drift {
+  animation: grid-drift 20s linear infinite;
+}
+
+.animate-slow-spin {
+  animation: slow-spin 35s linear infinite;
+}
+
+.animate-slow-reverse-spin {
+  animation: slow-reverse-spin 25s linear infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-aura-pulse {
+  animation: aura-pulse 10s ease-in-out infinite;
+}
+
+.gold-glass {
+  background: rgba(251, 191, 36, 0.02);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(251, 191, 36, 0.15);
+  box-shadow: 0 0 40px rgba(251, 191, 36, 0.03);
+}
+
+.gold-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.1) 50%, transparent);
+  background-size: 200% 100%;
+  animation: shimmer-gold 6s infinite linear;
+}
+
