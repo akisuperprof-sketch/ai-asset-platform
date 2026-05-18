@@ -124,7 +124,7 @@ export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
               {/* Huge Unified Title */}
               <h1 className="text-4xl sm:text-5xl lg:text-[2.6rem] xl:text-[3.2rem] font-black text-white leading-[1.0] tracking-tighter drop-shadow-3xl flex flex-col">
                 <span>
-                  AI <span className="bg-ai-gradient bg-clip-text text-transparent">ASSETS</span>
+                  AI <span className="inline-block bg-ai-gradient bg-clip-text text-transparent [-webkit-background-clip:text]">ASSETS</span>
                 </span>
                 <span className="text-amber-500/80 font-serif font-light flex items-center gap-2">
                   FROM JAPAN
