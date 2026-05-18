@@ -33,8 +33,8 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   icons: {
-    icon: '/icon.svg',
-    apple: '/icon.svg',
+    icon: '/brand/ninja-char-7.png',
+    apple: '/brand/ninja-char-7.png',
   }
 };
 

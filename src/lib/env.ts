@@ -7,17 +7,18 @@ import fs from "fs";
  * Prioritizes .env.local, then falls back to .env.vercel
  */
 export function loadEnv(requireValidation: boolean = true) {
-  const localPath = path.resolve(process.cwd(), ".env.local");
   const vercelPath = path.resolve(process.cwd(), ".env.vercel");
+  const localPath = path.resolve(process.cwd(), ".env.local");
 
-  if (fs.existsSync(localPath)) {
-    dotenv.config({ path: localPath });
-    // If we loaded .env.local but it only has VERCEL_OIDC_TOKEN, warn the user
+  if (fs.existsSync(vercelPath)) {
+    dotenv.config({ path: vercelPath, override: true });
+    console.log("ℹ️  Loaded environment variables from .env.vercel");
+  } else if (fs.existsSync(localPath)) {
+    dotenv.config({ path: localPath, override: true });
+    console.log("ℹ️  Loaded environment variables from .env.local");
     if (process.env.VERCEL_OIDC_TOKEN && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
-      console.warn("⚠️ 警告: .env.local が vercel env pull で上書きされた可能性があります！ (VERCEL_OIDC_TOKEN のみ検出)");
+      console.warn("⚠️ 警告: .env.local が vercel env pull で上書きされた可能性があります！");
     }
-  } else if (fs.existsSync(vercelPath)) {
-    dotenv.config({ path: vercelPath });
   }
 
   if (requireValidation) {

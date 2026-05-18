@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "env:check": "tsx src/scripts/check-env.ts",
+    "env:check": "npx tsx src/scripts/check-env.ts",
     "env:pull": "vercel env pull .env.vercel --environment=production --yes",
     "env:backup": "cp .env.local .env.local.backup"
   },

@@ -16,9 +16,9 @@ export function NinjaDownloadSuccess() {
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: "spring", damping: 12 }}
-          src="/brand/icon-ninja-face.svg" 
+          src="/brand/ninja-icon-1.png" 
           alt="Success" 
-          className="w-12 h-12"
+          className="w-12 h-12 object-contain"
         />
         <motion.div
           initial={{ scale: 0 }}

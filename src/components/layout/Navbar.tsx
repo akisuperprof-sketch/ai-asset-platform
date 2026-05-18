@@ -14,11 +14,12 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto glass rounded-full px-6 py-2.5 flex items-center justify-between border-white/10 shadow-2xl backdrop-blur-3xl">
         <div className="flex items-center gap-12">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="hidden sm:block group-hover:opacity-80 transition-opacity">
-              <img src="/brand/logo-horizontal.svg" alt="SUKASHI AssetNinja logo" className="h-8 md:h-10 w-auto" />
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl overflow-hidden group-hover:scale-105 transition-transform duration-300 relative border border-white/10 shadow-[0_0_15px_rgba(0,255,255,0.2)]">
+              <img src="/brand/ninja-icon-1.png" alt="AssetNinja icon" className="w-full h-full object-cover" />
             </div>
-            <div className="block sm:hidden group-hover:opacity-80 transition-opacity">
-              <img src="/brand/logo-square.svg" alt="SUKASHI AssetNinja logo" className="h-8 w-auto rounded-lg" />
+            <div className="hidden sm:flex flex-col">
+              <span className="text-[13px] font-black text-white tracking-tighter leading-none">ASSET NINJA</span>
+              <span className="text-[8px] font-black text-ai-cyan tracking-[0.2em] uppercase leading-none mt-1">Premium PNG</span>
             </div>
           </Link>
 

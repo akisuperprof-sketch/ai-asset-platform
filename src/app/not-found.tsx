@@ -16,7 +16,7 @@ export default function NotFound() {
             animate={{ opacity: [1, 0, 1, 0.5, 1], x: [0, -5, 5, -2, 0] }}
             transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
           >
-            <img src="/brand/icon-ninja-face.svg" alt="404" className="w-32 h-32 opacity-30" />
+            <img src="/brand/ninja-char-4.png" alt="404" className="w-48 h-48 opacity-30 object-contain" />
           </motion.div>
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
         </div>

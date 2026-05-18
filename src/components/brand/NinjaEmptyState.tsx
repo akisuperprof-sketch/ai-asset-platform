@@ -8,7 +8,7 @@ export function NinjaEmptyState({ message = "まだ見つからない…" }: { m
           animate={{ y: [0, -10, 0] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         >
-          <img src="/brand/icon-ninja-face.svg" alt="Not found" className="w-24 h-24 opacity-20 grayscale" />
+          <img src="/brand/ninja-char-2.png" alt="Not found" className="w-32 h-32 opacity-30 grayscale object-contain" />
         </motion.div>
         
         {/* Smoke trail hiding the ninja */}
