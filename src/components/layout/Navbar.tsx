@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Zap, Search, Menu, Globe, MessageCircle } from "lucide-react";
+import { Zap, Search, Menu, Globe, MessageCircle, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 export function Navbar() {
@@ -38,6 +38,13 @@ export function Navbar() {
           </Link>
           
           <div className="hidden md:flex items-center gap-4">
+            <Link 
+              href="/coming-soon" 
+              className="bg-white/[0.02] border border-white/5 hover:border-amber-500/30 hover:bg-amber-500/5 px-4 py-2 rounded-full text-[9px] font-black text-amber-400 uppercase tracking-[0.25em] transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(245,158,11,0.02)]"
+            >
+              <Sparkles className="w-3.5 h-3.5 fill-amber-500/10 text-amber-400" />
+              PRO PLAN
+            </Link>
             <Link href="/coming-soon" className="text-[11px] font-black text-white uppercase tracking-widest hover:text-ai-cyan transition-colors">
               ログイン
             </Link>
