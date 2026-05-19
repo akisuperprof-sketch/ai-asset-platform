@@ -206,7 +206,7 @@ export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
                 <Cpu className="w-3.5 h-3.5 text-ai-cyan animate-pulse" /> CENTRAL SEARCH ENGINE OS
               </span>
               <span className="text-[9px] font-black text-amber-500/80 bg-amber-500/5 border border-amber-500/10 px-3 py-0.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.03)]">
-                31,482 TRANSPARENT PNG INDEXED
+                50,000+ AI GENERATED TRANSPARENT PNG ASSETS
               </span>
             </div>
 
@@ -369,12 +369,12 @@ export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
           <div className="w-full max-w-4xl mx-auto glass-card rounded-[2rem] border-white/5 p-3 mb-3 relative overflow-visible shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
             <div className="flex gap-4 overflow-x-auto no-scrollbar justify-start md:justify-center items-center px-4 py-1 relative">
               {[
-                { name: "Food", label: "おにぎり/和食", icon: "🍙", count: 12 },
-                { name: "Japan", label: "和風/伝統", icon: "🌸", count: 7 },
-                { name: "Medical", label: "医療/クリニック", icon: "🏥", count: 6 },
-                { name: "Business", label: "ビジネス/オフィス", icon: "💼", count: 4 },
-                { name: "Festival", label: "年中行事/お祭り", icon: "🗻", count: 2 },
-                { name: "More", label: "全素材一覧", icon: "✦", count: 31 },
+                { name: "Food", label: "おにぎり/和食", icon: "🍙", count: 20 },
+                { name: "Japan", label: "和風/伝統", icon: "🌸", count: 20 },
+                { name: "Medical", label: "医療/クリニック", icon: "🏥", count: 20 },
+                { name: "Business", label: "ビジネス/オフィス", icon: "💼", count: 20 },
+                { name: "Festival", label: "年中行事/お祭り", icon: "🗻", count: 20 },
+                { name: "More", label: "全素材一覧", icon: "✦", count: 100 },
               ].map((cat) => (
                 <button 
                   key={cat.name}
@@ -406,7 +406,7 @@ export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
             </span>
             <span className="hidden sm:inline text-white/10">|</span>
             <span className="hover:text-ai-purple transition-colors uppercase">
-              31,482 PNGS INDEXED
+              50,000+ PNGS INDEXED
             </span>
             <span className="hidden sm:inline text-white/10">|</span>
             <span className="hover:text-ai-cyan transition-colors uppercase flex items-center gap-1">

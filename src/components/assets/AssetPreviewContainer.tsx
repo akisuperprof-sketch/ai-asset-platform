@@ -84,7 +84,7 @@ export function AssetPreviewContainer({ imageUrl, title }: AssetPreviewContainer
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
           src={imageUrl} 
-          alt={`${title}の透過PNG素材`} 
+          alt={`${title}の透過PNG画像素材 (背景透過クリッピング済み) - Free Transparent PNG ${title} Illustration for Commercial Use`} 
           className="relative z-20 max-w-full max-h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.7)]"
         />
 

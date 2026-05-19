@@ -5,7 +5,17 @@ import { motion } from "framer-motion";
 import { Download, ExternalLink, Zap, ShieldCheck, Heart } from "lucide-react";
 import Link from "next/link";
 
+const altMapping: Record<string, string> = {
+  "日本の食": "Japanese Food Illustration",
+  "医療・歯科": "Medical Dental Healthcare Illustration",
+  "事務用品": "Office Supplies Business Gadget Illustration",
+  "年中行事": "Annual Events Cultural Iconic Japanese Illustration",
+  "日本の日常小物": "Daily Items Japan Traditional Objects Accessories"
+};
+
 export function AssetCard({ asset }: { asset: Asset }) {
+  const seoAlt = `${asset.title} - カテゴリ: ${asset.category} (${altMapping[asset.category] || "Japanese Assets"}) - 高品質透過PNG画像素材 | Free Transparent PNG ${asset.title.replace(/\(背景透過画像\)/g, "").trim()}`;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -22,7 +32,7 @@ export function AssetCard({ asset }: { asset: Asset }) {
         
         <motion.img 
           src={asset.imageUrl} 
-          alt={asset.title}
+          alt={seoAlt}
           whileHover={{ scale: 1.1 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           className="relative z-20 max-w-[80%] max-h-[80%] object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.9)]" 

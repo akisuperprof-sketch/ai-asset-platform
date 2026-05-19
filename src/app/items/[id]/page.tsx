@@ -41,6 +41,70 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
+const tagMapping: Record<string, string> = {
+  "sushi": "寿司",
+  "ramen": "ラーメン",
+  "takoyaki": "たこ焼き",
+  "tempura": "天ぷら",
+  "wagashi": "和菓子",
+  "matcha": "抹茶",
+  "bento": "弁当",
+  "gyoza": "餃子",
+  "misoshiru": "味噌汁",
+  "yakitori": "焼き鳥",
+  "udon": "うどん",
+  "soba": "そば",
+  "karaage": "唐揚げ",
+  "curry": "カレー",
+  "sashimi": "刺身",
+  "taiyaki": "たい焼き",
+  "dango": "団子",
+  "yakiniku": "焼肉",
+  "sake": "日本酒",
+  "fujisan": "富士山",
+  "sakura": "桜",
+  "torii": "鳥居",
+  "jinja": "神社",
+  "katana": "日本刀",
+  "wagasa": "和傘",
+  "chochin": "提灯",
+  "manekineko": "招き猫",
+  "daruma": "だるま",
+  "tatami": "畳",
+  "shuriken": "手裏剣",
+  "shinkansen": "新幹線",
+  "tokyotower": "東京タワー",
+  "japanmap": "日本地図",
+  "matsuri": "祭り",
+  "businessman": "ビジネスマン",
+  "businesswoman": "ビジネスウーマン",
+  "meeting": "会議",
+  "ai": "AI",
+  "cloud": "クラウド",
+  "contract": "契約書",
+  "graph": "グラフ",
+  "smartphone": "スマホ",
+  "pc": "PC",
+  "server": "サーバー",
+  "analysis": "データ分析",
+  "hospital": "病院",
+  "doctor": "医者",
+  "nurse": "看護師",
+  "karte": "カルテ",
+  "medicine": "薬",
+  "dentist": "歯科",
+  "mri": "MRI",
+  "ecg": "心電図",
+  "ambulance": "救急車",
+  "medical-icon": "医療アイコン"
+};
+
+function slugifyTag(tag: string): string {
+  const entry = Object.entries(tagMapping).find(([_, val]) => val === tag);
+  if (entry) return entry[0];
+  return encodeURIComponent(tag);
+}
+
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const asset = await getAssetById(id);
@@ -90,7 +154,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               </div>
               <div className="flex flex-wrap gap-3">
                 {asset.tags.map(tag => (
-                  <Link key={tag} href={`/?q=${encodeURIComponent(tag)}`} className="glass px-6 py-3 rounded-xl text-[11px] font-bold hover:bg-white hover:text-black transition-all">
+                  <Link key={tag} href={`/tag/${slugifyTag(tag)}`} className="glass px-6 py-3 rounded-xl text-[11px] font-bold hover:bg-white hover:text-black transition-all">
                     #{tag}
                   </Link>
                 ))}
