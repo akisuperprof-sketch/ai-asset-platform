@@ -2,26 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, Loader2, CheckCircle, ShieldCheck, Sparkles } from "lucide-react";
+import { Download, Loader2, Sparkles } from "lucide-react";
 import { NinjaDownloadSuccess } from "@/components/brand/NinjaDownloadSuccess";
+import { RewardDownloadModal } from "@/components/download/RewardDownloadModal";
+import { trackEvent } from "@/lib/analytics";
 
 export function DownloadButton({ assetId, title }: { assetId: string, title: string }) {
-  const [status, setStatus] = useState<"idle" | "preparing" | "ready" | "downloading" | "done">("idle");
-  const [countdown, setCountdown] = useState(5);
+  const [status, setStatus] = useState<"idle" | "downloading" | "done">("idle");
   const [showToast, setShowToast] = useState(false);
-
-  const startPreparation = () => {
-    setStatus("preparing");
-    setCountdown(5);
-  };
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    if (status === "preparing" && countdown > 0) {
-      const timer = setTimeout(() => setCountdown(prev => prev - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (status === "preparing" && countdown === 0) {
-      setStatus("ready");
-    } else if (status === "done") {
+    if (status === "done") {
       setShowToast(true);
       const timer = setTimeout(() => {
         setStatus("idle");
@@ -29,7 +21,7 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
       }, 4000);
       return () => clearTimeout(timer);
     }
-  }, [status, countdown]);
+  }, [status]);
 
   const handleDownload = async () => {
     setStatus("downloading");
@@ -52,6 +44,7 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
         link.remove();
         
         window.URL.revokeObjectURL(blobUrl);
+        trackEvent("download_complete", { assetId, assetTitle: title });
         setStatus("done");
       } else {
         throw new Error("Download URL not found");
@@ -59,8 +52,13 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
     } catch (err) {
       console.error(err);
       alert("ダウンロード中にエラーが発生しました。");
-      setStatus("ready");
+      setStatus("idle");
     }
+  };
+
+  const handleUnlockInstant = () => {
+    setShowModal(false);
+    handleDownload();
   };
 
   return (
@@ -70,51 +68,11 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
           <motion.button
             key="idle"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={startPreparation}
+            onClick={() => setShowModal(true)}
             className="w-full bg-ai-gradient hover:opacity-90 text-white font-bold py-4 rounded-apple flex items-center justify-center gap-3 shadow-lg shadow-ai-purple/20 transition-all cursor-pointer"
           >
             <Download className="w-6 h-6 animate-pulse" />
             無料ダウンロードを開始
-          </motion.button>
-        )}
-
-        {status === "preparing" && (
-          <motion.div
-            key="preparing"
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            className="w-full glass p-6 rounded-apple border-ai-purple/30 text-center"
-          >
-            <p className="text-secondary text-sm mb-2 font-medium">準備中... {countdown}秒後に準備が完了します</p>
-            <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden mb-4">
-              <motion.div 
-                className="bg-ai-gradient h-full"
-                initial={{ width: "0%" }}
-                animate={{ width: `${(5 - countdown) * 20}%` }}
-              />
-            </div>
-            
-            {/* Ad Placeholder within the button flow */}
-            <div className="bg-ai-purple/5 border border-ai-purple/20 rounded-lg p-4 mb-4">
-              <p className="text-[10px] text-ai-purple/60 uppercase tracking-widest mb-1">Sponsored</p>
-              <p className="text-xs text-white">あなたのクリエイティブをAIで次のレベルへ。今すぐ詳細をチェック。</p>
-            </div>
-            
-            <div className="flex items-center justify-center gap-2 text-[10px] text-secondary">
-              <ShieldCheck className="w-3 h-3 text-success" />
-              ウイルススキャン済み • 安全な接続
-            </div>
-          </motion.div>
-        )}
-
-        {status === "ready" && (
-          <motion.button
-            key="ready"
-            initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-            onClick={handleDownload}
-            className="w-full bg-success hover:bg-success/90 text-black font-bold py-4 rounded-apple flex items-center justify-center gap-3 transition-all cursor-pointer shadow-[0_0_20px_rgba(48,209,88,0.3)] animate-pulse"
-          >
-            <CheckCircle className="w-6 h-6" />
-            ダウンロードの準備ができました
           </motion.button>
         )}
 
@@ -138,6 +96,15 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Reward Download OS Console Modal */}
+      <RewardDownloadModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onUnlockInstant={handleUnlockInstant}
+        assetTitle={title}
+        assetId={assetId}
+      />
 
       {/* Linear-style Premium Notification Toast */}
       <AnimatePresence>
