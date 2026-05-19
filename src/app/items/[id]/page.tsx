@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       type: "website",
     },
     alternates: {
-      canonical: `https://ai-asset-platform.vercel.app/items/${id}`
+      canonical: `https://assetninja.jp/items/${id}`
     }
   };
 }
@@ -185,7 +185,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             "@type": "ImageObject",
             "contentUrl": asset.imageUrl,
             "license": "https://creativecommons.org/publicdomain/zero/1.0/",
-            "acquireLicensePage": `https://ai-asset-platform.vercel.app/items/${id}`,
+            "acquireLicensePage": `https://assetninja.jp/items/${id}`,
             "creator": {
               "@type": "Organization",
               "name": "AssetNinja"
@@ -206,19 +206,19 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 "@type": "ListItem",
                 "position": 1,
                 "name": "ホーム",
-                "item": "https://ai-asset-platform.vercel.app/"
+                "item": "https://assetninja.jp/"
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": asset.category,
-                "item": `https://ai-asset-platform.vercel.app/category/${asset.category}`
+                "item": `https://assetninja.jp/category/${asset.category}`
               },
               {
                 "@type": "ListItem",
                 "position": 3,
                 "name": asset.title,
-                "item": `https://ai-asset-platform.vercel.app/items/${id}`
+                "item": `https://assetninja.jp/items/${id}`
               }
             ]
           })

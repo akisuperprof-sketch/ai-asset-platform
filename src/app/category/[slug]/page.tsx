@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: "website",
     },
     alternates: {
-      canonical: `https://ai-asset-platform.vercel.app/category/${encodeURIComponent(categoryName)}`
+      canonical: `https://assetninja.jp/category/${encodeURIComponent(categoryName)}`
     }
   };
 }

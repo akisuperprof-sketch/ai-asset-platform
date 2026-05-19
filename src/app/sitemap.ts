@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { getAssets } from '@/lib/assets'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://ai-asset-platform.vercel.app'
+  const baseUrl = 'https://assetninja.jp'
   
   // Get all assets for dynamic routes
   const assets = await getAssets()

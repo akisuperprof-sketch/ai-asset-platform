@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: ['/', '/_next/image', '/_next/static'],
       disallow: ['/api/', '/admin/'],
     },
-    sitemap: 'https://ai-asset-platform.vercel.app/sitemap.xml',
+    sitemap: 'https://assetninja.jp/sitemap.xml',
   }
 }

@@ -9,7 +9,7 @@ const notoEmoji = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://ai-asset-platform.vercel.app'),
+  metadataBase: new URL('https://assetninja.jp'),
   title: {
     default: "AssetNinja - 日本発 高品質AI透過PNG素材",
     template: "%s | AssetNinja"
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AssetNinja - 日本発 高品質AI透過PNG素材",
     description: "商用利用可能な日本特化の高品質AI生成透過PNG素材ライブラリ。",
-    url: 'https://ai-asset-platform.vercel.app',
+    url: 'https://assetninja.jp',
     siteName: 'AssetNinja',
     locale: 'ja_JP',
     type: 'website',
