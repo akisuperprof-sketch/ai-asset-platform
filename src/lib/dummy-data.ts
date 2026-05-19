@@ -126,7 +126,7 @@ const dailyNames = [
 
 export const dummyAssets: Asset[] = [];
 
-// Populate 100 perfectly optimized transparent PNG assets dynamically!
+// Populate 1,100 perfectly optimized transparent PNG assets dynamically for massive programmatic SEO!
 const populateAssets = () => {
   let idCounter = 1;
 
@@ -161,6 +161,54 @@ const populateAssets = () => {
   addSet(businessNames, "事務用品", "https://pngimg.com/uploads/pen/pen_PNG1395.png");
   addSet(medicalNames, "医療・歯科", "https://pngimg.com/uploads/medical_items/medical_items_PNG11.png");
   addSet(dailyNames, "日本の日常小物", "https://pngimg.com/uploads/teapot/teapot_PNG27.png");
+
+  // ==========================================
+  // PROGRAMMATIC 1,000 ASSETS EXPANSION ENGINE
+  // ==========================================
+  const targetTagCategories = [
+    { tag: "寿司", slug: "sushi", category: "日本の食", baseImg: "https://pngimg.com/uploads/sushi/sushi_PNG9202.png", baseName: "江戸前特選握り寿司" },
+    { tag: "ラーメン", slug: "ramen", category: "日本の食", baseImg: "https://pngimg.com/uploads/sushi/sushi_PNG9202.png", baseName: "極上醤油豚骨ラーメン" },
+    { tag: "和柄", slug: "japanese-pattern", category: "年中行事", baseImg: "https://pngimg.com/uploads/new_year/new_year_PNG66.png", baseName: "伝統的美麗和柄紋様" },
+    { tag: "桜", slug: "sakura", category: "年中行事", baseImg: "https://pngimg.com/uploads/new_year/new_year_PNG66.png", baseName: "満開の吉野桜の華" },
+    { tag: "富士山", slug: "fujisan", category: "年中行事", baseImg: "https://pngimg.com/uploads/new_year/new_year_PNG66.png", baseName: "赤富士と冠雪富士山" },
+    { tag: "鳥居", slug: "torii", category: "年中行事", baseImg: "https://pngimg.com/uploads/new_year/new_year_PNG66.png", baseName: "神社赤塗り千本鳥居" },
+    { tag: "抹茶", slug: "matcha", category: "日本の食", baseImg: "https://pngimg.com/uploads/sushi/sushi_PNG9202.png", baseName: "本格京都宇治抹茶" },
+    { tag: "着物", slug: "kimono", category: "日本の日常小物", baseImg: "https://pngimg.com/uploads/teapot/teapot_PNG27.png", baseName: "京友禅高級振袖着物" },
+    { tag: "提灯", slug: "chochin", category: "日本の日常小物", baseImg: "https://pngimg.com/uploads/teapot/teapot_PNG27.png", baseName: "お祭り伝統赤提灯" },
+    { tag: "日本刀", slug: "katana", category: "事務用品", baseImg: "https://pngimg.com/uploads/pen/pen_PNG1395.png", baseName: "研ぎ澄まされた日本刀真剣" }
+  ];
+
+  const prefixes = ["極上", "特選", "伝統的", "雅な", "モダン和風", "黄金の", "プレミアム", "匠の技", "令和新生", "名匠仕立て"];
+  const suffixes = ["#", "Ver.", "Edition", "カスタム", "ゴールド", "漆黒", "朱塗り", "白銀", "デラックス", "セレクト"];
+
+  targetTagCategories.forEach((target) => {
+    for (let i = 0; i < 100; i++) {
+      const pref = prefixes[i % prefixes.length];
+      const suff = suffixes[(i + 3) % suffixes.length];
+      const title = `${pref}${target.baseName}${suff}${i + 1}`;
+      const id = `${target.slug}-gen-item-${i + 1}`;
+
+      dummyAssets.push({
+        id,
+        title: `${title} (背景透過画像)`,
+        category: target.category,
+        tags: [target.tag, "背景透過", "PNG素材", "商用利用可能", "無料素材", "透過画像", "AI生成素材"],
+        description: `高精度AI技術で生成された、${title}の高品質な背景透過PNG画像素材です。解像度4000px以上の高密度ピクセルで、商用利用・Web制作・グラフィックデザインにすぐ使える背景透過切り抜き処理済みデータです。`,
+        imageUrl: target.baseImg,
+        thumbnailUrl: target.baseImg,
+        storageKey: `assets/generated/${target.slug}-item-${i + 1}.png`,
+        width: 4096,
+        height: 4096,
+        fileSize: "2.8 MB",
+        isAiGenerated: true,
+        isCommercialOk: true,
+        licenseType: "free",
+        reviewStatus: "approved",
+        legalStatus: "clean",
+        publishedAt: new Date(Date.now() - (i + 10) * 12 * 60 * 60 * 1000).toISOString()
+      });
+    }
+  });
 };
 
 populateAssets();

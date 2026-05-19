@@ -61,7 +61,8 @@ const tagMapping: Record<string, string> = {
   "mri": "MRI",
   "ecg": "心電図",
   "ambulance": "救急車",
-  "medical-icon": "医療アイコン"
+  "medical-icon": "医療アイコン",
+  "japanese-pattern": "和柄"
 };
 
 function getJapaneseTag(slug: string): string {

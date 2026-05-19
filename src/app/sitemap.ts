@@ -8,7 +8,7 @@ const tagSlugs = [
   "sakura", "torii", "jinja", "katana", "wagasa", "chochin", "manekineko", "daruma", "tatami", "shuriken",
   "shinkansen", "tokyotower", "japanmap", "matsuri", "businessman", "businesswoman", "meeting", "ai",
   "cloud", "contract", "graph", "smartphone", "pc", "server", "analysis", "hospital", "doctor", "nurse",
-  "karte", "medicine", "dentist", "mri", "ecg", "ambulance", "medical-icon"
+  "karte", "medicine", "dentist", "mri", "ecg", "ambulance", "medical-icon", "japanese-pattern"
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
