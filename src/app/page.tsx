@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { Navbar } from "@/components/layout/Navbar";
 import { HeroSection } from "@/components/layout/HeroSection";
 import { AssetCard } from "@/components/assets/AssetCard";
@@ -33,7 +36,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
   const isHome = !q && !cat;
 
   // Extract the 10 First Premium Assets (All real assets, sorted by latest)
-  const premiumAssets = allAssets.filter(a => a.imageUrl && a.imageUrl.startsWith("http")).slice(0, 10);
+  const premiumAssets = allAssets.filter(a => a.imageUrl).slice(0, 10);
   
   // Extract 6 representative Japanese traditional items for "LATEST FROM JAPAN"
   const latestJapanAssets = allAssets.filter(a => a.imageUrl && (a.category === "和の伝統素材" || a.category === "年中行事・祭り")).slice(0, 6);
@@ -82,9 +85,16 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
                 </div>
 
                 <div className="grid grid-cols-12 gap-8">
-                  {premiumAssets.map((asset) => (
-                    <AssetCard key={asset.id} asset={asset} />
-                  ))}
+                  {premiumAssets.length > 0 ? (
+                    premiumAssets.map((asset) => (
+                      <AssetCard key={asset.id} asset={asset} />
+                    ))
+                  ) : (
+                    <div className="col-span-12 py-16 text-center glass rounded-3xl border border-white/5 bg-white/[0.02]">
+                      <Sparkles className="w-8 h-8 text-purple-400/50 mx-auto mb-4 animate-pulse" />
+                      <p className="text-secondary text-sm">現在、プレミアム素材を準備中です。順次公開されます。</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </section>
@@ -115,9 +125,16 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
                 </div>
 
                 <div className="grid grid-cols-12 gap-8">
-                  {latestJapanAssets.map((asset) => (
-                    <AssetCard key={asset.id} asset={asset} />
-                  ))}
+                  {latestJapanAssets.length > 0 ? (
+                    latestJapanAssets.map((asset) => (
+                      <AssetCard key={asset.id} asset={asset} />
+                    ))
+                  ) : (
+                    <div className="col-span-12 py-16 text-center glass rounded-3xl border border-white/5 bg-white/[0.02]">
+                      <MapPin className="w-8 h-8 text-cyan-400/50 mx-auto mb-4" />
+                      <p className="text-secondary text-sm">日本の伝統文化アセットを準備中です。</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </section>
@@ -148,9 +165,16 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
                 </div>
 
                 <div className="grid grid-cols-12 gap-8">
-                  {trendingAssets.map((asset) => (
-                    <AssetCard key={asset.id} asset={asset} />
-                  ))}
+                  {trendingAssets.length > 0 ? (
+                    trendingAssets.map((asset) => (
+                      <AssetCard key={asset.id} asset={asset} />
+                    ))
+                  ) : (
+                    <div className="col-span-12 py-16 text-center glass rounded-3xl border border-white/5 bg-white/[0.02]">
+                      <Flame className="w-8 h-8 text-orange-400/50 mx-auto mb-4" />
+                      <p className="text-secondary text-sm">人気のPNG素材を準備中です。</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </section>

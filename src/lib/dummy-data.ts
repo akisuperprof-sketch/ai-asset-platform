@@ -293,7 +293,7 @@ const populateAssets = () => {
   });
 };
 
-populateAssets();
+// populateAssets();
 
 // Prepend the first 10 ultra-premium authentic assets for high-CTR SEO, Pinterest, and Canva campaigns
 const rawPremiumAssets = [
@@ -501,7 +501,7 @@ const first10PremiumAssets: Asset[] = rawPremiumAssets.map((asset): Asset => {
 });
 
 // Prepend the premium assets to dummyAssets to make them show up first globally
-dummyAssets.unshift(...first10PremiumAssets);
+// dummyAssets.unshift(...first10PremiumAssets);
 
 export const popularTags = [
   "寿司", "ラーメン", "焼き鳥", "だるま", "招き猫", "富士山", "桜", "鳥居", "お守り", "鏡餅", "ビジネス", "医療", "聴診器", "和風"

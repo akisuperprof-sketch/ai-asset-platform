@@ -27,6 +27,7 @@ export const reverseCategoryMap: Record<string, string> = {
   "food": "日本の食",
   "japan": "和の伝統素材",
   "festival": "年中行事・祭り",
+  "season": "年中行事・祭り",
   "business": "ビジネス",
   "medical": "医療・ヘルスケア",
   "stationery": "事務用品・文具",
@@ -100,23 +101,52 @@ function mapAsset(dbAsset: any): Asset {
 }
 
 export async function getAssets(): Promise<Asset[]> {
-  if (!supabase) return dummyAssets;
+  if (!supabase) {
+    console.log("⚠️ [getAssets] Supabase client is not initialized. Returning empty array.");
+    return [];
+  }
 
   try {
     const { data, error } = await applyPublicFilters(
-      supabase.from('assets').select('*').order('published_at', { ascending: false })
+      supabase
+        .from('assets')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100)
     );
 
-    if (error || !data) throw error;
-    return data.map(mapAsset);
-  } catch (error) {
-    console.error("Supabase error (getAssets):", error);
-    return dummyAssets;
+    if (error) throw error;
+    if (!data) return [];
+
+    console.log(`📊 [getAssets] Supabase fetch success. Total rows fetched: ${data.length}`);
+    
+    // Filter assets with valid image URLs and log their metadata
+    const validData = data.filter((d: any) => {
+      const hasUrl = !!d.image_url || !!d.storage_key;
+      if (!hasUrl) {
+        console.log(`⚠️ [getAssets] Skipping asset because image_url / storage_key is missing: ID=${d.id}, Title=${d.title}`);
+      }
+      return hasUrl;
+    });
+
+    const mapped = validData.map((d: any) => {
+      const asset = mapAsset(d);
+      console.log(`  - [Live Asset] Slug/ID: ${asset.id} | Title: ${asset.title} | Image: ${asset.imageUrl}`);
+      return asset;
+    });
+
+    return mapped;
+  } catch (error: any) {
+    console.error("❌ Supabase error (getAssets):", error.message || error);
+    return [];
   }
 }
 
 export async function getAssetById(id: string): Promise<Asset | null> {
-  if (!supabase) return dummyAssets.find(a => a.id === id) || null;
+  if (!supabase) {
+    console.log("⚠️ [getAssetById] Supabase client is not initialized. Returning null.");
+    return null;
+  }
 
   try {
     const { data, error } = await applyPublicFilters(
@@ -124,22 +154,18 @@ export async function getAssetById(id: string): Promise<Asset | null> {
     );
 
     if (error) throw error;
+    if (!data) return null;
     return mapAsset(data);
-  } catch (error) {
-    console.error("Supabase error (getAssetById):", error);
-    return dummyAssets.find(a => a.id === id) || null;
+  } catch (error: any) {
+    console.error(`❌ Supabase error (getAssetById for ${id}):`, error.message || error);
+    return null;
   }
 }
 
 export async function searchAssets(query: string, category: string): Promise<Asset[]> {
   if (!supabase) {
-    return dummyAssets.filter(asset => {
-      const matchesSearch = !query || 
-        asset.title.toLowerCase().includes(query.toLowerCase()) ||
-        asset.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()));
-      const matchesCategory = category === "すべて" || asset.category === category;
-      return matchesSearch && matchesCategory;
-    });
+    console.log("⚠️ [searchAssets] Supabase client is not initialized. Returning empty array.");
+    return [];
   }
 
   try {
@@ -156,17 +182,18 @@ export async function searchAssets(query: string, category: string): Promise<Ass
       supabaseQuery = supabaseQuery.or(`title.ilike.%${query}%,description.ilike.%${query}%,tags.cs.{${query}}`);
     }
 
-    const { data, error } = await supabaseQuery.order('published_at', { ascending: false });
+    const { data, error } = await supabaseQuery.order('created_at', { ascending: false });
 
-    if (error || !data) throw error;
-    return data.map(mapAsset);
-  } catch (error) {
-    console.error("Supabase error (searchAssets):", error);
-    // Fallback search logic on dummy data
-    return dummyAssets.filter(asset => {
-      const matchesSearch = !query || asset.title.toLowerCase().includes(query.toLowerCase());
-      const matchesCategory = category === "すべて" || asset.category === category;
-      return matchesSearch && matchesCategory;
-    });
+    if (error) throw error;
+    if (!data) return [];
+
+    console.log(`📊 [searchAssets] Query="${query}", Cat="${category}". Fetched: ${data.length}`);
+
+    // Filter valid image URLs
+    const validData = data.filter(d => !!d.image_url || !!d.storage_key);
+    return validData.map(mapAsset);
+  } catch (error: any) {
+    console.error("❌ Supabase error (searchAssets):", error.message || error);
+    return [];
   }
 }
