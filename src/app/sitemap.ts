@@ -46,7 +46,7 @@ export async function generateSitemaps() {
 
 export default async function sitemap({ id }: { id?: number }): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://assetninja.jp';
-  const currentId = id ?? 0;
+  const currentId = typeof id === 'string' ? parseInt(id, 10) : (id ?? 0);
 
   let assets: any[] = [];
   let dynamicTags: string[] = [];
