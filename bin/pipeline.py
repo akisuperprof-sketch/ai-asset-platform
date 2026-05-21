@@ -485,9 +485,9 @@ class AssetPipeline:
             "height": metadata["height"],
             "file_size": metadata["file_size"],
             "is_ai_generated": True,
-            "review_status": "approved",
+            "review_status": "pending",
             "legal_status": "clean",
-            "published_at": datetime.utcnow().isoformat() + "Z",
+            "published_at": None,
             "has_logo_risk": False,
             "has_face_risk": False,
             "has_landmark_risk": False
