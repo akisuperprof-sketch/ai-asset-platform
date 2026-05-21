@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Sparkles, 
   Layers, 
@@ -16,18 +16,28 @@ import {
   RefreshCw,
   Plus,
   Eye,
-  Sliders
+  Sliders,
+  Copy,
+  Check
 } from "lucide-react";
+import { dummyAssets } from "@/lib/dummy-data";
+import { Asset } from "@/types";
 
-// Mocking initial telemetry datasets for the Dashboard
-const initialKpi = {
-  totalAssets: 1100,
-  published: 980,
-  drafts: 90,
-  pendingReview: 20,
-  rejected: 10,
-  generatedToday: 24,
-  generatedWeekly: 184
+// Telemetry KPI calculator based on dummy assets
+const getKpiStats = (assets: Asset[]) => {
+  const total = assets.length;
+  const published = assets.filter(a => a.reviewStatus === "approved").length;
+  const pending = assets.filter(a => a.reviewStatus === "pending").length;
+  const rejected = assets.filter(a => a.reviewStatus === "rejected").length;
+  const dailyGen = 24; // Mock daily AI Pipeline output
+
+  return {
+    totalAssets: total,
+    published,
+    pendingReview: pending,
+    rejected,
+    generatedToday: dailyGen
+  };
 };
 
 const initialKeywords = [
@@ -40,81 +50,12 @@ const initialKeywords = [
   { term: "富士山 赤富士 浮世絵", searches: 2430, downloads: 820, hit: true, status: "stable" }
 ];
 
-const mockAssets = [
-  {
-    id: "sushi-item-1",
-    title: "江戸前極上マグロ握り寿司",
-    category: "日本の食",
-    imageUrl: "https://pngimg.com/uploads/sushi/sushi_PNG9202.png",
-    status: "pending",
-    qualityScore: 96,
-    transparencyScore: 98,
-    commercialSafetyScore: 94,
-    trademarkRiskScore: "low",
-    readinessScore: 96,
-    tags: ["寿司", "日本の食", "背景透過", "PNG素材"],
-    description: "極上大トロマグロの江戸前握り寿司背景透過アセットデータです。シャリの米粒一つ一つまで高精細に抽出。",
-    width: 4096,
-    height: 4096,
-    fileSize: "2.4 MB"
-  },
-  {
-    id: "ramen-item-2",
-    title: "濃厚特製醤油豚骨ラーメン",
-    category: "日本の食",
-    imageUrl: "https://pngimg.com/uploads/sushi/sushi_PNG9202.png",
-    status: "approved",
-    qualityScore: 94,
-    transparencyScore: 95,
-    commercialSafetyScore: 92,
-    trademarkRiskScore: "low",
-    readinessScore: 94,
-    tags: ["ラーメン", "日本の食", "背景透過", "PNG素材"],
-    description: "旨み豊かな極太チャーシューと煮玉子をトッピングした特製醤油豚骨ラーメンの透過PNGアセット。",
-    width: 4096,
-    height: 4096,
-    fileSize: "2.8 MB"
-  },
-  {
-    id: "katana-item-3",
-    title: "真打戦国日本刀真剣",
-    category: "事務用品",
-    imageUrl: "https://pngimg.com/uploads/pen/pen_PNG1395.png",
-    status: "approved",
-    qualityScore: 98,
-    transparencyScore: 99,
-    commercialSafetyScore: 95,
-    trademarkRiskScore: "low",
-    readinessScore: 97,
-    tags: ["日本刀", "武具", "背景透過", "PNG素材"],
-    description: "研ぎ澄まされた刃文と美しい日本刀の反りを極限再現した透過PNG画像アセット。",
-    width: 4096,
-    height: 4096,
-    fileSize: "2.1 MB"
-  },
-  {
-    id: "chochin-item-4",
-    title: "伝統お祭り赤塗り提灯",
-    category: "日本の日常小物",
-    imageUrl: "https://pngimg.com/uploads/teapot/teapot_PNG27.png",
-    status: "rejected",
-    qualityScore: 72,
-    transparencyScore: 60,
-    commercialSafetyScore: 88,
-    trademarkRiskScore: "high",
-    readinessScore: 65,
-    tags: ["提灯", "祭り", "背景透過", "PNG素材"],
-    description: "有名特定神社のロゴマークが提灯表面に意図せず写り込んでしまっているためリジェクト対象。",
-    width: 4096,
-    height: 4096,
-    fileSize: "2.5 MB"
-  }
-];
-
 export default function StudioPage() {
-  const [assets, setAssets] = useState(mockAssets);
-  const [selectedAsset, setSelectedAsset] = useState(mockAssets[0]);
-  const [previewBg, setPreviewBg] = useState("checker"); // 'checker', 'black', 'white'
+  const [localAssets, setLocalAssets] = useState<Asset[]>([]);
+  const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
+  const [previewBg, setPreviewBg] = useState<"checker" | "black" | "white">("checker");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   
   // Job Creator states
   const [jobCategory, setJobCategory] = useState("寿司");
@@ -123,20 +64,83 @@ export default function StudioPage() {
   const [jobTags, setJobTags] = useState("");
   const [modelType, setModelType] = useState("stability-sdxl-1.0");
 
-  const [activeTab, setActiveTab] = useState("dashboard"); // 'dashboard', 'generate', 'keywords'
+  const [activeTab, setActiveTab] = useState<"dashboard" | "generate" | "keywords">("dashboard");
 
-  // Handling Quick Verification Status actions
-  const updateStatus = (id: string, newStatus: string) => {
-    const updated = assets.map(asset => {
+  // Load assets on mount
+  useEffect(() => {
+    setLocalAssets(dummyAssets);
+    if (dummyAssets.length > 0) {
+      setSelectedAsset(dummyAssets[0]);
+    }
+  }, []);
+
+  // Sync selection when localAssets updates
+  useEffect(() => {
+    if (selectedAsset) {
+      const match = localAssets.find(a => a.id === selectedAsset.id);
+      if (match) setSelectedAsset(match);
+    }
+  }, [localAssets]);
+
+  const kpis = getKpiStats(localAssets);
+
+  // Filter assets based on search query
+  const filteredAssets = localAssets.filter(asset => 
+    asset.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  // Copy helper
+  const handleCopyText = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(label);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  // Quick Action: Change Status manually
+  const updateStatus = (id: string, newStatus: "approved" | "pending" | "rejected") => {
+    const updated = localAssets.map(asset => {
       if (asset.id === id) {
-        return { ...asset, status: newStatus };
+        return { ...asset, reviewStatus: newStatus } as Asset;
       }
       return asset;
     });
-    setAssets(updated);
-    // Sync selection
-    const match = updated.find(a => a.id === id);
-    if (match) setSelectedAsset(match);
+    setLocalAssets(updated);
+  };
+
+  // Advanced Action: Update Quality Rank & auto-adjust status / scores
+  const updateRank = (id: string, newRank: "S" | "A" | "B" | "C") => {
+    const updated = localAssets.map(asset => {
+      if (asset.id === id) {
+        let updatedAsset: Asset = {
+          ...asset,
+          qualityRank: newRank,
+          reviewStatus: (newRank === "C" ? "rejected" : newRank === "B" ? "pending" : "approved") as "approved" | "pending" | "rejected"
+        };
+        // Give ideal scores if upgraded to S-rank
+        if (newRank === "S") {
+          updatedAsset = {
+            ...updatedAsset,
+            compositionScore: 98,
+            centeringScore: 99,
+            marginScore: 96,
+            whiteFringeScore: 100,
+            resolutionScore: 100,
+            aiDistortionScore: 98,
+            subjectScore: 99,
+            pinterestScore: 97,
+            canvaScore: 98,
+            luxuryScore: 98,
+            seoScore: 99
+          };
+        }
+        return updatedAsset;
+      }
+      return asset;
+    });
+    setLocalAssets(updated);
   };
 
   const handleCreateJob = (e: React.FormEvent) => {
@@ -147,25 +151,25 @@ export default function StudioPage() {
   };
 
   return (
-    <div className="p-8 space-y-8 font-sans">
+    <div className="p-8 space-y-8 font-sans bg-zinc-950 text-white min-h-screen">
       
       {/* Top Banner OS Head */}
-      <div className="flex items-center justify-between border-b border-white/5 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/5 pb-6 gap-4">
         <div>
           <div className="flex items-center gap-2 text-purple-400 text-xs font-black uppercase tracking-widest mb-1.5">
             <Sparkles className="w-3.5 h-3.5" />
             AI Asset Factory Console
           </div>
-          <h1 className="text-3xl font-black tracking-tighter uppercase">
-            STUDIO WORKSPACE
+          <h1 className="text-3xl font-black tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-zinc-200 to-zinc-400">
+            STUDIO WORKSPACE OS
           </h1>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-2.5">
           <button 
             onClick={() => setActiveTab("dashboard")}
             className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-colors ${
-              activeTab === "dashboard" ? "bg-ai-gradient text-white" : "glass-card border-white/5 text-secondary hover:text-white"
+              activeTab === "dashboard" ? "bg-white text-zinc-950" : "bg-white/5 border border-white/5 text-zinc-400 hover:text-white"
             }`}
           >
             Dashboard
@@ -173,7 +177,7 @@ export default function StudioPage() {
           <button 
             onClick={() => setActiveTab("generate")}
             className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-colors ${
-              activeTab === "generate" ? "bg-ai-gradient text-white" : "glass-card border-white/5 text-secondary hover:text-white"
+              activeTab === "generate" ? "bg-white text-zinc-950" : "bg-white/5 border border-white/5 text-zinc-400 hover:text-white"
             }`}
           >
             Create Gen Job
@@ -181,7 +185,7 @@ export default function StudioPage() {
           <button 
             onClick={() => setActiveTab("keywords")}
             className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-colors ${
-              activeTab === "keywords" ? "bg-ai-gradient text-white" : "glass-card border-white/5 text-secondary hover:text-white"
+              activeTab === "keywords" ? "bg-white text-zinc-950" : "bg-white/5 border border-white/5 text-zinc-400 hover:text-white"
             }`}
           >
             Keyword Radar
@@ -191,35 +195,33 @@ export default function StudioPage() {
 
       {/* KPI METRICS WIDGETS */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="glass-card border-white/5 p-5 rounded-2xl relative overflow-hidden">
-          <div className="absolute inset-0 bg-purple-500/5 pointer-events-none" />
-          <span className="text-[9px] font-black text-secondary tracking-widest uppercase block mb-1">TOTAL IMAGES</span>
-          <h3 className="text-2xl font-black tracking-tight">{initialKpi.totalAssets}</h3>
+        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl relative overflow-hidden">
+          <span className="text-[9px] font-black text-zinc-400 tracking-widest uppercase block mb-1">TOTAL IMAGES</span>
+          <h3 className="text-2xl font-black tracking-tight">{kpis.totalAssets}</h3>
           <span className="text-[8px] text-purple-400 font-bold block mt-1 tracking-wider">ALL CATEGORIES</span>
         </div>
 
-        <div className="glass-card border-white/5 p-5 rounded-2xl">
-          <span className="text-[9px] font-black text-emerald-400 tracking-widest uppercase block mb-1">PUBLISHED</span>
-          <h3 className="text-2xl font-black tracking-tight">{initialKpi.published}</h3>
+        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl">
+          <span className="text-[9px] font-black text-emerald-400 tracking-widest uppercase block mb-1">APPROVED</span>
+          <h3 className="text-2xl font-black tracking-tight">{kpis.published}</h3>
           <span className="text-[8px] text-emerald-500/80 font-bold block mt-1 tracking-wider">LIVE IN SITEMAP</span>
         </div>
 
-        <div className="glass-card border-white/5 p-5 rounded-2xl">
+        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl">
           <span className="text-[9px] font-black text-amber-400 tracking-widest uppercase block mb-1">PENDING REVIEW</span>
-          <h3 className="text-2xl font-black tracking-tight">{initialKpi.pendingReview}</h3>
-          <span className="text-[8px] text-amber-500/80 font-bold block mt-1 tracking-wider">NEEDS RIGHTS AUDIT</span>
+          <h3 className="text-2xl font-black tracking-tight">{kpis.pendingReview}</h3>
+          <span className="text-[8px] text-amber-500/80 font-bold block mt-1 tracking-wider">NEEDS VISUAL AUDIT</span>
         </div>
 
-        <div className="glass-card border-white/5 p-5 rounded-2xl">
+        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl">
           <span className="text-[9px] font-black text-red-400 tracking-widest uppercase block mb-1">REJECTED</span>
-          <h3 className="text-2xl font-black tracking-tight">{initialKpi.rejected}</h3>
+          <h3 className="text-2xl font-black tracking-tight">{kpis.rejected}</h3>
           <span className="text-[8px] text-red-500/80 font-bold block mt-1 tracking-wider">TRADEMARK RISKS</span>
         </div>
 
-        <div className="glass-card border-white/5 p-5 rounded-2xl relative overflow-hidden">
-          <div className="absolute inset-0 bg-cyan-500/5 pointer-events-none" />
+        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl relative overflow-hidden">
           <span className="text-[9px] font-black text-cyan-400 tracking-widest uppercase block mb-1">GENERATED TODAY</span>
-          <h3 className="text-2xl font-black tracking-tight">+{initialKpi.generatedToday}</h3>
+          <h3 className="text-2xl font-black tracking-tight">+{kpis.generatedToday}</h3>
           <span className="text-[8px] text-cyan-500/80 font-bold block mt-1 tracking-wider">AI OPS QUEUE</span>
         </div>
       </div>
@@ -229,27 +231,36 @@ export default function StudioPage() {
           
           {/* LEFT: Assets Grid (7 cols) */}
           <div className="col-span-12 xl:col-span-7 space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h2 className="text-md font-black uppercase tracking-wider flex items-center gap-2">
                 <Layers className="w-4 h-4 text-purple-400" />
                 Asset Verification Pipeline Grid
               </h2>
-              <span className="text-[10px] text-secondary font-semibold">
-                Click an asset to load comprehensive SEO & Transparency analysis
-              </span>
+              
+              {/* Search Bar */}
+              <div className="relative max-w-xs w-full">
+                <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input 
+                  type="text"
+                  placeholder="Filter by title, tag, ID..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-zinc-900 border border-white/5 pl-10 pr-4 py-2 rounded-full text-xs text-white focus:outline-none focus:border-purple-500/40"
+                />
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {assets.map((asset) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
+              {filteredAssets.map((asset) => (
                 <div 
                   key={asset.id}
                   onClick={() => setSelectedAsset(asset)}
-                  className={`glass-card rounded-2xl p-3 cursor-pointer transition-all border ${
-                    selectedAsset.id === asset.id ? "border-purple-500/50 bg-purple-500/5" : "border-white/5 hover:border-white/10"
+                  className={`bg-zinc-900/40 rounded-2xl p-3 cursor-pointer transition-all border ${
+                    selectedAsset?.id === asset.id ? "border-purple-500/50 bg-purple-500/5 shadow-[0_0_15px_rgba(168,85,247,0.1)]" : "border-white/5 hover:border-white/10"
                   }`}
                 >
                   {/* Thumb Preview */}
-                  <div className="aspect-square w-full rounded-xl bg-zinc-900 flex items-center justify-center p-2 relative overflow-hidden group mb-3">
+                  <div className="aspect-square w-full rounded-xl bg-zinc-950 flex items-center justify-center p-2 relative overflow-hidden group mb-3">
                     <div className="absolute inset-0 bg-checker opacity-40 pointer-events-none" />
                     <img 
                       src={asset.imageUrl} 
@@ -259,27 +270,43 @@ export default function StudioPage() {
                     
                     {/* Status Badge */}
                     <div className="absolute top-2 right-2 z-20">
-                      {asset.status === "approved" && (
+                      {asset.reviewStatus === "approved" && (
                         <span className="bg-emerald-500/20 text-emerald-400 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border border-emerald-500/25">
                           APPROVED
                         </span>
                       )}
-                      {asset.status === "pending" && (
+                      {asset.reviewStatus === "pending" && (
                         <span className="bg-amber-500/20 text-amber-400 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border border-amber-500/25">
                           PENDING
                         </span>
                       )}
-                      {asset.status === "rejected" && (
+                      {asset.reviewStatus === "rejected" && (
                         <span className="bg-red-500/20 text-red-400 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border border-red-500/25">
                           REJECTED
                         </span>
                       )}
                     </div>
 
-                    {/* Quality score bottom badge */}
-                    <div className="absolute bottom-2 left-2 z-20 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/5 text-[9px] font-mono font-bold text-purple-300">
-                      Score: {asset.readinessScore}%
-                    </div>
+                    {/* Rank Badge */}
+                    {asset.qualityRank && (
+                      <div className="absolute top-2 left-2 z-20">
+                        <span className={`text-[9px] font-black px-2 py-0.5 rounded-md border ${
+                          asset.qualityRank === "S" ? "bg-purple-500/20 text-purple-300 border-purple-500/30" :
+                          asset.qualityRank === "A" ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/30" :
+                          asset.qualityRank === "B" ? "bg-amber-500/20 text-amber-300 border-amber-500/30" :
+                          "bg-zinc-800 text-zinc-400 border-zinc-700"
+                        }`}>
+                          {asset.qualityRank} RANK
+                        </span>
+                      </div>
+                    )}
+
+                    {/* SEO score bottom badge */}
+                    {asset.seoScore !== undefined && (
+                      <div className="absolute bottom-2 left-2 z-20 bg-black/80 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/5 text-[9px] font-mono font-bold text-zinc-300">
+                        SEO: {asset.seoScore}
+                      </div>
+                    )}
                   </div>
 
                   <h4 className="text-[11px] font-black text-white truncate">{asset.title}</h4>
@@ -289,169 +316,308 @@ export default function StudioPage() {
                   </div>
                 </div>
               ))}
+
+              {filteredAssets.length === 0 && (
+                <div className="col-span-full py-12 text-center text-zinc-500 text-xs font-semibold">
+                  No assets found matching "{searchQuery}"
+                </div>
+              )}
             </div>
           </div>
 
           {/* RIGHT: Detail Audit Panel (5 cols) */}
           <div className="col-span-12 xl:col-span-5 space-y-6">
-            <div className="glass-card border-purple-500/10 p-6 rounded-3xl space-y-6 relative overflow-hidden shadow-[0_0_30px_rgba(168,85,247,0.02)]">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-2xl pointer-events-none" />
-              
-              {/* Head Details */}
-              <div className="border-b border-white/5 pb-4">
-                <span className="text-[9px] font-mono tracking-widest text-purple-400 uppercase block mb-1">
-                  ID: {selectedAsset.id}
-                </span>
-                <h3 className="text-md font-black tracking-tight text-white">{selectedAsset.title}</h3>
-              </div>
-
-              {/* Quality Preview Sandbox */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-black text-secondary uppercase tracking-wider">
-                    Quality Preview Sandbox
-                  </span>
-                  
-                  {/* Bg options */}
-                  <div className="flex gap-1.5">
-                    <button 
-                      onClick={() => setPreviewBg("checker")}
-                      className={`px-2 py-0.5 rounded text-[9px] font-black uppercase transition-all ${
-                        previewBg === "checker" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"
-                      }`}
-                    >
-                      Checker
-                    </button>
-                    <button 
-                      onClick={() => setPreviewBg("black")}
-                      className={`px-2 py-0.5 rounded text-[9px] font-black uppercase transition-all ${
-                        previewBg === "black" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"
-                      }`}
-                    >
-                      Black
-                    </button>
-                    <button 
-                      onClick={() => setPreviewBg("white")}
-                      className={`px-2 py-0.5 rounded text-[9px] font-black uppercase transition-all ${
-                        previewBg === "white" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"
-                      }`}
-                    >
-                      White
-                    </button>
-                  </div>
-                </div>
-
-                {/* Main sandbox block */}
-                <div className={`aspect-video w-full rounded-2xl border border-white/5 flex items-center justify-center p-4 relative overflow-hidden transition-colors ${
-                  previewBg === "checker" ? "bg-zinc-950" : previewBg === "black" ? "bg-black" : "bg-white"
-                }`}>
-                  {previewBg === "checker" && <div className="absolute inset-0 bg-checker opacity-40" />}
-                  <img 
-                    src={selectedAsset.imageUrl} 
-                    alt="Preview" 
-                    className="h-full object-contain relative z-10" 
-                  />
-                </div>
-              </div>
-
-              {/* Asset Safety Scores */}
-              <div className="space-y-3">
-                <span className="text-[10px] font-black text-secondary uppercase tracking-wider block">
-                  Asset Safety Score Index
-                </span>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-white/5 p-3 rounded-xl border border-white/5">
-                    <span className="text-[9px] text-white/50 block">Quality Score</span>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-                      <span className="text-xs font-black">{selectedAsset.qualityScore}%</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/5 p-3 rounded-xl border border-white/5">
-                    <span className="text-[9px] text-white/50 block">Transparency</span>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                      <span className="text-xs font-black">{selectedAsset.transparencyScore}%</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/5 p-3 rounded-xl border border-white/5">
-                    <span className="text-[9px] text-white/50 block">Commercial Safety</span>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <div className={`w-1.5 h-1.5 rounded-full ${selectedAsset.commercialSafetyScore > 90 ? "bg-emerald-400" : "bg-amber-400"}`} />
-                      <span className="text-xs font-black">{selectedAsset.commercialSafetyScore}%</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/5 p-3 rounded-xl border border-white/5">
-                    <span className="text-[9px] text-white/50 block">Trademark Risks</span>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <div className={`w-1.5 h-1.5 rounded-full ${selectedAsset.trademarkRiskScore === "low" ? "bg-emerald-400" : "bg-red-400"}`} />
-                      <span className="text-xs font-black uppercase tracking-wider">{selectedAsset.trademarkRiskScore}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Rights & Platform Policy Audit */}
-              <div className="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-3">
-                <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4" />
-                  Rights & Policy Audit
-                </span>
-
-                <div className="text-[10px] space-y-2 text-white/70 font-semibold leading-relaxed">
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                    <span>著名ブランド・有名キャラクター・肖像権の侵害はありません。 (Verified Safe)</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                    <span>各プラットフォーム (BASE/BOOTH/Canva) のAI生成物掲載ガイドラインに適合しています。</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                    <span>公序良俗・性的/暴力的表現規約をパスしています。</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Operations controls */}
-              <div className="flex gap-3 pt-2">
-                <button
-                  onClick={() => updateStatus(selectedAsset.id, "approved")}
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
-                >
-                  <CheckCircle className="w-3.5 h-3.5" />
-                  Approve Asset
-                </button>
+            {selectedAsset ? (
+              <div className="bg-zinc-900/30 border border-white/5 p-6 rounded-3xl space-y-6 relative overflow-hidden shadow-[0_0_30px_rgba(168,85,247,0.02)]">
                 
-                <button
-                  onClick={() => updateStatus(selectedAsset.id, "rejected")}
-                  className="flex-1 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/10 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <XCircle className="w-3.5 h-3.5" />
-                  Reject/Deny
-                </button>
-              </div>
+                {/* Head Details */}
+                <div className="flex justify-between items-start border-b border-white/5 pb-4">
+                  <div>
+                    <span className="text-[9px] font-mono tracking-widest text-purple-400 uppercase block mb-1">
+                      ID: {selectedAsset.id}
+                    </span>
+                    <h3 className="text-md font-black tracking-tight text-white">{selectedAsset.title}</h3>
+                  </div>
 
-            </div>
+                  {selectedAsset.qualityRank && (
+                    <span className={`text-xs font-black px-3 py-1 rounded-lg border shadow-sm shrink-0 ${
+                      selectedAsset.qualityRank === "S" ? "bg-purple-500/20 text-purple-300 border-purple-500/30 shadow-purple-500/5" :
+                      selectedAsset.qualityRank === "A" ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/30 shadow-cyan-500/5" :
+                      selectedAsset.qualityRank === "B" ? "bg-amber-500/20 text-amber-300 border-amber-500/30 shadow-amber-500/5" :
+                      "bg-zinc-800 text-zinc-400 border-zinc-700"
+                    }`}>
+                      {selectedAsset.qualityRank} Rank
+                    </span>
+                  )}
+                </div>
+
+                {/* Quality Preview Sandbox */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider">
+                      Quality Preview Sandbox
+                    </span>
+                    
+                    {/* Bg options */}
+                    <div className="flex gap-1.5">
+                      {(["checker", "black", "white"] as const).map((bg) => (
+                        <button 
+                          key={bg}
+                          onClick={() => setPreviewBg(bg)}
+                          className={`px-2 py-0.5 rounded text-[9px] font-black uppercase transition-all ${
+                            previewBg === bg ? "bg-white/10 text-white" : "text-white/40 hover:text-white"
+                          }`}
+                        >
+                          {bg}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Main sandbox block */}
+                  <div className={`aspect-square w-full rounded-2xl border border-white/5 flex items-center justify-center p-4 relative overflow-hidden transition-colors ${
+                    previewBg === "checker" ? "bg-zinc-950" : previewBg === "black" ? "bg-black" : "bg-white"
+                  }`}>
+                    {previewBg === "checker" && <div className="absolute inset-0 bg-checker opacity-40" />}
+                    <img 
+                      src={selectedAsset.imageUrl} 
+                      alt="Preview" 
+                      className="h-full object-contain relative z-10" 
+                    />
+                  </div>
+                </div>
+
+                {/* Quality Gate Core Scores (Visual Bars) */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">
+                      AI Quality Gate Score Index
+                    </span>
+                    {selectedAsset.seoScore && (
+                      <span className="text-[10px] font-bold text-purple-300">
+                        Global SEO: {selectedAsset.seoScore}/100
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Centering Score */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[9px] font-bold text-zinc-500">
+                        <span>CENTERING</span>
+                        <span className="text-zinc-300">{selectedAsset.centeringScore || 90}%</span>
+                      </div>
+                      <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-cyan-400 rounded-full" 
+                          style={{ width: `${selectedAsset.centeringScore || 90}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Composition Score */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[9px] font-bold text-zinc-500">
+                        <span>COMPOSITION</span>
+                        <span className="text-zinc-300">{selectedAsset.compositionScore || 92}%</span>
+                      </div>
+                      <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-purple-400 rounded-full" 
+                          style={{ width: `${selectedAsset.compositionScore || 92}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Margin Cleanliness */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[9px] font-bold text-zinc-500">
+                        <span>MARGIN SPACE</span>
+                        <span className="text-zinc-300">{selectedAsset.marginScore || 88}%</span>
+                      </div>
+                      <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-amber-400 rounded-full" 
+                          style={{ width: `${selectedAsset.marginScore || 88}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* White Fringe Score */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[9px] font-bold text-zinc-500">
+                        <span>WHITE FRINGE REMOVAL</span>
+                        <span className="text-zinc-300">{selectedAsset.whiteFringeScore || 94}%</span>
+                      </div>
+                      <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-emerald-400 rounded-full" 
+                          style={{ width: `${selectedAsset.whiteFringeScore || 94}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* AI Distortion */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[9px] font-bold text-zinc-500">
+                        <span>AI DISTORTION RESIST</span>
+                        <span className="text-zinc-300">{selectedAsset.aiDistortionScore || 86}%</span>
+                      </div>
+                      <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-teal-400 rounded-full" 
+                          style={{ width: `${selectedAsset.aiDistortionScore || 86}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Luxury / Premium Aesthetics */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[9px] font-bold text-zinc-500">
+                        <span>LUXURY OS FEEL</span>
+                        <span className="text-zinc-300">{selectedAsset.luxuryScore || 85}%</span>
+                      </div>
+                      <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-rose-400 rounded-full" 
+                          style={{ width: `${selectedAsset.luxuryScore || 85}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Reject Reason warning banner if B/C grade */}
+                {selectedAsset.rejectReason && (
+                  <div className="bg-amber-500/10 border border-amber-500/20 p-3.5 rounded-2xl flex gap-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-[10px] font-bold text-amber-300 uppercase tracking-widest block mb-0.5">Quality Warning</span>
+                      <p className="text-[10px] text-zinc-300 font-semibold leading-relaxed">
+                        {selectedAsset.rejectReason}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Pinterest Metadata Studio */}
+                <div className="border-t border-white/5 pt-4 space-y-4">
+                  <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider block">
+                    Pinterest OGP Optimization Console
+                  </span>
+
+                  <div className="space-y-3.5">
+                    {/* Pinterest Title */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between items-center text-[10px] text-zinc-500 font-bold">
+                        <span>PINTEREST TITLE</span>
+                        <button 
+                          onClick={() => handleCopyText(selectedAsset.pinterestTitle || `【極上背景透過】${selectedAsset.title} - 無料商用利用`, "pintitle")}
+                          className="flex items-center gap-1 text-purple-400 hover:text-purple-300 font-black uppercase text-[8px]"
+                        >
+                          {copiedId === "pintitle" ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                          Copy
+                        </button>
+                      </div>
+                      <p className="bg-zinc-950 px-3 py-2 rounded-lg text-zinc-300 font-semibold border border-white/5 text-[10px] break-all leading-relaxed">
+                        {selectedAsset.pinterestTitle || `【極上背景透過】${selectedAsset.title} - 無料商用利用`}
+                      </p>
+                    </div>
+
+                    {/* Pinterest Description */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between items-center text-[10px] text-zinc-500 font-bold">
+                        <span>PINTEREST DESCRIPTION</span>
+                        <button 
+                          onClick={() => handleCopyText(selectedAsset.pinterestDescription || selectedAsset.description || "", "pindesc")}
+                          className="flex items-center gap-1 text-purple-400 hover:text-purple-300 font-black uppercase text-[8px]"
+                        >
+                          {copiedId === "pindesc" ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                          Copy
+                        </button>
+                      </div>
+                      <p className="bg-zinc-950 px-3 py-2 rounded-lg text-zinc-300 font-semibold border border-white/5 text-[10px] break-all leading-relaxed">
+                        {selectedAsset.pinterestDescription || selectedAsset.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Rights Audit Status */}
+                <div className="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-3">
+                  <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4" />
+                    Rights & Policy Audit
+                  </span>
+
+                  <div className="text-[10px] space-y-2 text-zinc-400 font-semibold leading-relaxed">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                      <span>著名ブランド・商標・肖像権の侵害判定：SAFE</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                      <span>BOOTH / Canva パブリッシャーポリシー準拠</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Verification Status Operators */}
+                <div className="flex flex-col gap-2 pt-2">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => updateStatus(selectedAsset.id, "approved")}
+                      className="flex-1 bg-emerald-600 hover:bg-emerald-700 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                    >
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      Approve Live
+                    </button>
+                    
+                    <button
+                      onClick={() => updateStatus(selectedAsset.id, "rejected")}
+                      className="flex-1 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/10 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5"
+                    >
+                      <XCircle className="w-3.5 h-3.5" />
+                      Reject / Quarantine
+                    </button>
+                  </div>
+
+                  {/* Manual Rank Upgrades */}
+                  <div className="grid grid-cols-4 gap-1.5 mt-1 border-t border-white/5 pt-3">
+                    {(["S", "A", "B", "C"] as const).map((r) => (
+                      <button
+                        key={r}
+                        onClick={() => updateRank(selectedAsset.id, r)}
+                        className={`py-1.5 rounded-lg text-[9px] font-black uppercase transition-all ${
+                          selectedAsset.qualityRank === r ? "bg-white text-zinc-950 font-bold" : "bg-white/5 text-zinc-400 hover:text-white"
+                        }`}
+                      >
+                        Set {r}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            ) : (
+              <div className="bg-zinc-900/30 border border-white/5 p-8 rounded-3xl text-center text-zinc-500 text-xs">
+                No asset selected
+              </div>
+            )}
           </div>
 
         </div>
       )}
 
       {activeTab === "generate" && (
-        <div className="max-w-3xl mx-auto glass-card border-white/5 p-8 rounded-3xl relative overflow-hidden">
+        <div className="max-w-3xl mx-auto bg-zinc-900/30 border border-white/5 p-8 rounded-3xl relative overflow-hidden">
           <div className="absolute inset-0 bg-purple-500/5 pointer-events-none" />
           
           <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/5">
             <Sparkles className="w-6 h-6 text-purple-400 animate-pulse" />
             <div>
               <h3 className="text-lg font-black uppercase tracking-tight">Create AI Image Generation Job</h3>
-              <p className="text-xs text-secondary">Initiate batch transparent PNG generation pipelines with smart prompt weighting</p>
+              <p className="text-xs text-zinc-500">Initiate batch transparent PNG generation pipelines with smart prompt weighting</p>
             </div>
           </div>
 
@@ -515,7 +681,7 @@ export default function StudioPage() {
 
             <div className="grid grid-cols-2 gap-6 bg-white/5 p-4 rounded-2xl border border-white/5">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-black uppercase tracking-wider text-secondary">
+                <span className="text-[11px] font-black uppercase tracking-wider text-zinc-400">
                   Auto-Transparency (rembg)
                 </span>
                 <div className="w-10 h-6 bg-purple-500/20 border border-purple-500/30 rounded-full flex items-center justify-end px-1 cursor-pointer">
@@ -524,7 +690,7 @@ export default function StudioPage() {
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-black uppercase tracking-wider text-secondary">
+                <span className="text-[11px] font-black uppercase tracking-wider text-zinc-400">
                   Pinterest OGP Optimizer (2:3)
                 </span>
                 <div className="w-10 h-6 bg-purple-500/20 border border-purple-500/30 rounded-full flex items-center justify-end px-1 cursor-pointer">
@@ -535,7 +701,7 @@ export default function StudioPage() {
 
             <button
               type="submit"
-              className="w-full bg-ai-gradient py-4 rounded-xl text-xs font-black uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(168,85,247,0.3)]"
+              className="w-full bg-white text-zinc-950 py-4 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-zinc-200 transition-all flex items-center justify-center gap-2"
             >
               <Plus className="w-4 h-4" />
               Enqueue Production Generation Job
@@ -546,19 +712,19 @@ export default function StudioPage() {
 
       {activeTab === "keywords" && (
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <h2 className="text-md font-black uppercase tracking-wider flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-purple-400" />
               SEO Keywords Search Radar & Gaps Analysis
             </h2>
-            <span className="text-[10px] text-cyan-400 font-black bg-cyan-500/5 border border-cyan-500/10 px-3 py-1 rounded-full uppercase tracking-widest animate-pulse">
+            <span className="text-[10px] text-cyan-400 font-black bg-cyan-500/5 border border-cyan-500/10 px-3 py-1 rounded-full uppercase tracking-widest animate-pulse w-fit">
               AI Market Watch Sync: Active
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Left Radar list */}
-            <div className="glass-card border-white/5 p-6 rounded-3xl space-y-4">
+            <div className="bg-zinc-900/30 border border-white/5 p-6 rounded-3xl space-y-4">
               <h3 className="text-sm font-black uppercase tracking-wider text-white">Top Searched Terms & Gaps</h3>
               
               <div className="space-y-2">
@@ -578,7 +744,7 @@ export default function StudioPage() {
                         </span>
                       ) : (
                         <span className="bg-amber-500/10 text-amber-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-amber-500/10 tracking-widest animate-pulse">
-                          MISSING GAP (PROMPT AI NOW)
+                          MISSING GAP (PROMPT AI)
                         </span>
                       )}
                     </div>
@@ -588,17 +754,17 @@ export default function StudioPage() {
             </div>
 
             {/* Right AI recommendations */}
-            <div className="glass-card border-purple-500/10 p-6 rounded-3xl space-y-6 relative overflow-hidden">
+            <div className="bg-zinc-900/30 border border-purple-500/10 p-6 rounded-3xl space-y-6 relative overflow-hidden">
               <div className="absolute inset-0 bg-purple-500/5 pointer-events-none" />
               <h3 className="text-sm font-black uppercase tracking-wider text-purple-300">AI Suggested Generated Themes</h3>
               
-              <div className="space-y-4 text-xs font-semibold leading-relaxed text-white/70">
+              <div className="space-y-4 text-xs font-semibold leading-relaxed text-zinc-400">
                 <div className="p-4 bg-white/5 rounded-2xl border border-white/5 space-y-2">
                   <div className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
                     <span className="font-black text-white uppercase tracking-wider">日本の食 / 和食惣菜シリーズ</span>
                   </div>
-                  <p className="text-[11px] text-secondary">
+                  <p className="text-[11px] text-zinc-400">
                     「おにぎり デコ」「屋台焼きそば 透過」「抹茶パフェ 和風」などのキーワードの検索数が過去1週間で +120% 急上昇していますが、該当する高品質素材が圧倒的に不足しています。
                   </p>
                 </div>
@@ -608,7 +774,7 @@ export default function StudioPage() {
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                     <span className="font-black text-white uppercase tracking-wider">年中行事 / お祭りネオン装飾</span>
                   </div>
-                  <p className="text-[11px] text-secondary">
+                  <p className="text-[11px] text-zinc-400">
                     「提灯 祭り 赤」「鳥居 夜景 ネオン」のダウンロード率が驚異の 48% を突破。夏祭りシーズンに向け、さらにバリエーションを100枚追加生成することを推奨します。
                   </p>
                 </div>

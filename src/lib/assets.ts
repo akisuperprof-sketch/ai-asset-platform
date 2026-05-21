@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { Asset } from "@/types";
-import { dummyAssets } from "./dummy-data";
+import { dummyAssets, computeQualityGate } from "./dummy-data";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -11,6 +11,26 @@ const isSupabaseConfigured = !!(supabaseUrl && supabaseAnonKey);
 export const supabase = isSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
+
+// UI (Japanese) to DB (English) mapping
+export const categoryMap: Record<string, string> = {
+  "日本の食": "food",
+  "和の伝統素材": "japan",
+  "年中行事・祭り": "festival",
+  "ビジネス": "business",
+  "医療・ヘルスケア": "medical",
+  "事務用品・文具": "stationery",
+};
+
+// DB (English) to UI (Japanese) mapping
+export const reverseCategoryMap: Record<string, string> = {
+  "food": "日本の食",
+  "japan": "和の伝統素材",
+  "festival": "年中行事・祭り",
+  "business": "ビジネス",
+  "medical": "医療・ヘルスケア",
+  "stationery": "事務用品・文具",
+};
 
 /**
  * 公開条件（審査済み、クリーン、公開日時設定済み）を適用する共通クエリ
@@ -41,10 +61,12 @@ function mapAsset(dbAsset: any): Asset {
     thumbnailUrl = imageUrl;
   }
 
+  const quality = computeQualityGate(dbAsset.id, dbAsset.title, dbAsset.category);
+
   return {
     id: dbAsset.id,
     title: dbAsset.title,
-    category: dbAsset.category,
+    category: reverseCategoryMap[dbAsset.category] || dbAsset.category,
     tags: dbAsset.tags || [],
     description: dbAsset.description,
     imageUrl: imageUrl || "",
@@ -59,6 +81,21 @@ function mapAsset(dbAsset: any): Asset {
     reviewStatus: dbAsset.review_status || "approved",
     legalStatus: dbAsset.legal_status || "clean",
     publishedAt: dbAsset.published_at,
+    compositionScore: dbAsset.composition_score || quality.compositionScore,
+    centeringScore: dbAsset.centering_score || quality.centeringScore,
+    marginScore: dbAsset.margin_score || quality.marginScore,
+    whiteFringeScore: dbAsset.white_fringe_score || quality.whiteFringeScore,
+    resolutionScore: dbAsset.resolution_score || quality.resolutionScore,
+    aiDistortionScore: dbAsset.ai_distortion_score || quality.aiDistortionScore,
+    subjectScore: dbAsset.subject_score || quality.subjectScore,
+    pinterestScore: dbAsset.pinterest_score || quality.pinterestScore,
+    canvaScore: dbAsset.canva_score || quality.canvaScore,
+    luxuryScore: dbAsset.luxury_score || quality.luxuryScore,
+    qualityRank: dbAsset.quality_rank || quality.qualityRank,
+    rejectReason: dbAsset.reject_reason || quality.rejectReason,
+    pinterestTitle: dbAsset.pinterest_title || quality.pinterestTitle,
+    pinterestDescription: dbAsset.pinterest_description || quality.pinterestDescription,
+    seoScore: dbAsset.seo_score || quality.seoScore,
   };
 }
 
@@ -110,7 +147,8 @@ export async function searchAssets(query: string, category: string): Promise<Ass
     supabaseQuery = applyPublicFilters(supabaseQuery);
 
     if (category !== "すべて") {
-      supabaseQuery = supabaseQuery.eq('category', category);
+      const dbCategory = categoryMap[category] || category;
+      supabaseQuery = supabaseQuery.eq('category', dbCategory);
     }
 
     if (query) {

@@ -59,7 +59,7 @@ export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
   }, []);
 
   return (
-    <div className="relative w-full h-[100dvh] flex flex-col justify-between overflow-hidden bg-black text-white select-none">
+    <div className="relative w-full min-h-[660px] lg:min-h-[720px] xl:min-h-[800px] h-auto flex flex-col justify-between overflow-hidden bg-black text-white select-none py-12 md:py-16 lg:py-20">
       
       {/* Background Animated Atmosphere - Reduced opacity to 3% for luxury quietness */}
       <div className="absolute inset-0 bg-grid opacity-3 animate-grid-drift pointer-events-none" />
@@ -98,7 +98,7 @@ export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
       </div>
 
       {/* Main Container: Split into 3 strict stacked layers for Visual focus */}
-      <div className="relative z-20 flex-1 max-w-7xl mx-auto px-6 w-full flex flex-col justify-between h-full pt-16 lg:pt-20 pb-2">
+      <div className="relative z-20 flex-1 max-w-7xl mx-auto px-6 w-full flex flex-col justify-between gap-10 pt-4 pb-2">
         
         {/* ========================================== */}
         {/* LAYER 1: BRAND TITLE & MASCOT (TOP) */}
@@ -369,12 +369,12 @@ export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
           <div className="w-full max-w-4xl mx-auto glass-card rounded-[2rem] border-white/5 p-3 mb-3 relative overflow-visible shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
             <div className="flex gap-4 overflow-x-auto no-scrollbar justify-start md:justify-center items-center px-4 py-1 relative">
               {[
-                { name: "Food", label: "おにぎり/和食", icon: "🍙", count: 20 },
-                { name: "Japan", label: "和風/伝統", icon: "🌸", count: 20 },
-                { name: "Medical", label: "医療/クリニック", icon: "🏥", count: 20 },
-                { name: "Business", label: "ビジネス/オフィス", icon: "💼", count: 20 },
-                { name: "Festival", label: "年中行事/お祭り", icon: "🗻", count: 20 },
-                { name: "More", label: "全素材一覧", icon: "✦", count: 100 },
+                { name: "日本の食", label: "日本の食", icon: "🍱", count: 18 },
+                { name: "和の伝統素材", label: "和の伝統素材", icon: "🏮", count: 5 },
+                { name: "年中行事・祭り", label: "年中行事・祭り", icon: "🌸", count: 2 },
+                { name: "ビジネス", label: "ビジネス", icon: "💼", count: 2 },
+                { name: "医療・ヘルスケア", label: "医療", icon: "🏥", count: 3 },
+                { name: "More", label: "全素材一覧", icon: "✦", count: 30 },
               ].map((cat) => (
                 <button 
                   key={cat.name}

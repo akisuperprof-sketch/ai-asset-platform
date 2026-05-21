@@ -13,7 +13,7 @@ const altMapping: Record<string, string> = {
   "日本の日常小物": "Daily Items Japan Traditional Objects Accessories"
 };
 
-export function AssetCard({ asset }: { asset: Asset }) {
+export function AssetCard({ asset, className = "col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3" }: { asset: Asset; className?: string }) {
   const seoAlt = `${asset.title} - カテゴリ: ${asset.category} (${altMapping[asset.category] || "Japanese Assets"}) - 高品質透過PNG画像素材 | Free Transparent PNG ${asset.title.replace(/\(背景透過画像\)/g, "").trim()}`;
 
   return (
@@ -21,7 +21,7 @@ export function AssetCard({ asset }: { asset: Asset }) {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="glass-card group col-span-12 sm:col-span-6 lg:col-span-4 rounded-3xl overflow-hidden flex flex-col h-[480px] relative border-white/5"
+      className={`glass-card group rounded-3xl overflow-hidden flex flex-col h-[480px] relative border-white/5 ${className}`}
     >
       <Link href={`/items/${asset.id}`} className="relative flex-1 bg-[#0a0a0a] flex items-center justify-center p-8 overflow-hidden cursor-pointer">
         {/* Checkerboard Pattern */}

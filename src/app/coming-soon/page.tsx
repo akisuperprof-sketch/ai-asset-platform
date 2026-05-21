@@ -33,7 +33,7 @@ export default function ComingSoon() {
 
       <div className="fixed bottom-12 left-0 right-0 text-center">
         <p className="text-[10px] text-secondary font-black tracking-widest uppercase opacity-30">
-          SUKASHI / AssetNinja • Phase 2 Implementation
+          AssetNinja • Phase 3 Implementation
         </p>
       </div>
     </div>

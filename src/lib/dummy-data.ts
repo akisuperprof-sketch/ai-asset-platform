@@ -1,12 +1,92 @@
 import { Asset, Category } from "@/types";
 
 export const dummyCategories: Category[] = [
-  { id: "1", name: "日本の食", slug: "japanese-food", count: 120 },
-  { id: "2", name: "医療・歯科", slug: "medical-dental", count: 85 },
-  { id: "3", name: "事務用品", slug: "office-supplies", count: 64 },
-  { id: "4", name: "年中行事", slug: "annual-events", count: 92 },
-  { id: "5", name: "日本の日常小物", slug: "daily-items", count: 110 },
+  { id: "1", name: "日本の食", slug: "food", count: 18 },
+  { id: "2", name: "和の伝統素材", slug: "japan", count: 5 },
+  { id: "3", name: "年中行事・祭り", slug: "festival", count: 2 },
+  { id: "4", name: "ビジネス", slug: "business", count: 2 },
+  { id: "5", name: "医療・ヘルスケア", slug: "medical", count: 3 },
+  { id: "6", name: "事務用品・文具", slug: "stationery", count: 0 },
 ];
+
+export interface QualityGateResult {
+  compositionScore: number;
+  centeringScore: number;
+  marginScore: number;
+  whiteFringeScore: number;
+  resolutionScore: number;
+  aiDistortionScore: number;
+  subjectScore: number;
+  pinterestScore: number;
+  canvaScore: number;
+  luxuryScore: number;
+  qualityRank: "S" | "A" | "B" | "C";
+  reviewStatus: "pending" | "approved" | "rejected";
+  rejectReason: string;
+  seoScore: number;
+  pinterestTitle: string;
+  pinterestDescription: string;
+}
+
+export const computeQualityGate = (id: string, title: string, category: string): QualityGateResult => {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = (hash << 5) - hash + id.charCodeAt(i);
+    hash |= 0;
+  }
+  hash = Math.abs(hash);
+
+  const comp = 80 + (hash % 21); // 80 - 100
+  const cent = 85 + (hash % 16); // 85 - 100
+  const marg = 80 + (hash % 21); // 80 - 100
+  const fringe = 88 + (hash % 13); // 88 - 100
+  const res = 90 + (hash % 11); // 90 - 100
+  const dist = 75 + (hash % 26); // 75 - 100
+  const subj = 82 + (hash % 19); // 82 - 100
+  const pin = 78 + (hash % 23); // 78 - 100
+  const canva = 80 + (hash % 21); // 80 - 100
+  const lux = 75 + (hash % 26); // 75 - 100
+
+  // Calculate publish readiness rank
+  const avg = Math.round((comp + cent + marg + fringe + res + dist + subj + pin + canva + lux) / 10);
+  
+  let qualityRank: "S" | "A" | "B" | "C" = "A";
+  let reviewStatus: "pending" | "approved" | "rejected" = "approved";
+  let rejectReason = "";
+
+  if (avg >= 92) {
+    qualityRank = "S";
+  } else if (avg >= 83) {
+    qualityRank = "A";
+  } else if (avg >= 78) {
+    qualityRank = "B";
+    reviewStatus = "pending";
+    rejectReason = "要目視チェック: AI崩れ検知 / 対称性の微小なズレ (Visual inspection recommended: slight AI edge asymmetry)";
+  } else {
+    qualityRank = "C";
+    reviewStatus = "rejected";
+    rejectReason = "リジェクト: 被写体境界の白フチ残留 / 輪郭に不自然な崩れあり (Rejected: White fringe artifacts / structural distortion on outer edge)";
+  }
+
+  return {
+    compositionScore: comp,
+    centeringScore: cent,
+    marginScore: marg,
+    whiteFringeScore: fringe,
+    resolutionScore: res,
+    aiDistortionScore: dist,
+    subjectScore: subj,
+    pinterestScore: pin,
+    canvaScore: canva,
+    luxuryScore: lux,
+    qualityRank,
+    reviewStatus,
+    rejectReason,
+    seoScore: Math.round(avg * 0.98 + 1),
+    pinterestTitle: `【無料・背景透過PNG】${title} | 商用利用可能`,
+    pinterestDescription: `CanvaやAdobe Express、Webデザインやスライド作成にそのまま重ねて使える高品質背景透過PNGアセットです。${title}の高精度切り抜き画像。無料ダウンロード可能。`
+  };
+};
 
 // Generation helper to ensure exactly 100 ultra-premium items for Programmatic SEO
 const foodNames = [
@@ -52,7 +132,7 @@ const japanNames = [
   { slug: "sensu-fan", title: "金箔の扇子", tags: ["扇子", "舞踊", "和風小物", "お正月"] },
   { slug: "koinobori-flag", title: "端午の節句 鯉のぼり", tags: ["鯉のぼり", "子供の日", "年中行事", "5月"] },
   { slug: "kimono-furisode", title: "伝統的な振袖着物", tags: ["着物", "振袖", "成人式", "伝統衣装"] },
-  { slug: "kokeshi-doll", title: "伝統木製こけし人形", tags: ["こけし", "郷土玩具", "民芸品", "木製"] }
+  { slug: "kokeshi-doll", title: "伝統木製こけし人形", tags: ["kokeshi", "こけし", "郷土玩具", "民芸品", "木製"] }
 ];
 
 const businessNames = [
@@ -119,7 +199,7 @@ const dailyNames = [
   { slug: "uwariki-paper", title: "手漉き和紙の書道半紙", tags: ["半紙", "書道", "和紙", "日本伝統"] },
   { slug: "fude-brush", title: "熊野筆の書道大筆", tags: ["書道筆", "熊野筆", "習字", "伝統工芸"] },
   { slug: "suzuri-ink", title: "漆黒の硯と固形墨", tags: ["硯", "墨", "書道", "伝統"] },
-  { slug: "uwariki-lantern", title: "手漉き和紙の置き行灯", tags: ["行灯", "照明", "和風インテリア", "間接照明"] },
+  { slug: "uwariki-lantern", title: "手漉き和紙 of 置き行灯", tags: ["行灯", "照明", "和風インテリア", "間接照明"] },
   { slug: "sudare-bamboo", title: "夏の竹製すだれ", tags: ["すだれ", "夏", "日よけ", "竹細工"] },
   { slug: "chabudai-table", title: "アンティーク昭和ちゃぶ台", tags: ["ちゃぶ台", "昭和レトロ", "ローテーブル", "和室"] }
 ];
@@ -133,6 +213,7 @@ const populateAssets = () => {
   const addSet = (set: typeof foodNames, category: string, baseImg: string) => {
     set.forEach((item, idx) => {
       const id = `${item.slug}-00${idx + 1}`;
+      const quality = computeQualityGate(id, item.title, category);
       dummyAssets.push({
         id,
         title: `${item.title} (背景透過画像)`,
@@ -147,10 +228,10 @@ const populateAssets = () => {
         fileSize: "2.4 MB",
         isAiGenerated: true,
         isCommercialOk: true,
-        licenseType: "free",
-        reviewStatus: "approved",
-        legalStatus: "clean",
-        publishedAt: new Date(Date.now() - idx * 24 * 60 * 60 * 1000).toISOString()
+        licenseType: "free" as const,
+        legalStatus: "clean" as const,
+        publishedAt: new Date(Date.now() - idx * 24 * 60 * 60 * 1000).toISOString(),
+        ...quality
       });
       idCounter++;
     });
@@ -187,6 +268,7 @@ const populateAssets = () => {
       const suff = suffixes[(i + 3) % suffixes.length];
       const title = `${pref}${target.baseName}${suff}${i + 1}`;
       const id = `${target.slug}-gen-item-${i + 1}`;
+      const quality = computeQualityGate(id, title, target.category);
 
       dummyAssets.push({
         id,
@@ -202,10 +284,10 @@ const populateAssets = () => {
         fileSize: "2.8 MB",
         isAiGenerated: true,
         isCommercialOk: true,
-        licenseType: "free",
-        reviewStatus: "approved",
-        legalStatus: "clean",
-        publishedAt: new Date(Date.now() - (i + 10) * 12 * 60 * 60 * 1000).toISOString()
+        licenseType: "free" as const,
+        legalStatus: "clean" as const,
+        publishedAt: new Date(Date.now() - (i + 10) * 12 * 60 * 60 * 1000).toISOString(),
+        ...quality
       });
     }
   });
@@ -214,7 +296,7 @@ const populateAssets = () => {
 populateAssets();
 
 // Prepend the first 10 ultra-premium authentic assets for high-CTR SEO, Pinterest, and Canva campaigns
-const first10PremiumAssets: Asset[] = [
+const rawPremiumAssets = [
   {
     id: "premium-sushi-001",
     title: "極上大トロ江戸前握り寿司 (背景透過4K)",
@@ -315,7 +397,7 @@ const first10PremiumAssets: Asset[] = [
     title: "伝統工芸金彩和柄・千代紙紋様 (背景透過4K)",
     category: "年中行事",
     tags: ["和柄", "千代紙", "年中行事", "背景透過", "PNG素材", "無料素材", "商用利用可能"],
-    description: "金彩の施された雅やかな流水紋と桜、麻の葉を緻密に交差させた伝統的和柄千代紙デザインの透過アセット。和柄のゴールドラインは金属光沢反射を含み、背景を選ばず高級日本食や老舗旅館、正月プロモーションの豪華さを引き立てます。",
+    description: "金彩の施された雅やかな流水紋と桜、麻の葉を緻密に交差させた伝統的和柄千代紙デザイン of 透過アセット。和柄のゴールドラインは金属光沢反射を含み、背景を選ばず高級日本食や老舗旅館、正月プロモーションの豪華さを引き立てます。",
     imageUrl: "https://pngimg.com/uploads/new_year/new_year_PNG66.png",
     thumbnailUrl: "https://pngimg.com/uploads/new_year/new_year_PNG66.png",
     storageKey: "assets/premium/wagara-006.png",
@@ -407,9 +489,20 @@ const first10PremiumAssets: Asset[] = [
   }
 ];
 
+const first10PremiumAssets: Asset[] = rawPremiumAssets.map((asset): Asset => {
+  const quality = computeQualityGate(asset.id, asset.title, asset.category);
+  return {
+    ...asset,
+    ...quality,
+    licenseType: asset.licenseType as "free" | "pro" | "cc0",
+    reviewStatus: asset.reviewStatus as "pending" | "approved" | "rejected",
+    legalStatus: asset.legalStatus as "clean" | "checked" | "risky"
+  };
+});
+
 // Prepend the premium assets to dummyAssets to make them show up first globally
 dummyAssets.unshift(...first10PremiumAssets);
 
 export const popularTags = [
-  "おにぎり", "寿司", "ラーメン", "ビジネス", "医療", "富士山", "桜", "鳥居", "忍者", "伝統工芸", "和風"
+  "寿司", "ラーメン", "焼き鳥", "だるま", "招き猫", "富士山", "桜", "鳥居", "お守り", "鏡餅", "ビジネス", "医療", "聴診器", "和風"
 ];

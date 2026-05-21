@@ -32,14 +32,14 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
 
   const isHome = !q && !cat;
 
-  // Extract the 10 First Premium Assets
-  const premiumAssets = allAssets.filter(a => a.id.startsWith("premium-")).slice(0, 10);
+  // Extract the 10 First Premium Assets (All real assets, sorted by latest)
+  const premiumAssets = allAssets.filter(a => a.imageUrl && a.imageUrl.startsWith("http")).slice(0, 10);
   
   // Extract 6 representative Japanese traditional items for "LATEST FROM JAPAN"
-  const latestJapanAssets = allAssets.filter(a => !a.id.startsWith("premium-") && (a.category === "年中行事" || a.category === "日本の日常小物")).slice(0, 6);
+  const latestJapanAssets = allAssets.filter(a => a.imageUrl && (a.category === "和の伝統素材" || a.category === "年中行事・祭り")).slice(0, 6);
 
   // Extract 6 trending items for "TRENDING PNG"
-  const trendingAssets = allAssets.filter(a => !a.id.startsWith("premium-") && a.category === "日本の食").slice(0, 6);
+  const trendingAssets = allAssets.filter(a => a.imageUrl && a.category === "日本の食").slice(0, 6);
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-ai-purple/30 relative">
@@ -197,7 +197,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
                 </p>
               </div>
               <div className="flex justify-center">
-                <img src="/brand/ninja-concept.png" alt="AssetNinja Concept" className="w-full max-w-md drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] group-hover:scale-105 transition-transform duration-700" />
+                <img src="/brand/ninja-char-1.png" alt="AssetNinja Concept" className="w-full max-w-sm drop-shadow-[0_20px_50px_rgba(245,158,11,0.25)] group-hover:scale-105 transition-transform duration-700" />
               </div>
             </div>
           </div>
@@ -213,8 +213,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
                   <Zap className="w-6 h-6 text-white fill-white" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-xl font-black tracking-tighter">SUKASHI</span>
-                  <span className="text-[10px] font-black text-ai-cyan tracking-[0.2em] uppercase">AssetNinja</span>
+                  <span className="text-xl font-black tracking-tighter">ASSET NINJA</span>
+                  <span className="text-[10px] font-black text-ai-cyan tracking-[0.2em] uppercase">Premium PNG OS</span>
                 </div>
               </div>
               <p className="text-secondary text-sm leading-relaxed mb-10 max-w-sm">
@@ -223,9 +223,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
               </p>
               <div className="flex gap-6">
                 {[MessageCircle, Camera, Play].map((Icon, i) => (
-                  <button key={i} className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:bg-white hover:text-black transition-all border-white/5">
+                  <Link href="/coming-soon" key={i} className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:bg-white hover:text-black transition-all border-white/5">
                     <Icon className="w-5 h-5" />
-                  </button>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -235,39 +235,39 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
                 <div>
                   <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white mb-8">サービス</h4>
                   <ul className="space-y-4 text-secondary text-sm font-bold">
-                    <li><a href="#" className="hover:text-white transition-colors">素材を探す</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">カテゴリ一覧</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">新着素材</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">人気素材</a></li>
+                    <li><Link href="/" className="hover:text-white transition-colors">素材を探す</Link></li>
+                    <li><Link href="/?cat=すべて" className="hover:text-white transition-colors">カテゴリ一覧</Link></li>
+                    <li><Link href="/coming-soon" className="hover:text-white transition-colors">新着素材</Link></li>
+                    <li><Link href="/coming-soon" className="hover:text-white transition-colors">人気素材</Link></li>
                   </ul>
                 </div>
                 <div>
                   <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white mb-8">サポート</h4>
                   <ul className="space-y-4 text-secondary text-sm font-bold">
-                    <li><a href="#" className="hover:text-white transition-colors">ご利用ガイド</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">よくある質問</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">お問い合わせ</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">規約・ポリシー</a></li>
+                    <li><Link href="/coming-soon" className="hover:text-white transition-colors">ご利用ガイド</Link></li>
+                    <li><Link href="/coming-soon" className="hover:text-white transition-colors">よくある質問</Link></li>
+                    <li><Link href="/coming-soon" className="hover:text-white transition-colors">お問い合わせ</Link></li>
+                    <li><Link href="/coming-soon" className="hover:text-white transition-colors">規約・ポリシー</Link></li>
                   </ul>
                 </div>
                 <div>
                   <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white mb-8">会社情報</h4>
                   <ul className="space-y-4 text-secondary text-sm font-bold">
-                    <li><a href="#" className="hover:text-white transition-colors">SUKASHIについて</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">プライバシーポリシー</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">利用規約</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">特定商取引法に基づく表記</a></li>
+                    <li><Link href="/coming-soon" className="hover:text-white transition-colors">AssetNinjaについて</Link></li>
+                    <li><Link href="/coming-soon" className="hover:text-white transition-colors">プライバシーポリシー</Link></li>
+                    <li><Link href="/coming-soon" className="hover:text-white transition-colors">利用規約</Link></li>
+                    <li><Link href="/coming-soon" className="hover:text-white transition-colors">特定商取引法に基づく表記</Link></li>
                   </ul>
                 </div>
                 <div>
                   <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white mb-8">最新情報を受け取る</h4>
-                  <p className="text-secondary text-xs mb-6 font-medium">新しい素材や機能のアップデート情報をお届けします。</p>
-                  <div className="flex gap-2">
-                    <input type="text" placeholder="メールアドレスを入力" className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 text-xs focus:outline-none focus:border-ai-purple transition-all" />
-                    <button className="bg-ai-gradient px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 shadow-lg shadow-ai-purple/20">
+                  <p className="text-secondary text-xs mb-6 font-medium">新しい素材や機能 of アップデート情報をお届けします。</p>
+                  <form action="/coming-soon" className="flex gap-2">
+                    <input type="email" placeholder="メールアドレスを入力" required className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 text-xs focus:outline-none focus:border-ai-purple transition-all" />
+                    <button type="submit" className="bg-ai-gradient px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 shadow-lg shadow-ai-purple/20">
                       登録する
                     </button>
-                  </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -275,12 +275,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
 
           <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="text-[10px] text-secondary font-black tracking-widest uppercase">
-              © 2024 SUKASHI / AssetNinja. All rights reserved.
+              © 2024 AssetNinja. All rights reserved.
             </p>
             <div className="flex gap-8 text-[10px] text-secondary font-black uppercase tracking-widest">
-              <a href="#" className="hover:text-white">Privacy</a>
-              <a href="#" className="hover:text-white">Terms</a>
-              <a href="#" className="hover:text-white">Cookies</a>
+              <Link href="/coming-soon" className="hover:text-white">Privacy</Link>
+              <Link href="/coming-soon" className="hover:text-white">Terms</Link>
+              <Link href="/coming-soon" className="hover:text-white">Cookies</Link>
             </div>
           </div>
         </div>

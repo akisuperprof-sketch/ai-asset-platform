@@ -16,6 +16,31 @@ export interface Asset {
   reviewStatus: "pending" | "approved" | "rejected";
   legalStatus: "checked" | "risky" | "clean";
   publishedAt?: string;
+
+  // Quality Gate Scores (0-100)
+  compositionScore?: number;
+  centeringScore?: number;
+  marginScore?: number;
+  whiteFringeScore?: number;
+  resolutionScore?: number;
+  aiDistortionScore?: number;
+  subjectScore?: number;
+  pinterestScore?: number;
+  canvaScore?: number;
+  luxuryScore?: number;
+  
+  // Quality Rank
+  qualityRank?: "S" | "A" | "B" | "C";
+  
+  // Reject reason if B or C
+  rejectReason?: string;
+
+  // Rich Pinterest Metadata
+  pinterestTitle?: string;
+  pinterestDescription?: string;
+
+  // SEO Score (0-100)
+  seoScore?: number;
 }
 
 export interface Category {

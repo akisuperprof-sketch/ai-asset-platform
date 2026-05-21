@@ -214,7 +214,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-ai-cyan">Rights-Clear PNG</h4>
               </div>
               <p className="text-[11px] text-secondary leading-relaxed font-medium">
-                このアセットはSUKASHI AIによって生成され、商用プロジェクトでの自由な利用が保証されています。
+                このアセットはAssetNinja AIによって生成され、商用プロジェクトでの自由な利用が保証されています。
               </p>
             </div>
           </div>
@@ -228,12 +228,12 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               もっと見る →
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-12 gap-6">
             {allAssets
               .filter(a => a.category === asset.category && a.id !== asset.id)
               .slice(0, 4)
               .map((relatedAsset) => (
-                <AssetCard key={relatedAsset.id} asset={relatedAsset} />
+                <AssetCard key={relatedAsset.id} asset={relatedAsset} className="col-span-12 sm:col-span-6 md:col-span-3" />
               ))}
           </div>
         </div>
