@@ -9,9 +9,16 @@ import Image from "next/image";
 interface HeroSectionProps {
   onSearch?: (query: string) => void;
   initialCount?: number;
+  todayAdded?: number;
+  categoryCounts?: Record<string, number>;
 }
 
-export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
+export function HeroSection({ 
+  onSearch, 
+  initialCount = 30, 
+  todayAdded = 0, 
+  categoryCounts = {} 
+}: HeroSectionProps) {
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -141,7 +148,7 @@ export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
                   <div className="absolute inset-0 gold-shimmer pointer-events-none" />
                   <div className="text-[9px] font-black text-amber-500/80 uppercase tracking-widest flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 fill-amber-500/10 text-amber-400" />
-                    +128 ADDED TODAY • AI VERIFIED
+                    +{todayAdded} ADDED TODAY • AI VERIFIED
                   </div>
                 </div>
               </div>
@@ -220,7 +227,7 @@ export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
                 <Cpu className="w-3.5 h-3.5 text-ai-cyan animate-pulse" /> CENTRAL SEARCH ENGINE OS
               </span>
               <span className="text-[9px] font-black text-amber-500/80 bg-amber-500/5 border border-amber-500/10 px-3 py-0.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.03)]">
-                50,000+ AI GENERATED TRANSPARENT PNG ASSETS
+                {initialCount} AI GENERATED TRANSPARENT PNG ASSETS
               </span>
             </div>
 
@@ -383,12 +390,12 @@ export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
           <div className="w-full max-w-4xl mx-auto glass-card rounded-[2rem] border-white/5 p-3 mb-3 relative overflow-visible shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
             <div className="flex gap-4 overflow-x-auto no-scrollbar justify-start md:justify-center items-center px-4 py-1 relative">
               {[
-                { name: "日本の食", label: "日本の食", icon: "🍱", count: 18 },
-                { name: "和の伝統素材", label: "和の伝統素材", icon: "🏮", count: 5 },
-                { name: "年中行事・祭り", label: "年中行事・祭り", icon: "🌸", count: 2 },
-                { name: "ビジネス", label: "ビジネス", icon: "💼", count: 2 },
-                { name: "医療・ヘルスケア", label: "医療", icon: "🏥", count: 3 },
-                { name: "More", label: "全素材一覧", icon: "✦", count: 30 },
+                { name: "日本の食", label: "日本の食", icon: "🍱", count: categoryCounts["日本の食"] || 0 },
+                { name: "和の伝統素材", label: "和の伝統素材", icon: "🏮", count: categoryCounts["和の伝統素材"] || 0 },
+                { name: "年中行事・祭り", label: "年中行事・祭り", icon: "🌸", count: categoryCounts["年中行事・祭り"] || 0 },
+                { name: "ビジネス", label: "ビジネス", icon: "💼", count: categoryCounts["ビジネス"] || 0 },
+                { name: "医療・ヘルスケア", label: "医療", icon: "🏥", count: categoryCounts["医療・ヘルスケア"] || categoryCounts["医療"] || 0 },
+                { name: "More", label: "全素材一覧", icon: "✦", count: initialCount },
               ].map((cat) => (
                 <button 
                   key={cat.name}
@@ -420,7 +427,7 @@ export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
             </span>
             <span className="hidden sm:inline text-white/10">|</span>
             <span className="hover:text-ai-purple transition-colors uppercase">
-              50,000+ PNGS INDEXED
+              {initialCount} PNGS INDEXED
             </span>
             <span className="hidden sm:inline text-white/10">|</span>
             <span className="hover:text-ai-cyan transition-colors uppercase flex items-center gap-1">

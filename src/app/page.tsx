@@ -18,21 +18,33 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
   const allAssets = await getAssets();
   const searchResultAssets = q || cat ? await searchAssets(q || "", currentCategory) : allAssets;
 
-  // Query actual asset count dynamically from Supabase
-  let assetCount = 1100;
-  try {
-    const { count } = await supabase
-      .from("assets")
-      .select("id", { count: "exact", head: true })
-      .eq("review_status", "approved")
-      .eq("legal_status", "clean");
-    if (count !== null && count > 0) {
-      assetCount = count;
+  // Calculate dynamic metrics on the server side
+  const assetCount = allAssets.length;
+
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const todayAdded = allAssets.filter(asset => {
+    if (!asset.publishedAt) return false;
+    return new Date(asset.publishedAt) >= startOfToday;
+  }).length;
+
+  // Extract category counts dynamically from active published assets
+  const categoryCounts: Record<string, number> = {
+    "日本の食": 0,
+    "和の伝統素材": 0,
+    "年中行事・祭り": 0,
+    "ビジネス": 0,
+    "医療・ヘルスケア": 0,
+  };
+
+  allAssets.forEach(asset => {
+    const catName = asset.category; // Already mapped to Japanese inside mapAsset
+    if (categoryCounts[catName] !== undefined) {
+      categoryCounts[catName]++;
+    } else {
+      categoryCounts[catName] = 1;
     }
-  } catch (e) {
-    // Dynamic fallback to pre-compiled count
-    assetCount = allAssets.length;
-  }
+  });
 
   const isHome = !q && !cat;
 
@@ -54,7 +66,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
         {/* On home page, HeroSection takes the full viewport. Below it, the scrollable showroom begins. */}
         {isHome ? (
           <div className="relative">
-            <HeroSection initialCount={assetCount} />
+            <HeroSection 
+              initialCount={assetCount} 
+              todayAdded={todayAdded} 
+              categoryCounts={categoryCounts}
+            />
             
             {/* 1. NEW PREMIUM ASSETS SECTION */}
             <section className="bg-black py-32 px-6 border-t border-white/5 relative overflow-hidden">

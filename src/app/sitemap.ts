@@ -25,7 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   // 2. All category routes
-  const categories = ['japanese-food', 'medical-dental', 'office-supplies', 'annual-events', 'daily-items'];
+  const categories = ['日本の食', '和の伝統素材', '年中行事・祭り', 'ビジネス', '医療・ヘルスケア', '事務用品・文具'];
   const categoryUrls = categories.map((cat) => ({
     url: `${baseUrl}/category/${encodeURIComponent(cat)}`,
     lastModified: new Date(),

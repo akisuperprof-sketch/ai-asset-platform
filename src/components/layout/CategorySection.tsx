@@ -84,7 +84,7 @@ export function CategorySection() {
                 <div>
                   <h3 className="text-white font-bold text-lg group-hover:text-ai-cyan transition-colors">{category.name}</h3>
                   <p className="text-[10px] text-secondary font-black tracking-widest uppercase mt-1">
-                    {Math.floor(Math.random() * 50) + 10} 素材
+                    {category.count} 素材
                   </p>
                 </div>
               </div>
