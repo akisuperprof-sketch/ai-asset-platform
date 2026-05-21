@@ -172,3 +172,73 @@ body {
   animation: shimmer-gold 6s infinite linear;
 }
 
+/* --- CYBER OS & NINJA LOADING ANIMATIONS --- */
+@keyframes ninja-stealth {
+  0% {
+    transform: translateX(60px) scale(0.85);
+    opacity: 0;
+  }
+  15% {
+    transform: translateX(0) scale(1);
+    opacity: 0.95;
+    filter: drop-shadow(0 0 10px rgba(6,182,212,0.3));
+  }
+  30% {
+    transform: translateX(0) scale(1) skewX(3deg);
+    opacity: 0.5;
+  }
+  45% {
+    transform: rotate(180deg) scale(0.5);
+    opacity: 0.1;
+  }
+  60% {
+    transform: scale(1.05);
+    opacity: 0.9;
+    filter: blur(0px);
+  }
+  75% {
+    transform: scale(0.95) translateY(-6px);
+    opacity: 0.35;
+    filter: blur(4px);
+  }
+  90% {
+    transform: scale(1.3);
+    opacity: 0;
+    filter: blur(15px);
+  }
+  100% {
+    transform: translateX(60px) scale(0.85);
+    opacity: 0;
+  }
+}
+
+.animate-ninja-stealth {
+  animation: ninja-stealth 6s ease-in-out infinite;
+}
+
+@keyframes reverse-spin {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-reverse-spin {
+  animation: reverse-spin 10s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2.5s infinite linear;
+}
+

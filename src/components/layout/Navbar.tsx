@@ -37,23 +37,29 @@ export function Navbar() {
             <Search className="w-5 h-5" />
           </Link>
           
-          <div className="hidden md:flex items-center gap-4">
-            <Link 
-              href="/coming-soon" 
-              className="bg-white/[0.02] border border-white/5 hover:border-amber-500/30 hover:bg-amber-500/5 px-4 py-2 rounded-full text-[9px] font-black text-amber-400 uppercase tracking-[0.25em] transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(245,158,11,0.02)]"
+          <div className="hidden md:flex items-center gap-4 select-none">
+            <button 
+              onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: 'PRO PLAN' } }))}
+              className="bg-white/[0.02] border border-white/5 hover:border-amber-500/30 hover:bg-amber-500/5 px-4 py-2 rounded-full text-[9px] font-black text-amber-400 uppercase tracking-[0.25em] transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(245,158,11,0.02)] cursor-not-allowed opacity-80"
+              aria-disabled="true"
             >
               <Sparkles className="w-3.5 h-3.5 fill-amber-500/10 text-amber-400" />
               PRO PLAN
-            </Link>
-            <Link href="/coming-soon" className="text-[11px] font-black text-white uppercase tracking-widest hover:text-ai-cyan transition-colors">
+            </button>
+            <button 
+              onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: 'ログイン' } }))}
+              className="text-[11px] font-black text-white/60 uppercase tracking-widest hover:text-white transition-colors cursor-not-allowed bg-transparent border-none py-1"
+              aria-disabled="true"
+            >
               ログイン
-            </Link>
-            <Link 
-              href="/coming-soon" 
-              className="bg-ai-gradient px-8 py-3 rounded-full text-[11px] font-black text-white uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-ai-purple/20"
+            </button>
+            <button 
+              onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: '新規登録' } }))}
+              className="bg-ai-gradient px-8 py-3 rounded-full text-[11px] font-black text-white/90 uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-ai-purple/20 cursor-not-allowed opacity-95"
+              aria-disabled="true"
             >
               無料で登録
-            </Link>
+            </button>
           </div>
 
           <button className="lg:hidden text-white">

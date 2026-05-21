@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { DownloadButton } from "@/components/download/DownloadButton";
 import { AssetPreviewContainer } from "@/components/assets/AssetPreviewContainer";
+import { ComingSoonButton } from "@/components/ui/ComingSoonButton";
 import { Metadata } from "next";
 import Link from "next/link";
 // ...
@@ -201,10 +202,13 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             {/* Action Buttons */}
             <div className="space-y-4">
               <DownloadButton assetId={asset.id} title={asset.title} />
-              <Link href="/coming-soon" className="w-full h-16 glass rounded-[20px] flex items-center justify-center gap-3 text-white/50 font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-white/10 transition-all border-white/5">
+              <ComingSoonButton 
+                feature="コレクション追加"
+                className="w-full h-16 glass rounded-[20px] flex items-center justify-center gap-3 text-white/50 font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-white/10 transition-all border-white/5 opacity-80"
+              >
                 <Bookmark className="w-4 h-4" />
                 コレクションに追加
-              </Link>
+              </ComingSoonButton>
             </div>
 
             {/* Rights Clearance Box */}

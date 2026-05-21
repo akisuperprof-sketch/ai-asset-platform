@@ -151,11 +151,21 @@ export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
           {/* Scaled Up Interactive Mascot (Right) */}
           <div className="lg:col-span-5 flex items-center justify-center relative">
             <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.2, delay: 0.1 }}
+              initial={{ opacity: 0, scale: 0.96, x: 30 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              transition={{ duration: 1.5, delay: 0.1, ease: "easeOut" }}
               className="relative w-full h-[180px] sm:h-[220px] lg:h-[250px] flex items-center justify-center"
             >
+              {/* Ghost Silhouette Background Layer (Z-0) */}
+              <div className="absolute w-[280px] h-[280px] lg:w-[350px] lg:h-[350px] opacity-[0.035] blur-[1px] pointer-events-none z-0 transform translate-x-[-12%] translate-y-[-6%] select-none">
+                <Image 
+                  src="/brand/ninja-char-1.png"
+                  alt="Ninja Ghost Silhouette"
+                  fill
+                  className="object-contain filter grayscale scale-125 animate-pulse"
+                />
+              </div>
+
               {/* Spinning Neon Rings in the foreground & background - Ultra thin borders */}
               <div className="absolute w-[220px] h-[220px] lg:w-[280px] lg:h-[280px] border border-ai-cyan/10 rounded-full border-dashed animate-slow-spin pointer-events-none z-0" />
               <div className="absolute w-[200px] h-[200px] lg:w-[250px] lg:h-[250px] border-[0.5px] border-ai-purple/10 rounded-full animate-slow-reverse-spin pointer-events-none z-0" />
@@ -175,6 +185,10 @@ export function HeroSection({ onSearch, initialCount = 31 }: HeroSectionProps) {
                     fill
                     sizes="(max-width: 768px) 75vw, (max-width: 1200px) 45vw"
                     className="object-contain"
+                    style={{
+                      maskImage: "linear-gradient(to bottom, white 70%, transparent 100%), linear-gradient(to left, white 80%, transparent 100%)",
+                      WebkitMaskImage: "linear-gradient(to bottom, white 70%, transparent 100%), linear-gradient(to left, white 80%, transparent 100%)",
+                    }}
                     priority
                     onError={() => setImgError(true)}
                   />
