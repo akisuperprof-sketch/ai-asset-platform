@@ -191,6 +191,28 @@ export function HeroSection({
       <div className="absolute top-[10%] right-[10%] w-[60vw] h-[55vh] bg-blue-600/5 rounded-full blur-[180px] opacity-35 pointer-events-none animate-aura-pulse" />
       <div className="absolute bottom-[5%] left-[5%] w-[50vw] h-[50vh] bg-ai-cyan/5 rounded-full blur-[160px] opacity-30 pointer-events-none animate-aura-pulse" style={{ animationDelay: "-4s" }} />
       <div className="scanline opacity-5 pointer-events-none" />
+      
+      {/* Cyber Stealth Ninja Overlay (Z-0) - Zero CPU WebGL-free CSS animation */}
+      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-0">
+        <div 
+          className="absolute right-[5%] top-[15%] w-[260px] h-[260px] md:w-[360px] md:h-[360px] opacity-0"
+          style={{
+            animation: "hero-ninja-stealth 9s cubic-bezier(0.25, 1, 0.5, 1) forwards",
+          }}
+        >
+          <Image
+            src="/brand/ninja-char-1.png"
+            alt="Stealth Ninja Background"
+            fill
+            className="object-contain"
+            style={{
+              filter: "brightness(0.7) drop-shadow(0 0 15px rgba(0,200,255,0.1))",
+              maskImage: "radial-gradient(circle at center, white 40%, transparent 95%)",
+              WebkitMaskImage: "radial-gradient(circle at center, white 40%, transparent 95%)",
+            }}
+          />
+        </div>
+      </div>
 
       {/* Floating Neon Micro-Dust Particles - Reduced count to 3 for Apple/Linear luxury feel */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">

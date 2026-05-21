@@ -36,6 +36,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
     "年中行事・祭り": 0,
     "ビジネス": 0,
     "医療・ヘルスケア": 0,
+    "事務用品・文具": 0,
   };
 
   allAssets.forEach(asset => {
@@ -46,6 +47,33 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
       categoryCounts[catName] = 1;
     }
   });
+
+  const categoriesList = [
+    { id: "1", name: "日本の食", slug: "food", count: categoryCounts["日本の食"] || 0 },
+    { id: "2", name: "和の伝統素材", slug: "japan", count: categoryCounts["和の伝統素材"] || 0 },
+    { id: "3", name: "年中行事・祭り", slug: "festival", count: categoryCounts["年中行事・祭り"] || 0 },
+    { id: "4", name: "ビジネス", slug: "business", count: categoryCounts["ビジネス"] || 0 },
+    { id: "5", name: "医療・ヘルスケア", slug: "medical", count: categoryCounts["医療・ヘルスケア"] || 0 },
+    { id: "6", name: "事務用品・文具", slug: "stationery", count: categoryCounts["事務用品・文具"] || 0 },
+  ];
+
+  // Extract popular tags dynamically from real assets
+  const tagCounts: Record<string, number> = {};
+  allAssets.forEach(asset => {
+    if (asset.tags) {
+      asset.tags.forEach(tag => {
+        const ignoreTags = ["背景透過", "PNG素材", "商用利用可能", "無料素材", "透過画像", "AI生成素材", "PNG"];
+        if (!ignoreTags.includes(tag)) {
+          tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        }
+      });
+    }
+  });
+
+  const popularTagsList = Object.entries(tagCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12)
+    .map(entry => entry[0]);
 
   const isHome = !q && !cat;
 
@@ -157,7 +185,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
               </section>
             )}
 
-            {/* 3. TRENDING PNG SECTION */}
+             {/* 3. TRENDING PNG SECTION */}
             {trendingAssets.length > 0 && (
               <section className="bg-black py-20 px-6 border-t border-white/5 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto">
@@ -196,6 +224,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
               </section>
             )}
 
+            {/* Dynamic Real-time Category OS Bento Section at Home Bottom */}
+            <div className="border-t border-white/5 bg-black/40 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-ai-cyan/15 to-transparent" />
+              <CategorySection categories={categoriesList} popularTags={popularTagsList} />
+            </div>
+
           </div>
         ) : (
           <div className="pt-32 px-6 max-w-7xl mx-auto mb-12">
@@ -210,7 +244,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
 
         {!isHome && (
           <>
-            <CategorySection />
+            <CategorySection categories={categoriesList} popularTags={popularTagsList} />
             <div id="assets">
               <AssetGrid 
                 assets={searchResultAssets} 

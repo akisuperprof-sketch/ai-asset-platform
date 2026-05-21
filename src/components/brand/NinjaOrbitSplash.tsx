@@ -61,14 +61,14 @@ export function NinjaOrbitSplash({ onComplete }: NinjaOrbitSplashProps) {
   const getStepText = () => {
     switch (step) {
       case 1:
-        return "STEALTH LINK ESTABLISHED";
+        return "STEALTH LINK ESTABLISHED // AI ASSET SYSTEM ONLINE";
       case 2:
-        return "SCANNING TRANSPARENT ASSETS";
+        return "SCANNING NEURAL DATASPACES // GENERATING TRANSPARENT PNG";
       case 3:
-        return "NINJA INDEX READY";
+        return "NINJA TRANSPARENCY PIPELINE ACTIVE // QUALITY GATE AUDIT [OK]";
       case 4:
       default:
-        return "ASSET NINJA";
+        return "ASSET NINJA // JAPANESE TRANSPARENT MATERIAL OS";
     }
   };
 

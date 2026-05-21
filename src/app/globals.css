@@ -242,3 +242,43 @@ body {
   animation: shimmer 2.5s infinite linear;
 }
 
+/* --- S-TIER NINE-SECOND STEALTH NINJA ANIMATION (Zero CPU, GPU-Accelerated) --- */
+@keyframes hero-ninja-stealth {
+  0% {
+    transform: translate3d(120px, 20px, 0) scale(0.95);
+    opacity: 0;
+    filter: blur(10px) brightness(0.1) contrast(1.2);
+  }
+  8% {
+    transform: translate3d(40px, 5px, 0) scale(1.0);
+    opacity: 0.85;
+    filter: blur(0px) brightness(0.85) contrast(1.0) drop-shadow(0 0 25px rgba(6, 182, 212, 0.3));
+  }
+  15% {
+    transform: translate3d(0, 0, 0) scale(1.0);
+    opacity: 0.95;
+    filter: blur(0px) brightness(0.9) contrast(1.0) drop-shadow(0 0 35px rgba(245, 158, 11, 0.25));
+  }
+  30% {
+    transform: translate3d(-35px, -2px, 0) scale(1.01);
+    opacity: 0.8;
+    filter: blur(0.5px) brightness(0.8) drop-shadow(0 0 25px rgba(6, 182, 212, 0.15));
+  }
+  75% {
+    transform: translate3d(-90px, -4px, 0) scale(1.02);
+    opacity: 0.75;
+    filter: blur(1px) brightness(0.7) drop-shadow(0 0 20px rgba(124, 58, 237, 0.1));
+  }
+  90% {
+    transform: translate3d(-150px, -8px, 0) scale(1.05);
+    opacity: 0.2;
+    filter: blur(10px) brightness(0.2) drop-shadow(0 0 40px rgba(0, 255, 170, 0.2));
+  }
+  100% {
+    transform: translate3d(-220px, -15px, 0) scale(1.1);
+    opacity: 0;
+    filter: blur(25px) brightness(0);
+  }
+}
+
+
