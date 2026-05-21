@@ -72,7 +72,7 @@ async function runAudit() {
   const tagCounts: Record<string, number> = {};
   assets.forEach(a => {
     if (Array.isArray(a.tags)) {
-      a.tags.forEach(tag => {
+      a.tags.forEach((tag: string) => {
         tagCounts[tag] = (tagCounts[tag] || 0) + 1;
       });
     }

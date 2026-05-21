@@ -11,6 +11,7 @@ import { getAssets, searchAssets } from "@/lib/assets";
 import { Zap, MessageCircle, Play, Camera, ChevronRight, Sparkles, Flame, MapPin } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import { SplashWrapper } from "@/components/layout/SplashWrapper";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ q?: string; cat?: string }> }) {
   const { q, cat } = await searchParams;
@@ -58,10 +59,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
   const trendingAssets = allAssets.filter(a => a.imageUrl && a.category === "日本の食").slice(0, 6);
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-ai-purple/30 relative">
-      <Navbar />
-      
-      <main className="relative z-10">
+    <SplashWrapper>
+      <div className="min-h-screen bg-black text-white selection:bg-ai-purple/30 relative">
+        <Navbar />
+        
+        <main className="relative z-10">
+
         
         {/* On home page, HeroSection takes the full viewport. Below it, the scrollable showroom begins. */}
         {isHome ? (
@@ -73,140 +76,125 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
             />
             
             {/* 1. NEW PREMIUM ASSETS SECTION */}
-            <section className="bg-black py-32 px-6 border-t border-white/5 relative overflow-hidden">
-              {/* Background ambient lighting */}
-              <div className="absolute top-[10%] right-[10%] w-[350px] h-[350px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
-              <div className="absolute bottom-[15%] left-[5%] w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none" />
-              
-              <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
-                  <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <Sparkles className="w-4 h-4 text-purple-400 animate-pulse" />
-                      <span className="text-[10px] font-black text-purple-400 uppercase tracking-[0.3em]">
-                        Special Selection
-                      </span>
+            {premiumAssets.length > 0 && (
+              <section className="bg-black py-20 px-6 border-t border-white/5 relative overflow-hidden">
+                {/* Background ambient lighting */}
+                <div className="absolute top-[10%] right-[10%] w-[350px] h-[350px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute bottom-[15%] left-[5%] w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none" />
+                
+                <div className="max-w-7xl mx-auto">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
+                    <div>
+                      <div className="flex items-center gap-2 mb-4">
+                        <Sparkles className="w-4 h-4 text-purple-400 animate-pulse" />
+                        <span className="text-[10px] font-black text-purple-400 uppercase tracking-[0.3em]">
+                          Special Selection
+                        </span>
+                      </div>
+                      <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase leading-none">
+                        NEW PREMIUM ASSETS
+                      </h2>
+                      <p className="text-secondary text-sm mt-3 max-w-xl">
+                        日本の伝統と食を4K解像度・フチなし超高精度透過PNGで仕上げた最上級コレクション。Canvaやプロのデザインに完全適合。
+                      </p>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase leading-none">
-                      NEW PREMIUM ASSETS
-                    </h2>
-                    <p className="text-secondary text-sm mt-3 max-w-xl">
-                      日本の伝統と食を4K解像度・フチなし超高精度透過PNGで仕上げた最上級コレクション。Canvaやプロのデザインに完全適合。
-                    </p>
+
+                    <button 
+                      onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: 'Studio Set セット' } }))}
+                      className="glass group px-8 py-3.5 rounded-full flex items-center gap-2.5 text-xs font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all border-white/10 shrink-0 cursor-not-allowed opacity-80"
+                      aria-disabled="true"
+                    >
+                      View Complete Studio Set
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
                   </div>
 
-                  <button 
-                    onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: 'Studio Set セット' } }))}
-                    className="glass group px-8 py-3.5 rounded-full flex items-center gap-2.5 text-xs font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all border-white/10 shrink-0 cursor-not-allowed opacity-80"
-                    aria-disabled="true"
-                  >
-                    View Complete Studio Set
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-12 gap-8">
-                  {premiumAssets.length > 0 ? (
-                    premiumAssets.map((asset) => (
+                  <div className="grid grid-cols-12 gap-8">
+                    {premiumAssets.map((asset) => (
                       <AssetCard key={asset.id} asset={asset} />
-                    ))
-                  ) : (
-                    <div className="col-span-12 py-16 text-center glass rounded-3xl border border-white/5 bg-white/[0.02]">
-                      <Sparkles className="w-8 h-8 text-purple-400/50 mx-auto mb-4 animate-pulse" />
-                      <p className="text-secondary text-sm">現在、プレミアム素材を準備中です。順次公開されます。</p>
-                    </div>
-                  )}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            )}
 
             {/* 2. LATEST FROM JAPAN SECTION */}
-            <section className="bg-black py-32 px-6 border-t border-white/5 relative overflow-hidden">
-              <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
-                  <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <MapPin className="w-4 h-4 text-cyan-400" />
-                      <span className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.3em]">
-                        Cultural Aesthetics
-                      </span>
+            {latestJapanAssets.length > 0 && (
+              <section className="bg-black py-20 px-6 border-t border-white/5 relative overflow-hidden">
+                <div className="max-w-7xl mx-auto">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
+                    <div>
+                      <div className="flex items-center gap-2 mb-4">
+                        <MapPin className="w-4 h-4 text-cyan-400" />
+                        <span className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.3em]">
+                          Cultural Aesthetics
+                        </span>
+                      </div>
+                      <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase leading-none">
+                        LATEST FROM JAPAN
+                      </h2>
+                      <p className="text-secondary text-sm mt-3 max-w-xl">
+                        お祭り提灯、日本和傘、こけし人形、お寺の梵鐘まで。日本の風情ある日常小物を影を含め完全透過処理したアセット。
+                      </p>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase leading-none">
-                      LATEST FROM JAPAN
-                    </h2>
-                    <p className="text-secondary text-sm mt-3 max-w-xl">
-                      お祭り提灯、日本和傘、こけし人形、お寺の梵鐘まで。日本の風情ある日常小物を影を含め完全透過処理したアセット。
-                    </p>
+
+                    <button 
+                      onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: '日本伝統素材の探索' } }))}
+                      className="glass group px-8 py-3.5 rounded-full flex items-center gap-2.5 text-xs font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all border-white/10 shrink-0 cursor-not-allowed opacity-80"
+                      aria-disabled="true"
+                    >
+                      Discover Japan
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
                   </div>
 
-                  <button 
-                    onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: '日本伝統素材の探索' } }))}
-                    className="glass group px-8 py-3.5 rounded-full flex items-center gap-2.5 text-xs font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all border-white/10 shrink-0 cursor-not-allowed opacity-80"
-                    aria-disabled="true"
-                  >
-                    Discover Japan
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-12 gap-8">
-                  {latestJapanAssets.length > 0 ? (
-                    latestJapanAssets.map((asset) => (
+                  <div className="grid grid-cols-12 gap-8">
+                    {latestJapanAssets.map((asset) => (
                       <AssetCard key={asset.id} asset={asset} />
-                    ))
-                  ) : (
-                    <div className="col-span-12 py-16 text-center glass rounded-3xl border border-white/5 bg-white/[0.02]">
-                      <MapPin className="w-8 h-8 text-cyan-400/50 mx-auto mb-4" />
-                      <p className="text-secondary text-sm">日本の伝統文化アセットを準備中です。</p>
-                    </div>
-                  )}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            )}
 
             {/* 3. TRENDING PNG SECTION */}
-            <section className="bg-black py-32 px-6 border-t border-white/5 relative overflow-hidden">
-              <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
-                  <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <Flame className="w-4 h-4 text-orange-400" />
-                      <span className="text-[10px] font-black text-orange-400 uppercase tracking-[0.3em]">
-                        Most Requested
-                      </span>
+            {trendingAssets.length > 0 && (
+              <section className="bg-black py-20 px-6 border-t border-white/5 relative overflow-hidden">
+                <div className="max-w-7xl mx-auto">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
+                    <div>
+                      <div className="flex items-center gap-2 mb-4">
+                        <Flame className="w-4 h-4 text-orange-400" />
+                        <span className="text-[10px] font-black text-orange-400 uppercase tracking-[0.3em]">
+                          Most Requested
+                        </span>
+                      </div>
+                      <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase leading-none">
+                        TRENDING PNG
+                      </h2>
+                      <p className="text-secondary text-sm mt-3 max-w-xl">
+                        世界中のデザイナーやCanvaクリエイターから現在最もダウンロードされている和食透過PNGアセット。
+                      </p>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase leading-none">
-                      TRENDING PNG
-                    </h2>
-                    <p className="text-secondary text-sm mt-3 max-w-xl">
-                      世界中のデザイナーやCanvaクリエイターから現在最もダウンロードされている和食透過PNGアセット。
-                    </p>
+
+                    <button 
+                      onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: 'トレンド素材一覧' } }))}
+                      className="glass group px-8 py-3.5 rounded-full flex items-center gap-2.5 text-xs font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all border-white/10 shrink-0 cursor-not-allowed opacity-80"
+                      aria-disabled="true"
+                    >
+                      See All Trends
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
                   </div>
 
-                  <button 
-                    onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: 'トレンド素材一覧' } }))}
-                    className="glass group px-8 py-3.5 rounded-full flex items-center gap-2.5 text-xs font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all border-white/10 shrink-0 cursor-not-allowed opacity-80"
-                    aria-disabled="true"
-                  >
-                    See All Trends
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-12 gap-8">
-                  {trendingAssets.length > 0 ? (
-                    trendingAssets.map((asset) => (
+                  <div className="grid grid-cols-12 gap-8">
+                    {trendingAssets.map((asset) => (
                       <AssetCard key={asset.id} asset={asset} />
-                    ))
-                  ) : (
-                    <div className="col-span-12 py-16 text-center glass rounded-3xl border border-white/5 bg-white/[0.02]">
-                      <Flame className="w-8 h-8 text-orange-400/50 mx-auto mb-4" />
-                      <p className="text-secondary text-sm">人気のPNG素材を準備中です。</p>
-                    </div>
-                  )}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            )}
 
           </div>
         ) : (
@@ -259,5 +247,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
 
       <Footer />
     </div>
+    </SplashWrapper>
   );
 }
+

@@ -24,8 +24,123 @@ export function HeroSection({
   const [isSearching, setIsSearching] = useState(false);
   const [imgError, setImgError] = useState(false);
   
+  // Real-time Stats Engine
+  const [realtimeCount, setRealtimeCount] = useState(initialCount);
+  const [realtimeTodayAdded, setRealtimeTodayAdded] = useState(todayAdded);
+  const [realtimeCategories, setRealtimeCategories] = useState<Record<string, number>>(categoryCounts);
+  const [trendingTags, setTrendingTags] = useState<string[]>(["寿司", "ラーメン", "和柄", "富士山", "ビジネス"]);
+  
+  // Cyber Live simulation engines
+  const [nowGenerating, setNowGenerating] = useState({
+    title: "極上うな重セット",
+    progress: 12,
+    phase: "AI_GENERATING",
+    category: "日本の食"
+  });
+
+  const [logs, setLogs] = useState<string[]>([
+    "STEALTH LINK ESTABLISHED: SECURE CORRIDOR ENGAGED",
+    "SCANNING SUPABASE NODE... 30 PNGS DETECTED",
+    "R2 CLOUD CACHE STATUS: 100% HEALTHY",
+    "READY FOR NEURAL TRANSLATION PROCESS"
+  ]);
+
   const searchInputRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
+
+  // Fetch real stats on client mount and every 30s
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch("/api/stats");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            setRealtimeCount(data.publishedAssets || data.totalAssets || initialCount);
+            setRealtimeTodayAdded(data.todayAdded ?? todayAdded);
+            if (data.categoryCounts) setRealtimeCategories(data.categoryCounts);
+            
+            // Extract top tags dynamically for TRENDING SEARCH
+            if (data.tagCounts) {
+              const sortedTags = Object.entries(data.tagCounts)
+                .sort((a: any, b: any) => b[1] - a[1])
+                .slice(0, 5)
+                .map(t => t[0]);
+              if (sortedTags.length > 0) setTrendingTags(sortedTags);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Stats real-time fetch error:", err);
+      }
+    };
+
+    fetchStats();
+    const interval = setInterval(fetchStats, 30000);
+    return () => clearInterval(interval);
+  }, [initialCount, todayAdded]);
+
+  // NOW GENERATING Simulation loop (Changes target every 6 seconds)
+  useEffect(() => {
+    const items = [
+      { title: "極上うな重セット", cat: "日本の食" },
+      { title: "満開の染井吉野", cat: "年中行事・祭り" },
+      { title: "伝統的な金屏風", cat: "和の伝統素材" },
+      { title: "グローバル商談風景", cat: "ビジネス" },
+      { title: "最先端MRI検査機", cat: "医療・ヘルスケア" },
+      { title: "特選天ぷら盛り合わせ", cat: "日本の食" },
+      { title: "日本庭園の灯篭", cat: "和の伝統素材" }
+    ];
+
+    let currentIdx = 0;
+    
+    // Smooth progress increment simulator
+    const progressInterval = setInterval(() => {
+      setNowGenerating(prev => {
+        if (prev.progress >= 100) {
+          // Switch to next item when complete
+          currentIdx = (currentIdx + 1) % items.length;
+          
+          // Log completion in console
+          const timeStr = new Date().toLocaleTimeString();
+          const target = items[currentIdx];
+          
+          setLogs(logList => {
+            const newLogs = [
+              `[${timeStr}] SUCCESS: '${prev.title}' background auto-removal completed (quality_score=94)`,
+              `[${timeStr}] SYNCHRONIZED: '${prev.title}' uploaded to Cloudflare R2 Edge`,
+              `[${timeStr}] DB_INSERTION: Registered asset securely into public.assets`,
+              `[${timeStr}] INITIATED: Generating high-fidelity '${target.title}' via Stability AI`,
+              ...logList
+            ].slice(0, 15);
+            return newLogs;
+          });
+
+          return {
+            title: target.title,
+            progress: 0,
+            phase: "AI_GENERATING",
+            category: target.cat
+          };
+        }
+
+        const step = Math.floor(Math.random() * 8) + 4;
+        const newProgress = Math.min(100, prev.progress + step);
+        
+        let phase = "AI_GENERATING";
+        if (newProgress > 40 && newProgress < 85) phase = "REMBG_PROCESSING";
+        else if (newProgress >= 85) phase = "COMPILER_SEO_QA";
+
+        return {
+          ...prev,
+          progress: newProgress,
+          phase
+        };
+      });
+    }, 450);
+
+    return () => clearInterval(progressInterval);
+  }, []);
 
   // Handle actual query search
   const handleSearch = (searchQuery: string) => {
@@ -148,7 +263,7 @@ export function HeroSection({
                   <div className="absolute inset-0 gold-shimmer pointer-events-none" />
                   <div className="text-[9px] font-black text-amber-500/80 uppercase tracking-widest flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 fill-amber-500/10 text-amber-400" />
-                    +{todayAdded} ADDED TODAY • AI VERIFIED
+                    +{realtimeTodayAdded} ADDED TODAY • AI VERIFIED
                   </div>
                 </div>
               </div>
@@ -227,7 +342,7 @@ export function HeroSection({
                 <Cpu className="w-3.5 h-3.5 text-ai-cyan animate-pulse" /> CENTRAL SEARCH ENGINE OS
               </span>
               <span className="text-[9px] font-black text-amber-500/80 bg-amber-500/5 border border-amber-500/10 px-3 py-0.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.03)]">
-                {initialCount} AI GENERATED TRANSPARENT PNG ASSETS
+                {realtimeCount} AI GENERATED TRANSPARENT PNG ASSETS
               </span>
             </div>
 
@@ -354,27 +469,77 @@ export function HeroSection({
               </AnimatePresence>
             </form>
 
-            {/* Searching Status Indicator - Advanced Processing Queue status SYS-003 */}
-            <div className="h-6 mt-3 flex items-center justify-center overflow-hidden">
+            {/* Searching Status Indicator & Live Asset Engine OS Panel (Phase-002) */}
+            <div className="mt-4 w-full">
               <AnimatePresence mode="wait">
                 {isSearching ? (
-                  <motion.span
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="text-[9px] font-black text-ai-cyan tracking-[0.2em] uppercase flex items-center gap-1.5"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-ai-cyan animate-ping" />
-                    SEARCHING NEURAL DATASPACES...
-                  </motion.span>
+                  <div className="h-6 flex items-center justify-center">
+                    <motion.span
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="text-[9px] font-black text-ai-cyan tracking-[0.2em] uppercase flex items-center gap-1.5"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-ai-cyan animate-ping" />
+                      SEARCHING NEURAL DATASPACES...
+                    </motion.span>
+                  </div>
                 ) : (
-                  <motion.span
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-[9px] font-black text-white/20 tracking-[0.2em] uppercase flex items-center gap-1.5"
-                  >
-                    NEURAL STATUS: ACTIVE <span className="text-[8px] text-white/10">|</span> DB LATENCY: 12ms <span className="text-[8px] text-white/10">|</span> PROCESSING QUEUE: IDLE
-                  </motion.span>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full text-left">
+                    
+                    {/* Panel Left: NOW GENERATING */}
+                    <div className="glass border border-white/5 rounded-2xl p-4 bg-black/60 backdrop-blur-md relative overflow-hidden flex flex-col justify-between h-[82px]">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[8px] font-black text-ai-cyan tracking-[0.2em] uppercase flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-ai-cyan animate-pulse" />
+                          NOW GENERATING
+                        </span>
+                        <span className="text-[8px] font-mono text-white/30 uppercase">
+                          {nowGenerating.phase}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between items-end my-1">
+                        <span className="text-[11px] font-bold text-white tracking-wide truncate max-w-[70%]">
+                          [{nowGenerating.category}] {nowGenerating.title}
+                        </span>
+                        <span className="text-[10px] font-black text-ai-cyan font-mono">
+                          {nowGenerating.progress}%
+                        </span>
+                      </div>
+
+                      {/* Micro neon progress bar */}
+                      <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden relative">
+                        <div 
+                          className="h-full bg-ai-gradient rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(0,200,255,0.6)]"
+                          style={{ width: `${nowGenerating.progress}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Panel Right: LIVE INDEX STATUS */}
+                    <div className="glass border border-white/5 rounded-2xl p-4 bg-black/60 backdrop-blur-md relative overflow-hidden flex flex-col justify-between h-[82px]">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[8px] font-black text-amber-500/80 tracking-[0.2em] uppercase flex items-center gap-1.5">
+                          <span className="w-1 h-1 rounded-full bg-amber-500 animate-ping" />
+                          LIVE INDEX STATUS
+                        </span>
+                        <span className="text-[8px] font-mono text-white/30 uppercase">
+                          DB_LATENCY: 12ms
+                        </span>
+                      </div>
+                      
+                      {/* Scrolling Console log */}
+                      <div className="flex-1 overflow-hidden font-mono text-[8px] leading-relaxed text-white/50 flex flex-col gap-0.5 max-h-[46px] select-text">
+                        {logs.slice(0, 3).map((log, index) => (
+                          <div key={index} className="truncate whitespace-nowrap">
+                            <span className="text-[#00ffaa]/80 mr-1">&gt;</span> {log}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
                 )}
               </AnimatePresence>
             </div>
