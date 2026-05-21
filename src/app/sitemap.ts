@@ -47,14 +47,20 @@ export async function generateSitemaps() {
   }
 }
 
-export default async function sitemap({ id }: { id?: number }): Promise<MetadataRoute.Sitemap> {
+export default async function sitemap(props: { id?: number | string | Promise<number | string> }): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://assetninja.jp';
-  const currentId = typeof id === 'string' ? parseInt(id, 10) : (id ?? 0);
+  
+  // Next.js 15/16 pass params (including sitemap id) as a Promise
+  const rawId = props.id && props.id instanceof Promise ? await props.id : props.id;
+  const currentId = typeof rawId === 'string' ? parseInt(rawId, 10) : (rawId ?? 0);
+
+  console.log("🗺️ [sitemap.ts] Called with props.id:", props.id, "resolved currentId:", currentId);
 
   let assets: any[] = [];
   let dynamicTags: string[] = [];
 
   if (supabase) {
+    console.log("🗺️ [sitemap.ts] Supabase client is initialized. Fetching data...");
     try {
       // 1. Fetch assets for the current chunk
       const start = currentId * CHUNK_SIZE;
@@ -71,6 +77,7 @@ export default async function sitemap({ id }: { id?: number }): Promise<Metadata
 
       if (error) throw error;
       assets = data || [];
+      console.log(`🗺️ [sitemap.ts] Successfully fetched ${assets.length} assets.`);
 
       // 2. Fetch distinct tags from approved assets
       const { data: tagData, error: tagError } = await supabase
@@ -89,10 +96,13 @@ export default async function sitemap({ id }: { id?: number }): Promise<Metadata
         }
       });
       dynamicTags = Array.from(tagSet);
+      console.log(`🗺️ [sitemap.ts] Successfully fetched ${dynamicTags.length} dynamic tags.`);
 
     } catch (err) {
-      console.error("Error fetching sitemap data from Supabase:", err);
+      console.error("🗺️ [sitemap.ts] Error fetching sitemap data from Supabase:", err);
     }
+  } else {
+    console.log("🗺️ [sitemap.ts] Supabase client is NOT initialized!");
   }
 
   // Use fallback if dynamic tags query failed or returned empty
@@ -131,7 +141,7 @@ export default async function sitemap({ id }: { id?: number }): Promise<Metadata
       priority: 0.85,
     }));
 
-    return [
+    const finalSitemap: MetadataRoute.Sitemap = [
       {
         url: baseUrl,
         lastModified: new Date(),
@@ -148,9 +158,12 @@ export default async function sitemap({ id }: { id?: number }): Promise<Metadata
       },
       ...assetUrls,
     ];
+    console.log(`🗺️ [sitemap.ts] Returning ${finalSitemap.length} sitemap entries for currentId === 0`);
+    return finalSitemap;
   }
 
   // Segmented sitemap chunk returns only asset URLs
+  console.log(`🗺️ [sitemap.ts] Returning ${assetUrls.length} sitemap entries for currentId !== 0`);
   return assetUrls;
 }
 

@@ -248,5 +248,35 @@
     "resolution_score": 100,
     "ai_distortion_score": 98,
     "subject_score": 92
+  },
+  {
+    "id": "food-8a2701fd-001-828",
+    "title": "極上ねぎま焼き鳥特選ゴールド #1",
+    "category": "food",
+    "tags": [
+      "ねぎま焼き鳥",
+      "背景透過",
+      "PNG素材",
+      "商用利用可能",
+      "無料素材",
+      "透過画像",
+      "AI生成素材",
+      "プレミアム素材",
+      "日本の食",
+      "高解像度4K"
+    ],
+    "description": "AI技術で生成され、完全な切り抜き・背景透過加工が施されたねぎま焼き鳥の最高品質PNG画像素材です。境界線の白フチ（ホワイトフリンジ）を徹底排除し、暗い背景やCanva・スライド資料へ重ねても完璧に自然に溶け込みます。商用・個人プロジェクトでロイヤリティフリーにて今すぐご使用いただけます。",
+    "width": 4096,
+    "height": 4096,
+    "file_size": "2.8 MB",
+    "storage_key": "food/food-8a2701fd-001-828.png",
+    "seo_score": 93,
+    "quality_score": 97,
+    "centering_score": 99,
+    "margin_score": 100,
+    "white_fringe_score": 100,
+    "resolution_score": 100,
+    "ai_distortion_score": 98,
+    "subject_score": 89
   }
 ]
