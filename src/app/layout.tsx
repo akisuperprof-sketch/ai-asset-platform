@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import { ComingSoonToast } from "@/components/ui/ComingSoonToast";
+import { LivingBackground } from "@/components/layout/LivingBackground";
 import "./globals.css";
 
 const notoEmoji = Noto_Sans_JP({
@@ -47,6 +48,7 @@ export default function RootLayout({
   return (
     <html lang="ja" className={`${notoEmoji.variable}`}>
       <body className="bg-black text-foreground antialiased selection:bg-ai-purple/30">
+        <LivingBackground />
         <main className="relative min-height-screen">
           {children}
         </main>

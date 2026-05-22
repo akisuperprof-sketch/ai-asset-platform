@@ -13,6 +13,14 @@ interface HeroSectionProps {
   categoryCounts?: Record<string, number>;
 }
 
+const formatCountBadge = (count: number) => {
+  if (count >= 5000) return "5K+";
+  if (count >= 1000) return "1K+";
+  if (count >= 500) return "500+";
+  if (count >= 100) return "100+";
+  return count.toString();
+};
+
 export function HeroSection({ 
   onSearch, 
   initialCount = 30, 
@@ -181,18 +189,9 @@ export function HeroSection({
   }, []);
 
   return (
-    <div className="relative w-full min-h-[660px] lg:min-h-[720px] xl:min-h-[800px] h-auto flex flex-col justify-between overflow-hidden bg-black text-white select-none py-12 md:py-16 lg:py-20">
+    <div className="relative w-full min-h-[660px] lg:min-h-[720px] xl:min-h-[800px] h-auto flex flex-col justify-between overflow-hidden bg-transparent text-white select-none py-12 md:py-16 lg:py-20">
       
-      {/* Background Animated Atmosphere - Reduced opacity to 3% for luxury quietness */}
-      <div className="absolute inset-0 bg-grid opacity-3 animate-grid-drift pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.005),transparent_70%)] pointer-events-none" />
-      
-      {/* Deep Blue/Cyan Smoke Aura Behind - Extremely subtle */}
-      <div className="absolute top-[10%] right-[10%] w-[60vw] h-[55vh] bg-blue-600/5 rounded-full blur-[180px] opacity-35 pointer-events-none animate-aura-pulse" />
-      <div className="absolute bottom-[5%] left-[5%] w-[50vw] h-[50vh] bg-ai-cyan/5 rounded-full blur-[160px] opacity-30 pointer-events-none animate-aura-pulse" style={{ animationDelay: "-4s" }} />
-      <div className="scanline opacity-5 pointer-events-none" />
-      
-      {/* Cyber Stealth Ninja Overlay (Z-0) - Zero CPU WebGL-free CSS animation */}
+      {/* Cyber Stealth Ninja Overlay (Z-0) - Crosses from right to left */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-0">
         <div 
           className="absolute right-[5%] top-[15%] w-[260px] h-[260px] md:w-[360px] md:h-[360px] opacity-0"
@@ -214,35 +213,8 @@ export function HeroSection({
         </div>
       </div>
 
-      {/* Floating Neon Micro-Dust Particles - Reduced count to 3 for Apple/Linear luxury feel */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
-        {[...Array(3)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 rounded-full bg-ai-cyan/20"
-            initial={{ 
-              x: Math.random() * 1920, 
-              y: Math.random() * 1080,
-              opacity: 0.05 + Math.random() * 0.2
-            }}
-            animate={{
-              y: [null, Math.random() * -100, Math.random() * -200],
-              opacity: [0.05, 0.4, 0.05]
-            }}
-            transition={{
-              duration: 12 + Math.random() * 8,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-            style={{
-              filter: "blur(0.5px)"
-            }}
-          />
-        ))}
-      </div>
-
       {/* Main Container: Split into 3 strict stacked layers for Visual focus */}
-      <div className="relative z-20 flex-1 max-w-7xl mx-auto px-6 w-full flex flex-col justify-between gap-10 pt-4 pb-2">
+      <div className="relative z-20 flex-1 max-w-7xl mx-auto px-4 sm:px-6 w-full flex flex-col justify-between gap-10 pt-4 pb-2">
         
         {/* ========================================== */}
         {/* LAYER 1: BRAND TITLE & MASCOT (TOP) */}
@@ -364,7 +336,7 @@ export function HeroSection({
                 <Cpu className="w-3.5 h-3.5 text-ai-cyan animate-pulse" /> CENTRAL SEARCH ENGINE OS
               </span>
               <span className="text-[9px] font-black text-amber-500/80 bg-amber-500/5 border border-amber-500/10 px-3 py-0.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.03)]">
-                {realtimeCount} AI GENERATED TRANSPARENT PNG ASSETS
+                {formatCountBadge(realtimeCount)} AI GENERATED TRANSPARENT PNG ASSETS
               </span>
             </div>
 
@@ -614,7 +586,7 @@ export function HeroSection({
             </span>
             <span className="hidden sm:inline text-white/10">|</span>
             <span className="hover:text-ai-purple transition-colors uppercase">
-              {initialCount} PNGS INDEXED
+              {formatCountBadge(initialCount)} PNGS INDEXED
             </span>
             <span className="hidden sm:inline text-white/10">|</span>
             <span className="hover:text-ai-cyan transition-colors uppercase flex items-center gap-1">

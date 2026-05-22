@@ -2,9 +2,22 @@
 
 import { Asset } from "@/types";
 import { motion } from "framer-motion";
-import { Download, ExternalLink, Zap, ShieldCheck, Heart } from "lucide-react";
+import { Download, Flame, Heart, ArrowDown } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { ComingSoonButton } from "../ui/ComingSoonButton";
+
+const getSeedStats = (id: string) => {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = id.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const absHash = Math.abs(hash);
+  const favoriteSeed = 5 + (absHash % 16); // 5 to 20
+  const downloadSeed = 30 + (absHash % 171); // 30 to 200
+  const isTrending = downloadSeed > 150;
+  return { favoriteSeed, downloadSeed, isTrending };
+};
 
 const altMapping: Record<string, string> = {
   "日本の食": "Japanese Food Illustration",
@@ -21,6 +34,8 @@ export function AssetCard({ asset, className = "col-span-12 sm:col-span-6 md:col
   if (!asset.imageUrl) {
     return null;
   }
+
+  const { favoriteSeed, downloadSeed, isTrending } = getSeedStats(asset.id);
 
   const seoAlt = `${asset.title} - カテゴリ: ${asset.category} (${altMapping[asset.category] || "Japanese Assets"}) - 高品質透過PNG画像素材 | Free Transparent PNG ${asset.title.replace(/\(背景透過画像\)/g, "").trim()}`;
 
@@ -64,16 +79,12 @@ export function AssetCard({ asset, className = "col-span-12 sm:col-span-6 md:col
         </div>
         
         <div className="absolute top-5 right-5 z-40">
-          <div 
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: 'お気に入り登録' } }));
-            }}
+          <ComingSoonButton 
+            feature="お気に入り登録"
             className="w-10 h-10 glass rounded-xl flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all pointer-events-auto cursor-pointer"
           >
             <Heart className="w-4 h-4 text-white/50 group-hover:text-red-500 transition-colors" />
-          </div>
+          </ComingSoonButton>
         </div>
       </Link>
 
@@ -98,9 +109,20 @@ export function AssetCard({ asset, className = "col-span-12 sm:col-span-6 md:col
               1024x1024
             </div>
           </div>
-          <div className="flex items-center gap-1.5 text-secondary">
-            <Heart className="w-3 h-3 text-red-500/80" />
-            <span className="text-[10px] font-bold">12</span>
+          <div className="flex items-center gap-3 text-secondary">
+            {isTrending && (
+              <div className="flex items-center gap-1 text-orange-400">
+                <Flame className="w-3 h-3" />
+              </div>
+            )}
+            <div className="flex items-center gap-1">
+              <ArrowDown className="w-3 h-3 text-ai-cyan" />
+              <span className="text-[10px] font-bold text-white/70">{downloadSeed}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Heart className="w-3 h-3 text-red-500/80" />
+              <span className="text-[10px] font-bold text-white/70">{favoriteSeed}</span>
+            </div>
           </div>
         </div>
       </div>

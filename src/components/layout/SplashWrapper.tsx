@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { NinjaOrbitSplash } from "@/components/brand/NinjaOrbitSplash";
+import { NinjaAntigravitySplash } from "@/components/brand/NinjaAntigravitySplash";
 
 interface SplashWrapperProps {
   children: React.ReactNode;
@@ -12,6 +12,7 @@ export function SplashWrapper({ children }: SplashWrapperProps) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line
     setIsMounted(true);
     
     // Check session storage to see if we should display the splash on this session
@@ -35,7 +36,7 @@ export function SplashWrapper({ children }: SplashWrapperProps) {
   return (
     <>
       {showSplash && (
-        <NinjaOrbitSplash onComplete={handleSplashComplete} />
+        <NinjaAntigravitySplash onComplete={handleSplashComplete} />
       )}
       
       <div 
