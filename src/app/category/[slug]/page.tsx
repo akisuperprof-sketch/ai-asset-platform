@@ -9,8 +9,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const categoryName = decodeURIComponent(slug);
 
-  const title = `${categoryName}のPNG素材（透過）一覧｜商用利用OK｜AssetNinja`;
-  const description = `${categoryName}の商用利用可能な透過PNG素材一覧です。AssetNinjaなら日本発の高品質AIアセットが無料でダウンロード可能。Webデザインや資料作成にすぐ使えます。`;
+  const title = `${categoryName} | Transparent PNG Assets | ${categoryName}のPNG素材（透過）一覧｜商用利用OK | AssetNinja`;
+  const description = `Download commercial-use ready transparent PNG assets for ${categoryName}. ${categoryName}の商用利用可能な透過PNG素材一覧です。日本発の高品質AIアセットが無料でダウンロード可能。`;
 
   return {
     title,
@@ -21,7 +21,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: "website",
     },
     alternates: {
-      canonical: `https://assetninja.jp/category/${encodeURIComponent(categoryName)}`
+      canonical: `https://assetninja.jp/category/${encodeURIComponent(categoryName)}`,
+      languages: {
+        "ja": `https://assetninja.jp/category/${encodeURIComponent(categoryName)}`,
+        "en": `https://assetninja.jp/category/${encodeURIComponent(categoryName)}`,
+      }
     }
   };
 }
@@ -32,8 +36,81 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   
   const assets = await searchAssets("", categoryName);
 
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": `${categoryName}の背景透過PNG画像素材一覧 | AssetNinja`,
+    "description": `Download commercial-use ready transparent PNG assets for ${categoryName}.`,
+    "url": `https://assetninja.jp/category/${slug}`,
+    "mainEntity": {
+      "@type": "ItemList",
+      "numberOfItems": assets.length,
+      "itemListElement": assets.map((asset, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "url": `https://assetninja.jp/items/${asset.id}`,
+        "name": asset.title
+      }))
+    }
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "ホーム",
+        "item": "https://assetninja.jp"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": `カテゴリ: ${categoryName}`,
+        "item": `https://assetninja.jp/category/${slug}`
+      }
+    ]
+  };
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": `Are the ${categoryName} PNG assets free for commercial use? (商用利用は無料ですか？)`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, all assets in this category are completely free for both personal and commercial use without attribution. (はい、このカテゴリの素材はすべて商用利用含めて完全無料でご利用いただけます。)"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": `Do the ${categoryName} images have transparent backgrounds? (背景は透過されていますか？)`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, all images have been processed with AI to completely remove the background, providing clean transparent PNGs. (はい、すべてAIによって完全に背景が除去された綺麗な透過PNG画像です。)"
+        }
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-black">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
       <Navbar />
 
       <main className="pt-32 pb-20 px-4 max-w-7xl mx-auto">

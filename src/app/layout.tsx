@@ -13,14 +13,14 @@ const notoEmoji = Noto_Sans_JP({
 export const metadata: Metadata = {
   metadataBase: new URL('https://assetninja.jp'),
   title: {
-    default: "Free Japanese PNG Assets for Commercial Use | AssetNinja",
+    default: "Premium Japanese Transparent PNG Assets | AssetNinja",
     template: "%s | AssetNinja"
   },
-  description: "Download high-quality Japanese transparent PNG assets. Commercial-use ready AI-generated PNGs including food, culture, business, and medical illustrations.",
-  keywords: ["PNG", "背景透過", "素材", "AI素材", "フリー素材", "商用利用", "日本素材", "AssetNinja", "切り抜き画像", "Transparent PNG", "Free PNG", "Japanese Assets"],
+  description: "Download high-quality Japanese transparent PNG assets. Commercial-use ready premium PNGs including food, culture, business, and medical illustrations.",
+  keywords: ["PNG", "背景透過", "素材", "プレミアム素材", "フリー素材", "商用利用", "日本素材", "AssetNinja", "切り抜き画像", "Transparent PNG", "Premium PNG", "Japanese Assets"],
   openGraph: {
-    title: "Free Japanese PNG Assets for Commercial Use | AssetNinja",
-    description: "Download high-quality Japanese transparent PNG assets. Commercial-use ready AI-generated PNGs.",
+    title: "Premium Japanese Transparent PNG Assets | AssetNinja",
+    description: "Download high-quality Japanese transparent PNG assets. Commercial-use ready premium PNGs.",
     url: 'https://assetninja.jp',
     siteName: 'AssetNinja',
     locale: 'ja_JP',
@@ -28,8 +28,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Free Japanese PNG Assets for Commercial Use | AssetNinja",
-    description: "Download high-quality Japanese transparent PNG assets. Commercial-use ready AI-generated PNGs.",
+    title: "Premium Japanese Transparent PNG Assets | AssetNinja",
+    description: "Download high-quality Japanese transparent PNG assets. Commercial-use ready premium PNGs.",
   },
   alternates: {
     canonical: 'https://assetninja.jp',

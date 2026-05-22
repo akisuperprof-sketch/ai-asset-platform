@@ -74,8 +74,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const jpTag = getJapaneseTag(slug);
 
-  const title = `Free Japanese ${jpTag} PNG Assets (Transparent) | Commercial Use | AssetNinja`;
-  const description = `Download high-quality transparent Japanese ${jpTag} PNG assets. Commercial-use ready AI-generated illustrations for web design, video creation, and marketing.`;
+  const title = `Free Japanese ${jpTag} PNG Assets (Transparent) | ${jpTag}の透過PNG素材 | Commercial Use | AssetNinja`;
+  const description = `Download high-quality transparent Japanese ${jpTag} PNG assets. 商用利用可能な${jpTag}の透過PNG素材。Commercial-use ready AI-generated illustrations for web design, video creation, and marketing.`;
 
   return {
     title,
@@ -90,12 +90,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
           url: "https://assetninja.jp/brand/ninja-concept.png",
           width: 800,
           height: 1200, // Vertical OGP for Pinterest SEO optimization
-          alt: `Free Japanese ${jpTag} PNG Assets`,
+          alt: `Free Japanese ${jpTag} PNG Assets | ${jpTag}の透過PNG素材`,
         }
       ]
     },
     alternates: {
-      canonical: `https://assetninja.jp/tag/${slug}`
+      canonical: `https://assetninja.jp/tag/${slug}`,
+      languages: {
+        "ja": `https://assetninja.jp/tag/${slug}`,
+        "en": `https://assetninja.jp/tag/${slug}`,
+      }
     },
     // Pinterest specific meta configurations
     other: {
@@ -154,6 +158,29 @@ export default async function TagPage({ params }: { params: Promise<{ slug: stri
     ]
   };
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": `Are the ${jpTag} PNG assets free for commercial use? (商用利用は無料ですか？)`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, all assets with this tag are completely free for both personal and commercial use without attribution. (はい、このタグの素材はすべて商用利用含めて完全無料でご利用いただけます。)"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": `Do the ${jpTag} images have transparent backgrounds? (背景は透過されていますか？)`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, all images have been processed with AI to completely remove the background, providing clean transparent PNGs. (はい、すべてAIによって完全に背景が除去された綺麗な透過PNG画像です。)"
+        }
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       
@@ -165,6 +192,10 @@ export default async function TagPage({ params }: { params: Promise<{ slug: stri
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
       {/* Cyber ambient aura background */}

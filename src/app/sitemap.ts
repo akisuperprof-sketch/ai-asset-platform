@@ -79,24 +79,8 @@ export default async function sitemap(props: { id?: number | string | Promise<nu
       assets = data || [];
       console.log(`🗺️ [sitemap.ts] Successfully fetched ${assets.length} assets.`);
 
-      // 2. Fetch distinct tags from approved assets
-      const { data: tagData, error: tagError } = await supabase
-        .from('assets')
-        .select('tags')
-        .eq('review_status', 'approved');
-
-      if (tagError) throw tagError;
-      
-      const tagSet = new Set<string>();
-      tagData?.forEach((row: any) => {
-        if (Array.isArray(row.tags)) {
-          row.tags.forEach((tag: string) => {
-            if (tag && tag.trim()) tagSet.add(tag.trim());
-          });
-        }
-      });
-      dynamicTags = Array.from(tagSet);
-      console.log(`🗺️ [sitemap.ts] Successfully fetched ${dynamicTags.length} dynamic tags.`);
+      // Removed full table scan for tags to prevent memory crash
+      dynamicTags = FALLBACK_TAG_SLUGS;
 
     } catch (err) {
       console.error("🗺️ [sitemap.ts] Error fetching sitemap data from Supabase:", err);
@@ -121,6 +105,7 @@ export default async function sitemap(props: { id?: number | string | Promise<nu
       lastModified: new Date(asset.published_at || new Date()),
       changeFrequency: 'weekly' as const,
       priority: 0.8,
+      images: imageUrl ? [imageUrl] : undefined,
     };
   });
 

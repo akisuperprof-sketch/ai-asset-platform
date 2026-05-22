@@ -59,10 +59,10 @@ export function AssetPreviewContainer({ imageUrl, title }: AssetPreviewContainer
         {/* Floating Photoshop Grid Tag */}
         <div className="absolute top-6 left-6 z-30 flex flex-col gap-2">
           <div className={`backdrop-blur-md border px-3 py-1 rounded-full flex items-center gap-1.5 shadow-lg ${
-            isLight ? "bg-white/80 border-black/10" : "bg-black/80 border-white/10"
+            isLight ? "bg-white/90 border-black/10 text-black" : "bg-black/80 border-white/10 text-white"
           }`}>
             <span className="w-1.5 h-1.5 rounded-full bg-ai-cyan animate-pulse" />
-            <span className={`text-[9px] font-black uppercase tracking-widest ${isLight ? "text-black" : "text-white"}`}>
+            <span className="text-[9px] font-black uppercase tracking-widest">
               Pixel Perfect Transparency
             </span>
           </div>
@@ -70,9 +70,9 @@ export function AssetPreviewContainer({ imageUrl, title }: AssetPreviewContainer
             <motion.div 
               initial={{ opacity: 0, y: -5 }} 
               animate={{ opacity: 1, y: 0 }}
-              className="bg-amber-400/10 border border-amber-400/30 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-lg"
+              className="bg-white/95 border border-amber-400/50 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-xl"
             >
-              <span className="text-[8px] font-black text-amber-500 uppercase tracking-widest">
+              <span className="text-[8px] font-black text-amber-600 uppercase tracking-widest">
                 Halo Contrast View
               </span>
             </motion.div>
@@ -129,23 +129,23 @@ export function AssetPreviewContainer({ imageUrl, title }: AssetPreviewContainer
             {/* Divider */}
             <div className={`h-px w-full ${isLight ? "bg-black/5" : "bg-white/10"}`} />
 
-            {/* Row 2: Mode Toggles & ZOOM - Vertical on small, Horizontal wrap on large */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[10px] font-black uppercase">
+            {/* Row 2: Mode Toggles */}
+            <div className="flex items-center justify-center gap-3 text-[10px] font-black uppercase w-full">
               {/* Background Mode Toggles */}
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className={`text-[8px] tracking-wider uppercase mr-1 ${isLight ? "text-black/40" : "text-white/40"}`}>
+              <div className="flex flex-wrap items-center justify-center gap-1.5">
+                <span className={`text-[8px] tracking-wider uppercase mr-1 hidden sm:inline-block ${isLight ? "text-black/40" : "text-white/40"}`}>
                   PREVIEW:
                 </span>
                 
                 <button 
                   type="button"
                   onClick={() => setBgMode("checkerboard")}
-                  className={`px-2.5 py-1 rounded-md text-[9px] font-bold uppercase transition-all ${
+                  className={`px-3 py-1.5 rounded-md text-[9px] font-bold uppercase transition-all ${
                     bgMode === "checkerboard" 
                       ? "bg-ai-cyan text-black" 
                       : isLight 
-                        ? "bg-black/5 hover:bg-black/10 text-black"
-                        : "bg-white/5 hover:bg-white/10 text-white"
+                        ? "bg-black/5 hover:bg-black/10 text-black/70 hover:text-black"
+                        : "bg-white/5 hover:bg-white/10 text-white/70 hover:text-white"
                   }`}
                 >
                   Grid
@@ -154,12 +154,12 @@ export function AssetPreviewContainer({ imageUrl, title }: AssetPreviewContainer
                 <button 
                   type="button"
                   onClick={() => setBgMode("black")}
-                  className={`px-2.5 py-1 rounded-md text-[9px] font-bold uppercase transition-all ${
+                  className={`px-3 py-1.5 rounded-md text-[9px] font-bold uppercase transition-all ${
                     bgMode === "black" 
-                      ? isLight ? "bg-black text-white" : "bg-white text-black" 
+                      ? "bg-black text-white shadow-[0_0_10px_rgba(255,255,255,0.1)] border border-white/20" 
                       : isLight 
-                        ? "bg-black/5 hover:bg-black/10 text-black"
-                        : "bg-white/5 hover:bg-white/10 text-white"
+                        ? "bg-black/5 hover:bg-black/10 text-black/70 hover:text-black"
+                        : "bg-white/5 hover:bg-white/10 text-white/70 hover:text-white"
                   }`}
                 >
                   Dark
@@ -168,10 +168,12 @@ export function AssetPreviewContainer({ imageUrl, title }: AssetPreviewContainer
                 <button 
                   type="button"
                   onClick={() => setBgMode("white")}
-                  className={`px-2.5 py-1 rounded-md text-[9px] font-bold uppercase transition-all ${
+                  className={`px-3 py-1.5 rounded-md text-[9px] font-bold uppercase transition-all ${
                     bgMode === "white" 
-                      ? "bg-amber-500 text-white shadow-lg" 
-                      : "bg-white/5 hover:bg-white/10 text-white"
+                      ? "bg-amber-500 text-white shadow-lg border-none" 
+                      : isLight 
+                        ? "bg-black/5 hover:bg-black/10 text-black/70 hover:text-black"
+                        : "bg-white/5 hover:bg-white/10 text-white/70 hover:text-white"
                   }`}
                 >
                   Light
@@ -180,46 +182,19 @@ export function AssetPreviewContainer({ imageUrl, title }: AssetPreviewContainer
                 <button 
                   type="button"
                   onClick={() => setBgMode("photoshop")}
-                  className={`px-2.5 py-1 rounded-md text-[9px] font-bold uppercase transition-all ${
+                  className={`px-3 py-1.5 rounded-md text-[9px] font-bold uppercase transition-all ${
                     bgMode === "photoshop" 
-                      ? "bg-purple-600 text-white shadow-[0_0_10px_rgba(147,51,234,0.4)]" 
+                      ? "bg-purple-600 text-white shadow-[0_0_10px_rgba(147,51,234,0.4)] border-none" 
                       : isLight 
-                        ? "bg-black/5 hover:bg-black/10 text-black"
-                        : "bg-white/5 hover:bg-white/10 text-white"
+                        ? "bg-black/5 hover:bg-black/10 text-black/70 hover:text-black"
+                        : "bg-white/5 hover:bg-white/10 text-white/70 hover:text-white"
                   }`}
                 >
                   PS Style
                 </button>
               </div>
-              
-              {/* ZOOM button */}
-              <button 
-                type="button"
-                onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: 'Zoomプレビュー' } }))}
-                className={`transition-colors flex items-center justify-center gap-1 uppercase text-[9px] tracking-widest font-black cursor-pointer hover:scale-105 active:scale-95 py-1 self-start sm:self-auto ${
-                  isLight ? "text-black/60 hover:text-black" : "text-white/60 hover:text-white"
-                }`}
-              >
-                <Maximize2 className="w-3.5 h-3.5" /> ZOOM
-              </button>
             </div>
           </div>
-        </div>
-
-        {/* Floating Action (Like) */}
-        <div className="absolute right-6 top-6 z-40">
-          <button 
-            type="button"
-            onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: 'お気に入り登録' } }))}
-            className={`w-12 h-12 glass rounded-2xl border flex items-center justify-center transition-all cursor-pointer ${
-              isLight 
-                ? "border-black/10 text-black/40 hover:text-red-500 hover:bg-black/5" 
-                : "border-white/10 text-white/40 hover:text-red-500 hover:bg-white/5"
-            }`}
-            title="Heart (Coming Soon)"
-          >
-            <Heart className="w-5 h-5" />
-          </button>
         </div>
       </div>
     </div>

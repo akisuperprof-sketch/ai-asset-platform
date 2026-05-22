@@ -14,18 +14,17 @@ import {
 } from "lucide-react";
 import { DownloadButton } from "@/components/download/DownloadButton";
 import { AssetPreviewContainer } from "@/components/assets/AssetPreviewContainer";
-import { ComingSoonButton } from "@/components/ui/ComingSoonButton";
+
 import { Metadata } from "next";
 import Link from "next/link";
-// ...
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const asset = await getAssetById(id);
   
   if (!asset) return { title: "Asset Not Found" };
 
-  const title = `${asset.title} PNG素材（透過）｜商用利用OK｜AssetNinja`;
-  const description = asset.description || `${asset.title}の透過PNG素材です。商用利用可能な日本発の高品質AIアセット。背景切り抜き済みでWebデザインや資料作成にすぐ使えます。`;
+  const title = `${asset.title} | Transparent PNG Asset | 背景透過PNG素材｜商用利用OK (Commercial Use) | AssetNinja`;
+  const description = asset.description || `Download ${asset.title} high-quality transparent PNG asset. 商用利用可能な日本発のプレミアム素材。背景切り抜き済みでWebデザインや資料作成にすぐ使えます。Commercial use ready, AI-generated illustration.`;
 
   return {
     title,
@@ -33,11 +32,33 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     openGraph: {
       title,
       description,
+      images: [
+        {
+          url: asset.imageUrl,
+          width: 1000,
+          height: 1500, // Pinterest 2:3 aspect ratio recommendation
+          alt: title,
+        }
+      ],
+      type: "article", // Pinterest Rich Pin requires article/product
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
       images: [asset.imageUrl],
-      type: "website",
     },
     alternates: {
-      canonical: `https://assetninja.jp/items/${id}`
+      canonical: `https://assetninja.jp/items/${id}`,
+      languages: {
+        "ja": `https://assetninja.jp/items/${id}`,
+        "en": `https://assetninja.jp/items/${id}`,
+      }
+    },
+    other: {
+      "pinterest:card": "summary_large_image",
+      "pinterest:title": title,
+      "pinterest:description": description
     }
   };
 }
@@ -202,13 +223,6 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             {/* Action Buttons */}
             <div className="space-y-4">
               <DownloadButton assetId={asset.id} title={asset.title} />
-              <ComingSoonButton 
-                feature="コレクション追加"
-                className="w-full h-16 glass rounded-[20px] flex items-center justify-center gap-3 text-white/50 font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-white/10 transition-all border-white/5 opacity-80"
-              >
-                <Bookmark className="w-4 h-4" />
-                コレクションに追加
-              </ComingSoonButton>
             </div>
 
             {/* Rights Clearance Box */}
@@ -218,7 +232,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-ai-cyan">Rights-Clear PNG</h4>
               </div>
               <p className="text-[11px] text-secondary leading-relaxed font-medium">
-                このアセットはAssetNinja AIによって生成され、商用プロジェクトでの自由な利用が保証されています。
+                このアセットはAssetNinjaによって精密に透過処理されており、商用プロジェクトでの自由な利用が完全に保証されています。
               </p>
             </div>
           </div>
@@ -241,8 +255,23 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               ))}
           </div>
         </div>
-      </main>
 
+        {/* Trending / Recently Added Section */}
+        <div className="mt-20">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-black">急上昇・最新の素材</h2>
+          </div>
+          <div className="grid grid-cols-12 gap-6">
+            {allAssets
+              .filter(a => a.id !== asset.id)
+              .sort((a, b) => new Date(b.publishedAt || 0).getTime() - new Date(a.publishedAt || 0).getTime())
+              .slice(0, 4)
+              .map((recentAsset) => (
+                <AssetCard key={recentAsset.id} asset={recentAsset} className="col-span-12 sm:col-span-6 md:col-span-3" />
+              ))}
+          </div>
+        </div>
+      </main>
 
       {/* JSON-LD Structured Data */}
       <script
@@ -259,7 +288,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               "name": "AssetNinja"
             },
             "description": asset.description || `${asset.title}の高品質な背景透過PNG素材です。`,
-            "name": `${asset.title}の透過PNG素材`
+            "name": `${asset.title}の透過PNG素材 | Transparent PNG Asset`
           })
         }}
       />
@@ -287,6 +316,61 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 "position": 3,
                 "name": asset.title,
                 "item": `https://assetninja.jp/items/${id}`
+              }
+            ]
+          })
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            "name": `How to download and use ${asset.title} PNG asset`,
+            "description": `Step-by-step guide to download and use the transparent PNG asset "${asset.title}" for commercial projects.`,
+            "step": [
+              {
+                "@type": "HowToStep",
+                "name": "Download the PNG",
+                "text": "Click the 'Free Download / 無料ダウンロード' button on the asset page. The image will be downloaded as a high-resolution PNG file with a transparent background."
+              },
+              {
+                "@type": "HowToStep",
+                "name": "Import to Design Tool",
+                "text": "Drag and drop the downloaded PNG file into your favorite design tool like Figma, Canva, Photoshop, or PowerPoint."
+              },
+              {
+                "@type": "HowToStep",
+                "name": "Use in your project",
+                "text": "Since the background is fully transparent, you can place the asset over any color or background in your commercial or personal project."
+              }
+            ]
+          })
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": `Is "${asset.title}" free for commercial use? (商用利用は無料ですか？)`,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, all assets on AssetNinja, including this one, are completely free for both personal and commercial use without attribution. (はい、AssetNinjaの素材はすべて商用利用含めて完全無料でご利用いただけます。)"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": `Does the PNG have a transparent background? (背景は透過されていますか？)`,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, the background has been completely removed with AI, providing a clean transparent PNG ready to drop into any design. (はい、AIによって完全に背景が除去された綺麗な透過PNG画像としてダウンロードされます。)"
+                }
               }
             ]
           })

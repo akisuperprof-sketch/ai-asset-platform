@@ -1,0 +1,602 @@
+[
+  {
+    "timestamp": "2026-05-22T11:30:31.595213",
+    "category": "sakura",
+    "keyword": "舞い散る桜の花びら",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (b315f912-ae31-4f6e-aa0b-3d9dfecf12ae, null, 伝統的舞い散る桜の花びら特選ゴールド #36, AI技術で生成され、完全な切り抜き・背景透過..., sakura, {AI生成素材,桜,sakura,商用利用可能,ai-generated,premi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., sakura/sakura-5d61a927-036-863.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:30:31.690856+00, 2026-05-22 02:30:31.690856+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:30:34.902529",
+    "category": "sakura",
+    "keyword": "舞い散る桜の花びら",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (ccea448c-7968-4a15-b61f-ce5e9626f979, null, モダン和風舞い散る桜の花びらプレミアム #38, AI技術で生成され、完全な切り抜き・背景透過..., sakura, {AI生成素材,桜,sakura,商用利用可能,ai-generated,premi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., sakura/sakura-5d61a927-038-179.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:30:35.000487+00, 2026-05-22 02:30:35.000487+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:30:36.685551",
+    "category": "sakura",
+    "keyword": "桜のブーケ",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (81dc1df2-21f0-4b33-8b9e-5452b022c29e, null, 黄金の桜のブーケ伝統工芸品仕様 #39, AI技術で生成され、完全な切り抜き・背景透過..., sakura, {AI生成素材,桜,sakura,商用利用可能,ai-generated,premi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., sakura/sakura-7934260c-039-408.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:30:36.779844+00, 2026-05-22 02:30:36.779844+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:30:38.519214",
+    "category": "sakura",
+    "keyword": "満開の桜の枝",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (a711f9ba-3dc4-4606-a3dc-4583e416f8e5, null, プレミアム満開の桜の枝4K切り抜きカット #40, AI技術で生成され、完全な切り抜き・背景透過..., sakura, {AI生成素材,sakura,桜,sakura-76309359,商用利用可能,ai..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., sakura/sakura-76309359-040-906.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:30:38.614512+00, 2026-05-22 02:30:38.614512+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:30:44.501688",
+    "category": "japanese-background",
+    "keyword": "障子の背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (53c8ca6d-91f4-4e1d-ae57-f97a7ca971a6, null, 特選障子の背景白銀仕立て #2, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,asset-e2487d37,japanese-background,商用利用可..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-e2487d37-002-904.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:30:44.598601+00, 2026-05-22 02:30:44.598601+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:30:46.294917",
+    "category": "japanese-background",
+    "keyword": "和紙のテクスチャ背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (0a167978-7fc0-4ac8-8143-f93b20ca2e75, null, 伝統的和紙のテクスチャ背景プレミアム #3, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-1fa4b373-003-700.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:30:46.38907+00, 2026-05-22 02:30:46.38907+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:30:48.159186",
+    "category": "japanese-background",
+    "keyword": "和風の水彩ぼかし背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (c48a4bd8-cee7-4b27-87f4-f22786aa74ff, null, 雅な和風の水彩ぼかし背景伝統工芸品仕様 #4, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-ddd9b243-004-555.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:30:48.255295+00, 2026-05-22 02:30:48.255295+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:30:50.006326",
+    "category": "japanese-background",
+    "keyword": "和室の畳背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (b5e65ece-27f2-454b-8fff-29e25df40807, null, モダン和風和室の畳背景4K切り抜きカット #5, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,和室の畳背景,japanese-background,商用利..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-534d4ca0-005-300.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:30:50.090282+00, 2026-05-22 02:30:50.090282+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:30:51.914315",
+    "category": "japanese-background",
+    "keyword": "墨汁の筆文字エフェクト",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (3f2d2101-d98a-4de0-b18e-8c8d08e90e18, null, 黄金の墨汁の筆文字エフェクト #6, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,墨汁の筆文字エフェク..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-8e84f8d5-006-489.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:30:52.009075+00, 2026-05-22 02:30:52.009075+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:30:53.829149",
+    "category": "japanese-background",
+    "keyword": "竹林の背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (515f38a2-eb69-4db1-b06f-3cfd4c6c57cd, null, プレミアム竹林の背景 (背景透過アセット) #7, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-9d108cd5-007-185.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:30:53.920664+00, 2026-05-22 02:30:53.920664+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:30:55.821479",
+    "category": "japanese-background",
+    "keyword": "金屏風の背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (ca2b499f-831c-4861-ac52-c375c886f9ce, null, 本格金屏風の背景特選ゴールド #8, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-e270054a-008-605.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:30:55.917969+00, 2026-05-22 02:30:55.917969+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:30:57.677898",
+    "category": "japanese-background",
+    "keyword": "金屏風の背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (5a7b6124-4071-491c-a0bc-83ba4f2940bf, null, AI極小ノイズ金屏風の背景白銀仕立て #9, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-e270054a-009-771.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:30:57.773774+00, 2026-05-22 02:30:57.773774+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:01.087538",
+    "category": "japanese-background",
+    "keyword": "金屏風の背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (7157b387-d3aa-4325-bcc6-b930f9c0773d, null, 特製デラックス金屏風の背景伝統工芸品仕様 #11, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-e270054a-011-638.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:01.184627+00, 2026-05-22 02:31:01.184627+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:02.995504",
+    "category": "japanese-background",
+    "keyword": "枯山水の砂紋背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (8d94a5dd-ff0e-4ff3-b174-9d5d1ecd48e5, null, 極上枯山水の砂紋背景4K切り抜きカット #12, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {asset-352299e0,ai-generated,japanese-background,商用利用可..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-352299e0-012-636.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:03.093067+00, 2026-05-22 02:31:03.093067+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:04.819785",
+    "category": "japanese-background",
+    "keyword": "和室の畳背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (6db2bda7-45ee-43c2-a32c-ae07d5f9eb6c, null, 特選和室の畳背景 #13, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,和室の畳背景,japanese-background,商用利..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-534d4ca0-013-917.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:04.915177+00, 2026-05-22 02:31:04.915177+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:06.592045",
+    "category": "japanese-background",
+    "keyword": "和室の畳背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (5e45eb61-77ab-4018-a706-95278c84afa9, null, 伝統的和室の畳背景 (背景透過アセット) #14, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,和室の畳背景,japanese-background,商用利..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-534d4ca0-014-389.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:06.68859+00, 2026-05-22 02:31:06.68859+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:08.485547",
+    "category": "japanese-background",
+    "keyword": "竹林の背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (ec33e17a-6c11-41e9-a992-6128d6761d31, null, 雅な竹林の背景特選ゴールド #15, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-9d108cd5-015-887.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:08.581088+00, 2026-05-22 02:31:08.581088+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:10.280833",
+    "category": "japanese-background",
+    "keyword": "障子の背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (bc532a13-c195-482f-8bbf-644799bcd523, null, モダン和風障子の背景白銀仕立て #16, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,asset-e2487d37,japanese-background,商用利用可..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-e2487d37-016-883.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:10.378654+00, 2026-05-22 02:31:10.378654+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:14.950121",
+    "category": "japanese-background",
+    "keyword": "枯山水の砂紋背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (9355bdb8-6387-406e-b732-a2c79aee6b4a, null, 本格枯山水の砂紋背景4K切り抜きカット #19, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {asset-352299e0,ai-generated,japanese-background,商用利用可..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-352299e0-019-936.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:15.045316+00, 2026-05-22 02:31:15.045316+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:16.825712",
+    "category": "japanese-background",
+    "keyword": "墨汁の筆文字エフェクト",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (1712aa8f-4d66-4614-8a23-b281efdaf9ab, null, AI極小ノイズ墨汁の筆文字エフェクト #20, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,墨汁の筆文字エフェク..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-8e84f8d5-020-725.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:16.902178+00, 2026-05-22 02:31:16.902178+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:18.637818",
+    "category": "japanese-background",
+    "keyword": "枯山水の砂紋背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (42ff2145-6d65-4a78-8fc1-003c9fd3d1a6, null, 本場仕込み枯山水の砂紋背景 (背景透過アセッ..., AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {asset-352299e0,ai-generated,japanese-background,商用利用可..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-352299e0-021-241.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:18.73345+00, 2026-05-22 02:31:18.73345+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:20.383748",
+    "category": "japanese-background",
+    "keyword": "和室の畳背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (200aed8e-92e0-4a8f-b6d7-f756a81e2083, null, 特製デラックス和室の畳背景特選ゴールド #22, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,和室の畳背景,japanese-background,商用利..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-534d4ca0-022-694.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:20.479851+00, 2026-05-22 02:31:20.479851+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:22.179233",
+    "category": "japanese-background",
+    "keyword": "和風の水彩ぼかし背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (150c8c04-24c1-4562-83c3-ad60f1640142, null, 極上和風の水彩ぼかし背景白銀仕立て #23, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-ddd9b243-023-746.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:22.275442+00, 2026-05-22 02:31:22.275442+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:24.022695",
+    "category": "japanese-background",
+    "keyword": "和風の水彩ぼかし背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (b3b20cab-171a-41d3-8ea4-e24c68c7a1b2, null, 特選和風の水彩ぼかし背景プレミアム #24, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-ddd9b243-024-850.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:24.119718+00, 2026-05-22 02:31:24.119718+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:25.735460",
+    "category": "japanese-background",
+    "keyword": "墨汁の筆文字エフェクト",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (2438c034-d05d-4b92-ace5-1da6192c5498, null, 伝統的墨汁の筆文字エフェクト伝統工芸品仕様 ..., AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,墨汁の筆文字エフェク..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-8e84f8d5-025-411.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:25.828824+00, 2026-05-22 02:31:25.828824+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:27.546882",
+    "category": "japanese-background",
+    "keyword": "和風の水彩ぼかし背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (20696fca-abc3-4c3f-93b6-737b7148a2e7, null, 雅な和風の水彩ぼかし背景4K切り抜きカット #26, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-ddd9b243-026-234.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:27.641419+00, 2026-05-22 02:31:27.641419+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:29.298238",
+    "category": "japanese-background",
+    "keyword": "和風の水彩ぼかし背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (bb3a9f70-6398-4896-ba49-edf182132e31, null, モダン和風和風の水彩ぼかし背景 #27, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-ddd9b243-027-333.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:29.388588+00, 2026-05-22 02:31:29.388588+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:31.095569",
+    "category": "japanese-background",
+    "keyword": "金屏風の背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (ba312789-e9f1-40f7-8ebb-7d0e39b22204, null, 黄金の金屏風の背景 (背景透過アセット) #28, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-e270054a-028-637.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:31.180912+00, 2026-05-22 02:31:31.180912+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:32.889597",
+    "category": "japanese-background",
+    "keyword": "金屏風の背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (900e4cc0-6395-45b7-bc4d-30a5761b963d, null, プレミアム金屏風の背景特選ゴールド #29, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-e270054a-029-529.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:32.96289+00, 2026-05-22 02:31:32.96289+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:34.766151",
+    "category": "japanese-background",
+    "keyword": "和紙のテクスチャ背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (10a83617-2d78-4381-adf3-f86e570288c7, null, 本格和紙のテクスチャ背景白銀仕立て #30, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-1fa4b373-030-180.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:34.862771+00, 2026-05-22 02:31:34.862771+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:36.624206",
+    "category": "japanese-background",
+    "keyword": "竹林の背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (a1ea1cb6-28f2-4bee-9a96-1a6a9bf8b1ff, null, AI極小ノイズ竹林の背景プレミアム #31, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-9d108cd5-031-146.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:36.718731+00, 2026-05-22 02:31:36.718731+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:38.424944",
+    "category": "japanese-background",
+    "keyword": "和紙のテクスチャ背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (548e19c5-0077-4cb2-aeb3-08b7561c5ecc, null, 本場仕込み和紙のテクスチャ背景伝統工芸品仕..., AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-1fa4b373-032-668.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:38.521968+00, 2026-05-22 02:31:38.521968+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:40.253613",
+    "category": "japanese-background",
+    "keyword": "和風の雲海背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (b6f876ca-f6d9-4762-b15e-6e9af836889e, null, 特製デラックス和風の雲海背景4K切り抜きカッ..., AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-b5f56d9c-033-171.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:40.340103+00, 2026-05-22 02:31:40.340103+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:43.416803",
+    "category": "japanese-background",
+    "keyword": "障子の背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (67bb8de9-261e-4133-ba0e-9858ae0b6098, null, 特選障子の背景 (背景透過アセット) #35, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,asset-e2487d37,japanese-background,商用利用可..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-e2487d37-035-896.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:43.514156+00, 2026-05-22 02:31:43.514156+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:45.209858",
+    "category": "japanese-background",
+    "keyword": "竹林の背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (e0d8cbd3-8c12-4a80-963d-a79649764327, null, 伝統的竹林の背景特選ゴールド #36, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-9d108cd5-036-618.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:45.305099+00, 2026-05-22 02:31:45.305099+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:48.419280",
+    "category": "japanese-background",
+    "keyword": "和室の畳背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (2f015575-15a7-4cc2-9f3d-6953b04bdd79, null, モダン和風和室の畳背景プレミアム #38, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,和室の畳背景,japanese-background,商用利..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-534d4ca0-038-873.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:48.511102+00, 2026-05-22 02:31:48.511102+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:50.205945",
+    "category": "japanese-background",
+    "keyword": "障子の背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (e680d1f6-df3e-4ca0-b053-49131bda970a, null, 黄金の障子の背景伝統工芸品仕様 #39, AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,asset-e2487d37,japanese-background,商用利用可..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-e2487d37-039-391.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:50.302426+00, 2026-05-22 02:31:50.302426+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:51.965775",
+    "category": "japanese-background",
+    "keyword": "和紙のテクスチャ背景",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (f91fbbbb-dd85-4d08-9063-83527a18604e, null, プレミアム和紙のテクスチャ背景4K切り抜きカ..., AI技術で生成され、完全な切り抜き・背景透過..., japanese-background, {ai-generated,japanese-background,商用利用可能,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japanese-background/japanese-background-1fa4b373-040-426.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:52.062102+00, 2026-05-22 02:31:52.062102+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:56.121734",
+    "category": "japan-icon",
+    "keyword": "手裏剣のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (81fc47d3-0900-48a9-aa35-7c8e1592eb31, null, 極上手裏剣のアイコン特選ゴールド #1, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,手裏剣のアイコン,AI生成素材,背..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-77e176e9-001-133.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:56.192832+00, 2026-05-22 02:31:56.192832+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:57.930478",
+    "category": "japan-icon",
+    "keyword": "折り鶴のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (0e449750-0758-44f1-bfef-e7b931d1ebf5, null, 特選折り鶴のアイコン白銀仕立て #2, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,asset-0e1c0801,AI生成素材,背景透過,a..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-0e1c0801-002-644.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:58.020542+00, 2026-05-22 02:31:58.020542+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:31:59.793294",
+    "category": "japan-icon",
+    "keyword": "和風の印鑑アイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (3bde377f-4fc2-4aab-9f96-e5de25ad70d1, null, 伝統的和風の印鑑アイコンプレミアム #3, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,AI生成素材,asset-436e547a,背景透過,a..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-436e547a-003-105.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:31:59.889784+00, 2026-05-22 02:31:59.889784+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:01.575575",
+    "category": "japan-icon",
+    "keyword": "日本の硬貨アイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (29b647de-3c11-4165-9eae-eee203585b4c, null, 雅な日本の硬貨アイコン伝統工芸品仕様 #4, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,AI生成素材,背景透過,ai-generated,ass..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-abc9aabd-004-938.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:01.642905+00, 2026-05-22 02:32:01.642905+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:03.389809",
+    "category": "japan-icon",
+    "keyword": "和風の印鑑アイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (fe7f3fdb-f380-4a34-a450-0780d96a8574, null, モダン和風和風の印鑑アイコン4K切り抜きカッ..., AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,AI生成素材,asset-436e547a,背景透過,a..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-436e547a-005-399.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:03.476705+00, 2026-05-22 02:32:03.476705+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:05.174268",
+    "category": "japan-icon",
+    "keyword": "和傘のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (9a702679-5d6a-4326-ab40-688055acccf3, null, 黄金の和傘のアイコン #6, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {asset-b27daf28,商用利用可能,和傘のアイコン,AI生..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-b27daf28-006-123.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:05.264579+00, 2026-05-22 02:32:05.264579+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:08.495430",
+    "category": "japan-icon",
+    "keyword": "初心者マーク",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (9f464618-8b9d-4098-b659-170b78f282af, null, 本格初心者マーク特選ゴールド #8, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,AI生成素材,背景透過,ai-generated,初..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-7659ca5e-008-671.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:08.542439+00, 2026-05-22 02:32:08.542439+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:10.793109",
+    "category": "japan-icon",
+    "keyword": "家紋のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (35bc3485-6a91-4110-955d-2982269d5536, null, AI極小ノイズ家紋のアイコン白銀仕立て #9, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,家紋のアイコン,AI生成素材,背景..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-8e0efa0a-009-216.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:10.681635+00, 2026-05-22 02:32:10.681635+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:12.904802",
+    "category": "japan-icon",
+    "keyword": "和傘のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (5ecaf4cd-5d11-42ff-9354-ca5e7b2da4c5, null, 本場仕込み和傘のアイコンプレミアム #10, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {asset-b27daf28,商用利用可能,和傘のアイコン,AI生..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-b27daf28-010-902.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:13.001871+00, 2026-05-22 02:32:13.001871+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:14.728218",
+    "category": "japan-icon",
+    "keyword": "和風の印鑑アイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (12b3e778-bdb5-41c4-9a67-63da70776099, null, 特製デラックス和風の印鑑アイコン伝統工芸品..., AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,AI生成素材,asset-436e547a,背景透過,a..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-436e547a-011-689.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:14.821876+00, 2026-05-22 02:32:14.821876+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:16.494265",
+    "category": "japan-icon",
+    "keyword": "折り鶴のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (614ab534-9033-4c4b-a22b-d9cf814499fd, null, 極上折り鶴のアイコン4K切り抜きカット #12, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,asset-0e1c0801,AI生成素材,背景透過,a..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-0e1c0801-012-350.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:16.591381+00, 2026-05-22 02:32:16.591381+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:18.312125",
+    "category": "japan-icon",
+    "keyword": "初心者マーク",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (05ff5fa6-8bfc-437b-a5c4-44e300fd9332, null, 特選初心者マーク #13, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,AI生成素材,背景透過,ai-generated,初..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-7659ca5e-013-243.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:18.408214+00, 2026-05-22 02:32:18.408214+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:20.228596",
+    "category": "japan-icon",
+    "keyword": "扇子のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (8297a730-3388-4cd6-a742-55e3ac30c650, null, 伝統的扇子のアイコン (背景透過アセット) #14, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,asset-ab986459,AI生成素材,背景透過,a..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-ab986459-014-279.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:20.324729+00, 2026-05-22 02:32:20.324729+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:22.098934",
+    "category": "japan-icon",
+    "keyword": "手裏剣のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (9a737de7-53c1-43eb-94f1-af8d2fc92489, null, 雅な手裏剣のアイコン特選ゴールド #15, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,手裏剣のアイコン,AI生成素材,背..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-77e176e9-015-187.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:22.19402+00, 2026-05-22 02:32:22.19402+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:23.982409",
+    "category": "japan-icon",
+    "keyword": "折り鶴のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (8a470bbb-9b7d-484a-a868-d0da5c82e2ec, null, モダン和風折り鶴のアイコン白銀仕立て #16, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,asset-0e1c0801,AI生成素材,背景透過,a..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-0e1c0801-016-380.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:24.071066+00, 2026-05-22 02:32:24.071066+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:27.282241",
+    "category": "japan-icon",
+    "keyword": "扇子のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (60557efd-d913-4fb1-afbd-65100bb5aee7, null, プレミアム扇子のアイコン伝統工芸品仕様 #18, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,asset-ab986459,AI生成素材,背景透過,a..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-ab986459-018-892.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:27.348537+00, 2026-05-22 02:32:27.348537+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:29.080073",
+    "category": "japan-icon",
+    "keyword": "折り鶴のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (fce2bbf5-7f48-41df-b8ad-ac7e7b0a0241, null, 本格折り鶴のアイコン4K切り抜きカット #19, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,asset-0e1c0801,AI生成素材,背景透過,a..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-0e1c0801-019-250.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:29.175315+00, 2026-05-22 02:32:29.175315+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:30.927304",
+    "category": "japan-icon",
+    "keyword": "日本の硬貨アイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (cfd6e4ab-a85e-4b2a-b3ab-c2432ee98d9f, null, AI極小ノイズ日本の硬貨アイコン #20, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,AI生成素材,背景透過,ai-generated,ass..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-abc9aabd-020-438.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:30.951049+00, 2026-05-22 02:32:30.951049+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:34.182614",
+    "category": "japan-icon",
+    "keyword": "手裏剣のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (c99de3d8-fa20-4f3e-a459-d06a79b62b4c, null, 特製デラックス手裏剣のアイコン特選ゴールド ..., AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,手裏剣のアイコン,AI生成素材,背..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-77e176e9-022-832.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:34.261252+00, 2026-05-22 02:32:34.261252+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:35.981589",
+    "category": "japan-icon",
+    "keyword": "扇子のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (abc54167-14bf-4379-8e86-5b61c33682d5, null, 極上扇子のアイコン白銀仕立て #23, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,asset-ab986459,AI生成素材,背景透過,a..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-ab986459-023-187.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:36.055228+00, 2026-05-22 02:32:36.055228+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:38.075718",
+    "category": "japan-icon",
+    "keyword": "和風の印鑑アイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (271261c4-6855-4be0-aa8f-b4fd338538aa, null, 特選和風の印鑑アイコンプレミアム #24, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,AI生成素材,asset-436e547a,背景透過,a..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-436e547a-024-557.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:38.162361+00, 2026-05-22 02:32:38.162361+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:41.233758",
+    "category": "japan-icon",
+    "keyword": "日本の硬貨アイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (05378fd8-3eb9-44ad-b40c-2fa3b1be32b4, null, 雅な日本の硬貨アイコン4K切り抜きカット #26, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,AI生成素材,背景透過,ai-generated,ass..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-abc9aabd-026-426.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:41.329704+00, 2026-05-22 02:32:41.329704+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:42.973721",
+    "category": "japan-icon",
+    "keyword": "こけしのアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (2b33c5da-abcb-489a-b6c3-a64c4eac22d3, null, モダン和風こけしのアイコン #27, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,asset-833534aa,AI生成素材,背景透過,..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-833534aa-027-739.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:43.070904+00, 2026-05-22 02:32:43.070904+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:46.752783",
+    "category": "japan-icon",
+    "keyword": "こけしのアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (83167519-c1c3-4bea-82c9-d9e9ce19ebb8, null, プレミアムこけしのアイコン特選ゴールド #29, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,asset-833534aa,AI生成素材,背景透過,..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-833534aa-029-203.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:46.848167+00, 2026-05-22 02:32:46.848167+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:48.519941",
+    "category": "japan-icon",
+    "keyword": "扇子のアイコン",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (b735e2f7-ae6a-4d42-bcd5-2d244563c286, null, 本格扇子のアイコン白銀仕立て #30, AI技術で生成され、完全な切り抜き・背景透過..., japan-icon, {商用利用可能,asset-ab986459,AI生成素材,背景透過,a..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan-icon/japan-icon-ab986459-030-101.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:48.609206+00, 2026-05-22 02:32:48.609206+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:52.706626",
+    "category": "speech-bubble",
+    "keyword": "シンプルな角丸吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (b522b89a-52a6-47e7-8b40-659786517f5a, null, 極上シンプルな角丸吹き出し特選ゴールド #1, AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,シンプルな角丸吹き出し,speech-bubble,..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-39337b6f-001-249.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:52.795838+00, 2026-05-22 02:32:52.795838+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:57.418819",
+    "category": "speech-bubble",
+    "keyword": "サイバーパンク風吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (bc240e0e-fd67-4e68-bb94-46d66940d7c4, null, 雅なサイバーパンク風吹き出し伝統工芸品仕様 ..., AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,speech-bubble-cb08468c,speech-bubble,商用利用..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-cb08468c-004-824.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:57.515062+00, 2026-05-22 02:32:57.515062+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:32:59.284343",
+    "category": "speech-bubble",
+    "keyword": "和紙テクスチャの吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (6384da53-7a03-476b-aec2-a793c86aa733, null, モダン和風和紙テクスチャの吹き出し4K切り抜..., AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,speech-bubble,商用利用可能,premium,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-37d0e0c3-005-411.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:32:59.325506+00, 2026-05-22 02:32:59.325506+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:01.179124",
+    "category": "speech-bubble",
+    "keyword": "もこもこポップな吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (b6a9ea24-0987-44ba-a1aa-48bb4c9c8985, null, 黄金のもこもこポップな吹き出し #6, AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,speech-bubble,商用利用可能,premium,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-e377492d-006-852.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:01.271739+00, 2026-05-22 02:33:01.271739+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:02.915647",
+    "category": "speech-bubble",
+    "keyword": "手書き風の吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (13c50ee3-f972-48b7-a100-42710a5f9eab, null, プレミアム手書き風の吹き出し (背景透過アセ..., AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,speech-bubble,商用利用可能,premium,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-723fc7f9-007-611.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:03.003733+00, 2026-05-22 02:33:03.003733+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:04.699881",
+    "category": "speech-bubble",
+    "keyword": "巻物風の吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (353e7d63-49d9-48b7-8f8e-d9c7d3eb7054, null, 本格巻物風の吹き出し特選ゴールド #8, AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,speech-bubble,背景透過,商用利用可能,prem..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-e83d6b4c-008-233.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:04.796863+00, 2026-05-22 02:33:04.796863+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:06.480728",
+    "category": "speech-bubble",
+    "keyword": "巻物風の吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (19ab6789-7898-46b2-a229-1a6bf51c3063, null, AI極小ノイズ巻物風の吹き出し白銀仕立て #9, AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,speech-bubble,背景透過,商用利用可能,prem..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-e83d6b4c-009-801.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:06.566778+00, 2026-05-22 02:33:06.566778+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:08.243204",
+    "category": "speech-bubble",
+    "keyword": "和紙テクスチャの吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (2ecb1f0e-4e83-4789-b203-964fabcdaf88, null, 本場仕込み和紙テクスチャの吹き出しプレミア..., AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,speech-bubble,商用利用可能,premium,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-37d0e0c3-010-281.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:08.341759+00, 2026-05-22 02:33:08.341759+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:10.115950",
+    "category": "speech-bubble",
+    "keyword": "手書き風の吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (6103c7cb-4f8b-41cd-9d69-a4b89bbf274b, null, 特製デラックス手書き風の吹き出し伝統工芸品..., AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,speech-bubble,商用利用可能,premium,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-723fc7f9-011-907.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:10.211195+00, 2026-05-22 02:33:10.211195+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:11.900960",
+    "category": "speech-bubble",
+    "keyword": "手書き風の吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (08a61c79-b3b1-4f8f-9904-1d46be6782ea, null, 極上手書き風の吹き出し4K切り抜きカット #12, AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,speech-bubble,商用利用可能,premium,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-723fc7f9-012-482.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:11.998512+00, 2026-05-22 02:33:11.998512+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:13.681875",
+    "category": "speech-bubble",
+    "keyword": "シンプルな角丸吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (b70c8827-947f-4b19-a043-3e69c2de367d, null, 特選シンプルな角丸吹き出し #13, AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,シンプルな角丸吹き出し,speech-bubble,..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-39337b6f-013-552.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:13.772455+00, 2026-05-22 02:33:13.772455+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:15.480799",
+    "category": "speech-bubble",
+    "keyword": "和風の筆文字風吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (454cfdd2-cb65-4d54-b0eb-416eb8be4316, null, 伝統的和風の筆文字風吹き出し (背景透過アセ..., AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,speech-bubble-c172906c,和風の筆文字風吹き..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-c172906c-014-750.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:15.558033+00, 2026-05-22 02:33:15.558033+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:17.209791",
+    "category": "speech-bubble",
+    "keyword": "ネオン輝く吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (9ad0e4c6-d7fb-4c5c-9837-888a33fc4a3d, null, 雅なネオン輝く吹き出し特選ゴールド #15, AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,ネオン輝く吹き出し,speech-bubble,商用..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-b3b455f1-015-377.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:17.3071+00, 2026-05-22 02:33:17.3071+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:19.024270",
+    "category": "speech-bubble",
+    "keyword": "和風の筆文字風吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (c569b942-b928-49e0-a72e-208755f0eb99, null, モダン和風和風の筆文字風吹き出し白銀仕立て ..., AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,speech-bubble-c172906c,和風の筆文字風吹き..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-c172906c-016-427.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:19.119913+00, 2026-05-22 02:33:19.119913+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:20.797518",
+    "category": "speech-bubble",
+    "keyword": "もこもこポップな吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (854b6179-5d48-4cc8-a0e9-cef71690dfe1, null, 黄金のもこもこポップな吹き出しプレミアム #17, AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,speech-bubble,商用利用可能,premium,プレミ..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-e377492d-017-900.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:20.890447+00, 2026-05-22 02:33:20.890447+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:24.241939",
+    "category": "speech-bubble",
+    "keyword": "桜の花びら型吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (02ef1e0b-efe6-47e8-94c9-77a1e73fd008, null, 本格桜の花びら型吹き出し4K切り抜きカット #19, AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {sakura-697fe8ee,吹き出し,speech-bubble,商用利用可能,..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-697fe8ee-019-696.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:24.338567+00, 2026-05-22 02:33:24.338567+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:26.083684",
+    "category": "speech-bubble",
+    "keyword": "ネオン輝く吹き出し",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (d1fbc504-cb85-4d10-8ae2-7e3450a69a26, null, AI極小ノイズネオン輝く吹き出し #20, AI技術で生成され、完全な切り抜き・背景透過..., speech-bubble, {吹き出し,ネオン輝く吹き出し,speech-bubble,商用..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., speech-bubble/speech-bubble-b3b455f1-020-828.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:26.179234+00, 2026-05-22 02:33:26.179234+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:31.701143",
+    "category": "japan",
+    "keyword": "縁起の良いだるま人形",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (3421bec6-fc95-48d5-8d56-245f49babff6, null, 特選縁起の良いだるま人形白銀仕立て #2, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,ai-generat..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-4c83681e-002-478.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:31.796475+00, 2026-05-22 02:33:31.796475+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:34.982259",
+    "category": "japan",
+    "keyword": "手裏剣",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (cde85488-ea4b-4ab4-9bd5-836e69ef7af8, null, 雅な手裏剣伝統工芸品仕様 #4, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,japan,asset-293f1eb0,和の..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-293f1eb0-004-932.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:35.07903+00, 2026-05-22 02:33:35.07903+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:36.792063",
+    "category": "japan",
+    "keyword": "木造の神社本殿",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (0eaef192-39c3-4078-8179-ed7edcc10fa0, null, モダン和風木造の神社本殿4K切り抜きカット #5, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,木造の..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-4836ab58-005-912.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:36.888587+00, 2026-05-22 02:33:36.888587+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:40.005645",
+    "category": "japan",
+    "keyword": "富士山",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (e43f41cc-59ef-41fb-af20-cd68062bdff0, null, プレミアム富士山 (背景透過アセット) #7, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,ai-generat..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-52a6ad27-007-464.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:40.093881+00, 2026-05-22 02:33:40.093881+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:43.279369",
+    "category": "japan",
+    "keyword": "招き猫",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (2fdfbf30-6488-496d-b9da-915ba71c20b5, null, AI極小ノイズ招き猫白銀仕立て #9, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,ai-generat..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-24a4b680-009-754.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:43.376186+00, 2026-05-22 02:33:43.376186+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:45.072386",
+    "category": "japan",
+    "keyword": "畳",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (9a5d1fd0-4116-452d-aed4-c335b6767bc9, null, 本場仕込み畳プレミアム #10, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,ai-generat..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-c3bbb347-010-288.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:45.169363+00, 2026-05-22 02:33:45.169363+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:48.273849",
+    "category": "japan",
+    "keyword": "朱塗りの鳥居",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (c658e32b-2515-43de-b25c-53f9c08e928b, null, 極上朱塗りの鳥居4K切り抜きカット #12, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,asset-76e6..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-76e69eba-012-104.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:48.368378+00, 2026-05-22 02:33:48.368378+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:50.010519",
+    "category": "japan",
+    "keyword": "朱塗りの鳥居",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (dabd5175-eade-4546-90fd-2c3104490b8c, null, 特選朱塗りの鳥居 #13, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,asset-76e6..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-76e69eba-013-214.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:50.105741+00, 2026-05-22 02:33:50.105741+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:54.641183",
+    "category": "japan",
+    "keyword": "朱塗りの鳥居",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (d26b561d-bb15-478c-95ec-2b4a8980572e, null, モダン和風朱塗りの鳥居白銀仕立て #16, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,asset-76e6..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-76e69eba-016-941.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:54.737683+00, 2026-05-22 02:33:54.737683+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:56.475889",
+    "category": "japan",
+    "keyword": "木造の神社本殿",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (e65235db-5055-4269-86e4-862462576593, null, 黄金の木造の神社本殿プレミアム #17, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,木造の..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-4836ab58-017-954.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:56.571736+00, 2026-05-22 02:33:56.571736+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:33:59.719441",
+    "category": "japan",
+    "keyword": "お守り",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (95e60e41-ed6d-4e6b-a730-759f3b7c83a0, null, 本格お守り4K切り抜きカット #19, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,ai-generat..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-13d47e81-019-363.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:33:59.813746+00, 2026-05-22 02:33:59.813746+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:34:01.547454",
+    "category": "japan",
+    "keyword": "朱塗りの鳥居",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (dc568807-148c-4124-bdd5-42c12e06c82d, null, AI極小ノイズ朱塗りの鳥居 #20, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,asset-76e6..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-76e69eba-020-873.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:34:01.642022+00, 2026-05-22 02:34:01.642022+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:34:04.920267",
+    "category": "japan",
+    "keyword": "朱塗りの鳥居",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (e3f52f59-2bbb-4ca7-8972-615950fb55a7, null, 特製デラックス朱塗りの鳥居特選ゴールド #22, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,asset-76e6..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-76e69eba-022-682.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:34:05.014243+00, 2026-05-22 02:34:05.014243+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:34:06.687136",
+    "category": "japan",
+    "keyword": "赤提灯",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (e53f190b-24de-4acc-b512-82acc64b69ff, null, 極上赤提灯白銀仕立て #23, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,赤提灯,..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-32ce6437-023-448.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:34:06.777495+00, 2026-05-22 02:34:06.777495+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:34:10.370323",
+    "category": "japan",
+    "keyword": "手裏剣",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (e5a7e8b4-24d5-4c64-be76-eb1a47edb2cf, null, 伝統的手裏剣伝統工芸品仕様 #25, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,japan,asset-293f1eb0,和の..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-293f1eb0-025-492.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:34:10.46762+00, 2026-05-22 02:34:10.46762+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:34:12.109472",
+    "category": "japan",
+    "keyword": "招き猫",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (c61147d9-38e7-4c6e-b2a2-a263f8c90a64, null, 雅な招き猫4K切り抜きカット #26, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,ai-generat..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-24a4b680-026-416.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:34:12.205455+00, 2026-05-22 02:34:12.205455+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:34:14.126808",
+    "category": "japan",
+    "keyword": "縁起の良いだるま人形",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (5d96df83-a9fe-4f45-8c0a-5badf910db04, null, モダン和風縁起の良いだるま人形 #27, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,ai-generat..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-4c83681e-027-685.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:34:14.223295+00, 2026-05-22 02:34:14.223295+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:34:15.935107",
+    "category": "japan",
+    "keyword": "お守り",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (42650334-236a-44d0-b2a5-03d49addc330, null, 黄金のお守り (背景透過アセット) #28, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,ai-generat..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-13d47e81-028-257.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:34:16.029823+00, 2026-05-22 02:34:16.029823+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:34:17.689036",
+    "category": "japan",
+    "keyword": "赤提灯",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (54f0420f-b4bf-44d4-9da3-df124795c692, null, プレミアム赤提灯特選ゴールド #29, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,赤提灯,..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-32ce6437-029-701.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:34:17.785904+00, 2026-05-22 02:34:17.785904+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  },
+  {
+    "timestamp": "2026-05-22T11:34:19.484167",
+    "category": "japan",
+    "keyword": "お祭り提灯",
+    "error": "DB Insert failed, rolled back storage: Database insertion failed completely: Supabase DB insert failed (400): {\"code\":\"23502\",\"details\":\"Failing row contains (fda056ad-5e90-4364-acb3-e843e5f8ae36, null, 本格お祭り提灯白銀仕立て #30, AI技術で生成され、完全な切り抜き・背景透過..., japan, {commercial-use,商用利用可能,和の伝統素材,ai-generat..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., https://jpbjapaozhwahjaardqn.supabase.co/storage/v1/object/publi..., japan/japan-55b7c2a3-030-962.png, 2.8 MB, 1024, 1024, free, t, clean, pending, f, f, f, 0, 2026-05-22 02:34:19.581094+00, 2026-05-22 02:34:19.581094+00, null).\",\"hint\":null,\"message\":\"null value in column \\\"slug\\\" of relation \\\"assets\\\" violates not-null constraint\"}"
+  }
+]

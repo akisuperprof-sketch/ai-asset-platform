@@ -240,7 +240,7 @@ export function HeroSection({
               {/* Huge Unified Title */}
               <h1 className="text-4xl sm:text-5xl lg:text-[2.6rem] xl:text-[3.2rem] font-black text-white leading-[1.0] tracking-tighter drop-shadow-3xl flex flex-col">
                 <span>
-                  AI <span className="inline-block bg-ai-gradient bg-clip-text text-transparent [-webkit-background-clip:text]">ASSETS</span>
+                  TRANSPARENT <span className="inline-block bg-ai-gradient bg-clip-text text-transparent [-webkit-background-clip:text]">ASSETS</span>
                 </span>
                 <span className="text-amber-500/80 font-serif font-light flex items-center gap-2">
                   FROM JAPAN
@@ -251,13 +251,14 @@ export function HeroSection({
               {/* Paragraph Info & Combined Gold Glass Status Card */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-1">
                 <p className="text-[12px] text-secondary leading-relaxed font-semibold max-w-sm">
-                  日本の日常・伝統食・文化・ビジネス・医療シーンの極めて精巧な背景透過PNG素材。
+                  Premium PNG materials for creators.<br/>
+                  高品質な透過PNG素材を、日本から。
                 </p>
                 <div className="gold-glass rounded-xl px-3.5 py-2 text-left relative overflow-hidden shrink-0 border border-amber-500/10">
                   <div className="absolute inset-0 gold-shimmer pointer-events-none" />
                   <div className="text-[9px] font-black text-amber-500/80 uppercase tracking-widest flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 fill-amber-500/10 text-amber-400" />
-                    +{realtimeTodayAdded} ADDED TODAY • AI VERIFIED
+                    +{realtimeTodayAdded} ADDED TODAY • QUALITY VERIFIED
                   </div>
                 </div>
               </div>
@@ -336,7 +337,7 @@ export function HeroSection({
                 <Cpu className="w-3.5 h-3.5 text-ai-cyan animate-pulse" /> CENTRAL SEARCH ENGINE OS
               </span>
               <span className="text-[9px] font-black text-amber-500/80 bg-amber-500/5 border border-amber-500/10 px-3 py-0.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.03)]">
-                {formatCountBadge(realtimeCount)} AI GENERATED TRANSPARENT PNG ASSETS
+                {formatCountBadge(realtimeCount)} PREMIUM TRANSPARENT PNG ASSETS
               </span>
             </div>
 
@@ -591,7 +592,7 @@ export function HeroSection({
             <span className="hidden sm:inline text-white/10">|</span>
             <span className="hover:text-ai-cyan transition-colors uppercase flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5 text-amber-500/80" />
-              AI VERIFIED ASSETS
+              QUALITY VERIFIED ASSETS
             </span>
             <span className="hidden md:inline text-white/10">|</span>
             <span className="flex items-center gap-2 hover:text-white transition-colors">
