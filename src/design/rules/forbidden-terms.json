@@ -1,0 +1,37 @@
+{
+  "generation": [
+    "abstract",
+    "symbol",
+    "icon",
+    "circle",
+    "star",
+    "geometric shape",
+    "blurry",
+    "cropped",
+    "deformed",
+    "low detail",
+    "watercolor",
+    "painting",
+    "text",
+    "logo",
+    "noise",
+    "background",
+    "frame",
+    "fake object",
+    "multiple objects",
+    "cutoff",
+    "gaming",
+    "cheap neon",
+    "oversaturated",
+    "AI generated style"
+  ],
+  "trademark": [
+    "canva", "adobe", "shutterstock", "getty", "pixta",
+    "apple", "google", "toyota", "sony", "microsoft",
+    "amazon", "facebook", "instagram", "disney"
+  ],
+  "nsfw": [
+    "nsfw", "nude", "sexy", "hentai", "porn", "adult",
+    "goregous", "erotic", "violence"
+  ]
+}

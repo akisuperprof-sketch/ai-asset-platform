@@ -138,3 +138,26 @@ npx -y tsx src/scripts/check-env.ts
 
 ---
 © 2026 SUKASHI. All rights reserved.
+
+## Autonomous Generation Engine
+
+To run the autonomous image generation engine (`bin/pipeline.py`), you must set the following API keys in `.env.local` to enable the Layer 4 Commercial Grade QA checks.
+
+```bash
+# Required for Generation and Layer 1-4 QA
+STABILITY_API_KEY="your_stability_api_key_here"
+GEMINI_API_KEY="your_gemini_api_key_here"
+```
+
+Copy the `.env.local.example` file to `.env.local` and fill in the values.
+
+### Safety Commands
+To verify keys without exposing their values in the console:
+```bash
+python3 bin/pipeline.py --env-check
+```
+
+To run a test batch strictly evaluating quality without saving to DB/Storage (Fail-Closed enabled):
+```bash
+python3 bin/pipeline.py --test10 --dry-run
+```

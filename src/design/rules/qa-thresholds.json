@@ -1,0 +1,13 @@
+{
+  "layer4": {
+    "min_quality_score": 90,
+    "min_edge_sharpness_variance": 50.0,
+    "max_white_fringe_rgb": 230,
+    "max_abstract_circularity": 0.85,
+    "min_contour_points": 10,
+    "min_color_stddev": 10.0,
+    "min_solid_ratio": 0.20,
+    "max_solid_ratio": 0.80,
+    "max_phash_diff": 5
+  }
+}

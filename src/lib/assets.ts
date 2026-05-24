@@ -100,7 +100,7 @@ function mapAsset(dbAsset: any): Asset {
   };
 }
 
-export async function getAssets(): Promise<Asset[]> {
+export async function getAssets(limit: number = 100, offset: number = 0): Promise<Asset[]> {
   if (!supabase) {
     console.log("⚠️ [getAssets] Supabase client is not initialized. Returning empty array.");
     return [];
@@ -112,13 +112,13 @@ export async function getAssets(): Promise<Asset[]> {
         .from('assets')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(100)
+        .range(offset, offset + limit - 1)
     );
 
     if (error) throw error;
     if (!data) return [];
 
-    console.log(`📊 [getAssets] Supabase fetch success. Total rows fetched: ${data.length}`);
+    console.log(`📊 [getAssets] Supabase fetch success. Total rows fetched: ${data.length} (Offset: ${offset}, Limit: ${limit})`);
     
     // Filter assets with valid image URLs and log their metadata
     const validData = data.filter((d: any) => {
@@ -131,7 +131,6 @@ export async function getAssets(): Promise<Asset[]> {
 
     const mapped = validData.map((d: any) => {
       const asset = mapAsset(d);
-      console.log(`  - [Live Asset] Slug/ID: ${asset.id} | Title: ${asset.title} | Image: ${asset.imageUrl}`);
       return asset;
     });
 
@@ -162,7 +161,7 @@ export async function getAssetById(id: string): Promise<Asset | null> {
   }
 }
 
-export async function searchAssets(query: string, category: string): Promise<Asset[]> {
+export async function searchAssets(query: string, category: string, limit: number = 100, offset: number = 0): Promise<Asset[]> {
   if (!supabase) {
     console.log("⚠️ [searchAssets] Supabase client is not initialized. Returning empty array.");
     return [];
@@ -182,7 +181,9 @@ export async function searchAssets(query: string, category: string): Promise<Ass
       supabaseQuery = supabaseQuery.or(`title.ilike.%${query}%,description.ilike.%${query}%,tags.cs.{${query}}`);
     }
 
-    const { data, error } = await supabaseQuery.order('created_at', { ascending: false });
+    const { data, error } = await supabaseQuery
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
 
     if (error) throw error;
     if (!data) return [];

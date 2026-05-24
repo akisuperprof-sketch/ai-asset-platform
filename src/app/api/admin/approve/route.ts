@@ -94,21 +94,35 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { assetId, action } = await request.json();
 
-    if (action === "approve_all") {
-      // 一括承認の実行
-      // 1. 全ての pending アセットを取得
+    const body = await request.json();
+    const { assetId, action, ids, confirm } = body;
+
+    // 5. 自動approve禁止: confirm gate
+    if (action === "bulk_approve" || action === "approve_single") {
+      if (confirm !== true) {
+        return NextResponse.json({ success: false, error: "Manual confirmation gate: 'confirm: true' is required." }, { status: 403 });
+      }
+    }
+
+
+    if (action === "bulk_approve") {
+      if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        return NextResponse.json({ success: false, error: "ids array is required." }, { status: 400 });
+      }
+
+      // 1. Fetch requested pending assets
       const { data: pendingAssets, error: fetchError } = await adminClient
         .from("assets")
         .select("*")
+        .in("id", ids)
         .eq("review_status", "pending");
 
       if (fetchError) throw fetchError;
       if (!pendingAssets || pendingAssets.length === 0) {
         return NextResponse.json({
           success: true,
-          message: "承認待ちのアセットはありません。",
+          message: "承認待ちのアセットは見つかりませんでした。",
           approvedCount: 0,
           skippedCount: 0,
           details: []
@@ -118,7 +132,7 @@ export async function POST(request: Request) {
       const approvedIds: string[] = [];
       const skippedDetails: { id: string; title: string; reason: string }[] = [];
 
-      // 2. 各アセットの安全監査を行い、パスした物だけを承認対象にする
+      // 2. Audit each asset
       for (const asset of pendingAssets) {
         const auditResult = await auditAssetBeforeApproval(asset);
         if (auditResult.safe) {
@@ -150,6 +164,23 @@ export async function POST(request: Request) {
         approvedCount: approvedIds.length,
         skippedCount: skippedDetails.length,
         skippedDetails
+      });
+
+    } else if (action === "bulk_reject") {
+      if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        return NextResponse.json({ success: false, error: "ids array is required." }, { status: 400 });
+      }
+
+      const { error: updateError } = await adminClient
+        .from("assets")
+        .update({ review_status: "rejected" })
+        .in("id", ids);
+
+      if (updateError) throw updateError;
+
+      return NextResponse.json({
+        success: true,
+        message: `${ids.length} 件のアセットを一括却下しました。`
       });
 
     } else if (action === "approve_single") {

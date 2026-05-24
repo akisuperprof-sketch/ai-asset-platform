@@ -3,6 +3,7 @@ import { AssetCard } from "@/components/assets/AssetCard";
 import { ChevronLeft, Filter, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { searchAssets } from "@/lib/assets";
+import { LoadMoreGrid } from "@/components/assets/LoadMoreGrid";
 import { Metadata } from "next";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -26,6 +27,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         "ja": `https://assetninja.jp/category/${encodeURIComponent(categoryName)}`,
         "en": `https://assetninja.jp/category/${encodeURIComponent(categoryName)}`,
       }
+    },
+    // Pinterest specific meta configurations
+    other: {
+      "pinterest:card": "summary_large_image",
+      "pinterest:title": title,
+      "pinterest:description": description
     }
   };
 }
@@ -34,7 +41,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const categoryName = decodeURIComponent(slug);
   
-  const assets = await searchAssets("", categoryName);
+  const limit = 24;
+  const assets = await searchAssets("", categoryName, limit, 0);
 
   const collectionJsonLd = {
     "@context": "https://schema.org",
@@ -82,7 +90,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         "name": `Are the ${categoryName} PNG assets free for commercial use? (商用利用は無料ですか？)`,
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, all assets in this category are completely free for both personal and commercial use without attribution. (はい、このカテゴリの素材はすべて商用利用含めて完全無料でご利用いただけます。)"
+          "text": "Yes, all assets in this category are completely free for both personal and commercial use without attribution. (はい、このカテゴリの素材はすべて商用利用含めて完全無料でご利用いただけます。クレジット表記も不要です。)"
         }
       },
       {
@@ -90,7 +98,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         "name": `Do the ${categoryName} images have transparent backgrounds? (背景は透過されていますか？)`,
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, all images have been processed with AI to completely remove the background, providing clean transparent PNGs. (はい、すべてAIによって完全に背景が除去された綺麗な透過PNG画像です。)"
+          "text": "Yes, all images have been processed with advanced clipping AI to completely remove the background, providing clean transparent PNGs. (はい、すべて高度なAIによって完全に背景が除去された綺麗な透過PNG画像です。)"
         }
       }
     ]
@@ -122,9 +130,6 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             </Link>
             <h1 className="text-4xl md:text-5xl font-bold flex items-center gap-4">
               {categoryName}
-              <span className="text-lg font-normal text-secondary bg-white/5 px-4 py-1 rounded-full border border-white/10">
-                {assets.length} assets
-              </span>
             </h1>
             <p className="text-secondary mt-4 max-w-2xl">
               「{categoryName}」に関する高品質な背景透過PNG素材の一覧です。
@@ -154,6 +159,10 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             <AssetCard key={asset.id} asset={asset} />
           ))}
         </div>
+        
+        {assets.length === limit && (
+          <LoadMoreGrid initialOffset={limit} category={categoryName} />
+        )}
 
         {/* SEO Content Section at bottom */}
         <section className="mt-24 p-8 glass rounded-apple border-white/5">

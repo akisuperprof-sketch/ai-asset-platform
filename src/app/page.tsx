@@ -17,8 +17,8 @@ import { ComingSoonButton } from "@/components/ui/ComingSoonButton";
 export default async function Home({ searchParams }: { searchParams: Promise<{ q?: string; cat?: string }> }) {
   const { q, cat } = await searchParams;
   const currentCategory = cat || "すべて";
-  const allAssets = await getAssets();
-  const searchResultAssets = q || cat ? await searchAssets(q || "", currentCategory) : allAssets;
+  const allAssets = await getAssets(100, 0); // Need 100 for homepage sections
+  const searchResultAssets = q || cat ? await searchAssets(q || "", currentCategory, 24, 0) : allAssets.slice(0, 24);
 
   // Calculate dynamic metrics on the server side
   const assetCount = allAssets.length;

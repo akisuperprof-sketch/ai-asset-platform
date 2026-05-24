@@ -2,7 +2,8 @@ import { Navbar } from "@/components/layout/Navbar";
 import { AssetCard } from "@/components/assets/AssetCard";
 import { ChevronLeft, Filter, SlidersHorizontal, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { getAssets } from "@/lib/assets";
+import { searchAssets } from "@/lib/assets";
+import { LoadMoreGrid } from "@/components/assets/LoadMoreGrid";
 import { Metadata } from "next";
 
 // Highly detailed slug-to-Japanese mapping for flawless English/Japanese Programmatic SEO matching
@@ -115,10 +116,8 @@ export default async function TagPage({ params }: { params: Promise<{ slug: stri
   const jpTag = getJapaneseTag(slug);
   
   // Filter assets dynamically by tag
-  const allAssets = await getAssets();
-  const assets = allAssets.filter(asset => 
-    asset.tags.some(t => t.toLowerCase() === jpTag.toLowerCase() || t.toLowerCase() === decodeURIComponent(slug).toLowerCase())
-  );
+  const limit = 24;
+  const assets = await searchAssets(jpTag, "すべて", limit, 0);
 
   // JSON-LD Structured data for advanced Google search inclusion (SYS-005, CollectionPage schema)
   const collectionJsonLd = {
@@ -260,11 +259,16 @@ export default async function TagPage({ params }: { params: Promise<{ slug: stri
 
         {/* Assets Grid */}
         {assets.length > 0 ? (
-          <div className="grid grid-cols-12 gap-6">
-            {assets.map((asset) => (
-              <AssetCard key={asset.id} asset={asset} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-12 gap-6">
+              {assets.map((asset) => (
+                <AssetCard key={asset.id} asset={asset} />
+              ))}
+            </div>
+            {assets.length === limit && (
+              <LoadMoreGrid initialOffset={limit} tag={jpTag} />
+            )}
+          </>
         ) : (
           <div className="w-full py-24 flex flex-col items-center justify-center gap-4 glass-card border-white/5 rounded-3xl">
             <img src="/brand/icon-shuriken.svg" alt="Loading" className="w-12 h-12 opacity-20 animate-spin" style={{ animationDuration: '4s' }} />

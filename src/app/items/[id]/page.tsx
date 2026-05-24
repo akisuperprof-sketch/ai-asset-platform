@@ -287,8 +287,11 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               "@type": "Organization",
               "name": "AssetNinja"
             },
-            "description": asset.description || `${asset.title}の高品質な背景透過PNG素材です。`,
-            "name": `${asset.title}の透過PNG素材 | Transparent PNG Asset`
+            "description": asset.description || `${asset.title}の高品質な背景透過PNG素材です。商用利用可能な日本発のプレミアム素材。 (High-quality transparent PNG of ${asset.title}. Commercial-use ready premium asset from Japan.)`,
+            "name": `${asset.title}の透過PNG素材 | Transparent PNG Asset`,
+            "width": asset.width || 1024,
+            "height": asset.height || 1024,
+            "encodingFormat": "image/png"
           })
         }}
       />
@@ -328,22 +331,22 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             "@context": "https://schema.org",
             "@type": "HowTo",
             "name": `How to download and use ${asset.title} PNG asset`,
-            "description": `Step-by-step guide to download and use the transparent PNG asset "${asset.title}" for commercial projects.`,
+            "description": `Step-by-step guide to download and use the transparent PNG asset "${asset.title}" for commercial projects. (商用プロジェクトで「${asset.title}」の透過PNG素材をダウンロードして使用する手順)`,
             "step": [
               {
                 "@type": "HowToStep",
                 "name": "Download the PNG",
-                "text": "Click the 'Free Download / 無料ダウンロード' button on the asset page. The image will be downloaded as a high-resolution PNG file with a transparent background."
+                "text": "Click the 'Free Download / 無料ダウンロード' button on the asset page. The image will be downloaded as a high-resolution PNG file with a transparent background. (ページ上の「Free Download」ボタンをクリックすると、背景透過処理された高解像度PNGがダウンロードされます。)"
               },
               {
                 "@type": "HowToStep",
                 "name": "Import to Design Tool",
-                "text": "Drag and drop the downloaded PNG file into your favorite design tool like Figma, Canva, Photoshop, or PowerPoint."
+                "text": "Drag and drop the downloaded PNG file into your favorite design tool like Figma, Canva, Photoshop, or PowerPoint. (ダウンロードした画像をFigma、Canva、Photoshopなどのデザインツールにドラッグ＆ドロップします。)"
               },
               {
                 "@type": "HowToStep",
                 "name": "Use in your project",
-                "text": "Since the background is fully transparent, you can place the asset over any color or background in your commercial or personal project."
+                "text": "Since the background is fully transparent, you can place the asset over any color or background in your commercial or personal project. (背景が完全に透過されているため、商用・個人問わずどのような背景やデザインの上にも重ねて使用できます。)"
               }
             ]
           })
@@ -361,7 +364,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 "name": `Is "${asset.title}" free for commercial use? (商用利用は無料ですか？)`,
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Yes, all assets on AssetNinja, including this one, are completely free for both personal and commercial use without attribution. (はい、AssetNinjaの素材はすべて商用利用含めて完全無料でご利用いただけます。)"
+                  "text": "Yes, all assets on AssetNinja, including this one, are completely free for both personal and commercial use without attribution. (はい、AssetNinjaの素材はすべて商用利用含めて完全無料でご利用いただけます。クレジット表記も不要です。)"
                 }
               },
               {
@@ -369,7 +372,15 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 "name": `Does the PNG have a transparent background? (背景は透過されていますか？)`,
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Yes, the background has been completely removed with AI, providing a clean transparent PNG ready to drop into any design. (はい、AIによって完全に背景が除去された綺麗な透過PNG画像としてダウンロードされます。)"
+                  "text": "Yes, the background has been completely removed using advanced processing, providing a clean transparent PNG ready to drop into any design. (はい、高度な切り抜き処理により完全に背景が除去された綺麗な透過PNG画像としてダウンロードされます。フチの白残り等もありません。)"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": `Can I use this image in Canva or Figma? (CanvaやFigmaで使えますか？)`,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Absolutely. It is provided in standard PNG format with an alpha channel (transparent background), which is fully supported by Canva, Figma, Adobe Suite, and Office apps. (はい、標準的なアルファチャンネル付きPNG形式のため、CanvaやFigmaをはじめ、Adobe製品やOfficeソフト等でも直接読み込んでご利用いただけます。)"
                 }
               }
             ]

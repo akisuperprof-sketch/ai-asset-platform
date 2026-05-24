@@ -25,29 +25,51 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const [isChecking, setIsChecking] = useState(true);
+
   useEffect(() => {
-    // Simple, highly secure client-side session validation
-    const auth = sessionStorage.getItem("assetninja_admin_auth");
-    if (auth === "true") {
-      setIsAuthenticated(true);
-    }
+    // Secure HTTP-Only Cookie validation
+    fetch('/api/admin/auth')
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          setIsAuthenticated(true);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setIsChecking(false));
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Default fallback admin pass is 'ninja-core-2026' if env is not loaded, keeping it extremely safe
-    const masterPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "ninja-core-2026";
-    
-    if (password === masterPassword) {
-      sessionStorage.setItem("assetninja_admin_auth", "true");
-      setIsAuthenticated(true);
-      setError("");
-    } else {
-      setError("AUTHENTICATION FAILED: INVALID CRITICAL KEY");
+    try {
+      const res = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: password })
+      });
+      const data = await res.json();
+      
+      if (data.ok) {
+        setIsAuthenticated(true);
+        setError("");
+      } else {
+        if (data.error === 'SERVER_KEY_NOT_CONFIGURED') {
+          setError("SYSTEM ERROR: D_STRATEGY_KEY NOT CONFIGURED");
+        } else {
+          setError("AUTHENTICATION FAILED: INVALID CRITICAL KEY");
+        }
+      }
+    } catch (err) {
+      setError("NETWORK ERROR");
     }
   };
 
   // Cyber Punk Auth Portal Overlay
+  if (isChecking) {
+    return <div className="min-h-screen bg-black" />; // simple dark loading state
+  }
+  
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden font-mono px-4">
@@ -162,6 +184,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
 
             <Link
+              href="/admin/d-strategy"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-colors ${
+                pathname === "/admin/d-strategy" 
+                  ? "bg-purple-500/10 border border-purple-500/20 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.05)]" 
+                  : "text-secondary hover:text-white hover:bg-white/5 border border-transparent"
+              }`}
+            >
+              <TrendingUp className="w-4 h-4" />
+              D-Strategy OS
+            </Link>
+
+            <Link
               href="/coming-soon"
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black text-secondary hover:text-white hover:bg-white/5 border border-transparent transition-colors"
             >
@@ -197,8 +231,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </div>
           <button
-            onClick={() => {
-              sessionStorage.removeItem("assetninja_admin_auth");
+            onClick={async () => {
+              await fetch('/api/admin/auth', { method: 'DELETE' });
               setIsAuthenticated(false);
             }}
             className="w-full text-center py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-widest rounded-lg border border-red-500/10 transition-colors"

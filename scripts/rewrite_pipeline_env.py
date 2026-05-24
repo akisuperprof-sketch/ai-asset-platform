@@ -1,8 +1,10 @@
-#!/usr/bin/env python3
-"""
+import sys
+
+new_pipeline = """#!/usr/bin/env python3
+\"\"\"
 AssetNinja AI Asset Generation & Transparency Pipeline Engine
 Layer 4 Commercial Grade QA Engine Integrated
-"""
+\"\"\"
 
 import os
 import sys
@@ -50,16 +52,6 @@ NSFW_BLACKLIST = [
 class AssetPipeline:
     def __init__(self, category=None, count=1, auto_mode=False, output_dir="output", test_tasks=None, dry_run=False, save_pending=False):
         self.count = count
-        
-        # Load Design OS Rules
-        rules_dir = os.path.join(os.path.dirname(__file__), "../src/design/rules")
-        with open(os.path.join(rules_dir, "prompt-rules.json"), "r") as f:
-            self.prompt_rules = json.load(f)
-        with open(os.path.join(rules_dir, "forbidden-terms.json"), "r") as f:
-            self.forbidden_terms = json.load(f)
-        with open(os.path.join(rules_dir, "qa-thresholds.json"), "r") as f:
-            self.qa_thresholds = json.load(f)["layer4"]
-
         self.auto_mode = auto_mode
         self.output_dir = output_dir
         self.test_tasks = test_tasks
@@ -80,10 +72,10 @@ class AssetPipeline:
             missing_keys.append("GEMINI_API_KEY")
             
         if missing_keys:
-            print(f"\n==========================================")
+            print(f"\\n==========================================")
             print(f"[FATAL ERROR] API keys missing: {', '.join(missing_keys)}")
             print(f"Please set these environment variables in .env.local")
-            print(f"==========================================\n")
+            print(f"==========================================\\n")
             print("[FATAL ERROR] Fail-Closed triggered. Cannot guarantee quality without full API access. Exiting.")
             sys.exit(1)
 
@@ -143,14 +135,10 @@ class AssetPipeline:
         
         import random
         diversity_seed = random.randint(1, 99999)
-        prompt_template = self.prompt_rules["system_prompt"]
-        prompt = prompt_template.replace("{keyword}", keyword).replace("{mod}", mod)
+        prompt = f"Ultra high quality transparent PNG asset of {keyword}, {mod}, isolated object, centered composition, no background, crystal clear edges, premium commercial stock asset, soft studio lighting, highly detailed, fully usable for design production, professional PNG material"
+        negative_prompt = "abstract, symbol, icon, circle, star, geometric shape, blurry, cropped, deformed, low detail, watercolor, painting, text, logo, noise, background, frame, fake object, multiple objects, cutoff"
         
-        # Enforce forbidden terms in negative prompt
-        negative_prompt = ", ".join(self.forbidden_terms["generation"])
-
-        
-        print(f"\n[STEP 1/6] Synthesizing Prompts for '{keyword}' (#{index+1})...")
+        print(f"\\n[STEP 1/6] Synthesizing Prompts for '{keyword}' (#{index+1})...")
         print(f"  Positive: {prompt}")
         print(f"  Negative: {negative_prompt}")
 
@@ -215,7 +203,7 @@ class AssetPipeline:
         solid_pixels = sum(1 for p in alpha_data if p > 50)
         solid_ratio = solid_pixels / total_pixels
         
-        if solid_ratio < self.qa_thresholds["min_solid_ratio"] or solid_ratio > self.qa_thresholds["max_solid_ratio"]:
+        if solid_ratio < 0.20 or solid_ratio > 0.80:
             return False, "rejected", 0, {}, f"Area Ratio Out of Bounds ({solid_ratio:.2f})"
 
         x_min, y_min, x_max, y_max = bbox
@@ -232,7 +220,7 @@ class AssetPipeline:
         img_rgb = img.convert("RGB")
         stat = ImageStat.Stat(img_rgb, mask=alpha)
         color_stddev = sum(stat.stddev) / 3
-        if color_stddev < self.qa_thresholds["min_color_stddev"]:
+        if color_stddev < 10.0:
             return False, "rejected", 0, {}, f"Single Color Detected (StdDev: {color_stddev:.1f})"
 
         layer4_edge = "PASS"
@@ -250,7 +238,7 @@ class AssetPipeline:
 
             variance = cv2.Laplacian(img_gray, cv2.CV_64F).var()
             layer4_edge = f"{variance:.1f}"
-            if variance < self.qa_thresholds["min_edge_sharpness_variance"]:
+            if variance < 50.0:
                 return False, "rejected", 0, {}, f"Layer4: Edge Sharpness failed (Blurry, Variance: {variance:.1f})"
 
             alpha_arr = np.array(alpha)
@@ -258,8 +246,7 @@ class AssetPipeline:
             if np.any(edge_mask):
                 edge_rgb = img_cv[edge_mask]
                 mean_r, mean_g, mean_b = np.mean(edge_rgb, axis=0)
-                max_rgb = self.qa_thresholds["max_white_fringe_rgb"]
-                if mean_r > max_rgb and mean_g > max_rgb and mean_b > max_rgb:
+                if mean_r > 230 and mean_g > 230 and mean_b > 230:
                     layer4_fringe = f"FAIL (R:{mean_r:.1f} G:{mean_g:.1f} B:{mean_b:.1f})"
                     return False, "rejected", 0, {}, f"Layer4: White Fringe detected {layer4_fringe}"
 
@@ -275,11 +262,11 @@ class AssetPipeline:
             
             if perimeter > 0:
                 circularity = 4 * math.pi * (area / (perimeter * perimeter))
-                if circularity > self.qa_thresholds["max_abstract_circularity"]:
+                if circularity > 0.85:
                     layer4_abstract = f"FAIL (Circularity: {circularity:.2f})"
                     return False, "rejected", 0, {}, f"Layer4: Abstract shape detected {layer4_abstract}"
             
-            if len(main_contour) < self.qa_thresholds["min_contour_points"]:
+            if len(main_contour) < 10:
                 return False, "rejected", 0, {}, "Layer4: Too few contour points (Simple geometry)"
 
             current_hash = str(imagehash.phash(img_rgb))
@@ -291,7 +278,7 @@ class AssetPipeline:
             
             for h in hashes:
                 diff = imagehash.hex_to_hash(current_hash) - imagehash.hex_to_hash(h)
-                if diff < self.qa_thresholds["max_phash_diff"]:
+                if diff < 5:
                     return False, "rejected", 0, {}, f"Layer4: Duplicate similarity detected (diff {diff})"
             
             layer4_phash = current_hash
@@ -313,7 +300,7 @@ class AssetPipeline:
             "phash": layer4_phash
         }
 
-        if quality_score < self.qa_thresholds["min_quality_score"]:
+        if quality_score < 90:
             return False, "rejected", quality_score, metrics, f"Low Score ({quality_score})"
 
         print("  [STEP 3.5] Running AI Vision Quality & Brand Safety Check...")
@@ -436,7 +423,7 @@ Criteria:
         results = []
         
         for i, task in enumerate(tasks):
-            print(f"\n{'='*40}\nProcessing {i+1}/{len(tasks)}: {task['keyword']}\n{'='*40}")
+            print(f"\\n{'='*40}\\nProcessing {i+1}/{len(tasks)}: {task['keyword']}\\n{'='*40}")
             try:
                 img, prompt, neg_prompt = self.generate_image(task, i)
                 transparent_img = self.remove_background(img)
@@ -499,7 +486,7 @@ Criteria:
         report_path = os.path.join(self.output_dir, "quality_audit_report.json")
         with open(report_path, "w", encoding="utf-8") as f:
             json.dump(results, f, ensure_ascii=False, indent=2)
-        print(f"\nReport saved to {report_path}")
+        print(f"\\nReport saved to {report_path}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -510,12 +497,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     if args.env_check:
-        print("\n=== Environment Check ===")
+        print("\\n=== Environment Check ===")
         stability = os.getenv('STABILITY_API_KEY')
         gemini = os.getenv('GEMINI_API_KEY')
         print(f"STABILITY_API_KEY: {'[SET]' if stability else '[NOT SET]'}")
         print(f"GEMINI_API_KEY:    {'[SET]' if gemini else '[NOT SET]'}")
-        print("=========================\n")
+        print("=========================\\n")
         sys.exit(0)
 
     if args.test10:
@@ -533,3 +520,9 @@ if __name__ == "__main__":
         ]
         pipeline = AssetPipeline(test_tasks=tasks, dry_run=args.dry_run, save_pending=args.save_pending)
         pipeline.execute_tasks()
+"""
+
+with open("bin/pipeline.py", "w", encoding="utf-8") as f:
+    f.write(new_pipeline)
+
+print("Pipeline completely rewritten with CLI flags and DB/Storage safe logic.")
