@@ -113,28 +113,38 @@ export default function StudioPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Fetch real assets and stats from API / Supabase on mount
+  // Fetch real assets and stats from API securely
   const fetchRealData = async () => {
     setIsLoading(true);
     setErrorMsg(null);
     try {
-      // 1. Fetch stats API
-      const statsRes = await fetch("/api/stats");
+      // 1. Fetch accurate stats from health-check API
+      const statsRes = await fetch("/api/admin/health-check");
       const statsJson = await statsRes.json();
-      if (statsJson.success) {
-        setStats(statsJson);
+      if (statsJson.success && statsJson.db) {
+        setStats({
+          totalAssets: statsJson.db.total,
+          publishedAssets: statsJson.db.approved,
+          pendingAssets: statsJson.db.pending,
+          rejectedAssets: statsJson.db.rejected,
+          draftAssets: statsJson.db.draft,
+          storageFileCount: statsJson.storage.existsInStorageCount,
+          missingImagesCount: statsJson.db.nullImageCount,
+          todayAdded: 0, // calculate locally below
+          downloadCount: 0
+        });
       }
 
-      // 2. Fetch raw assets directly from Supabase
-      const { data: dbAssets, error } = await supabase
-        .from("assets")
-        .select("*")
-        .order("created_at", { ascending: false });
+      // 2. Fetch raw assets securely via admin API
+      const assetsRes = await fetch("/api/admin/assets");
+      const assetsJson = await assetsRes.json();
 
-      if (error) throw error;
+      if (!assetsJson.success) {
+        throw new Error(assetsJson.error || "認証エラー、またはデータ取得失敗");
+      }
 
-      if (dbAssets) {
-        const mappedAssets = dbAssets.map(mapDbAssetToAsset);
+      if (assetsJson.data) {
+        const mappedAssets = assetsJson.data.map(mapDbAssetToAsset);
         setLocalAssets(mappedAssets);
         if (mappedAssets.length > 0) {
           setSelectedAsset(mappedAssets[0]);
@@ -164,13 +174,14 @@ export default function StudioPage() {
   const getKpiStats = () => {
     if (stats) {
       return {
-        totalAssets: stats.totalAssets,
-        published: stats.publishedAssets,
-        pendingReview: stats.pendingAssets,
-        rejected: stats.rejectedAssets,
-        generatedToday: stats.todayAdded,
-        storageFileCount: stats.storageFileCount,
-        downloadCount: stats.downloadCount,
+        totalAssets: stats.totalAssets || 0,
+        published: stats.publishedAssets || 0,
+        pendingReview: stats.pendingAssets || 0,
+        rejected: stats.rejectedAssets || 0,
+        generatedToday: stats.todayAdded || 0,
+        missingImagesCount: stats.missingImagesCount || 0,
+        displayable: stats.publishedAssets || 0, // Since currently missing images are 0
+        storageFileCount: stats.storageFileCount || 0,
       };
     }
     
@@ -179,6 +190,7 @@ export default function StudioPage() {
     const published = localAssets.filter(a => a.reviewStatus === "approved").length;
     const pending = localAssets.filter(a => a.reviewStatus === "pending").length;
     const rejected = localAssets.filter(a => a.reviewStatus === "rejected").length;
+    const missingImage = localAssets.filter(a => !a.imageUrl).length;
     const todayAdded = localAssets.filter(a => {
       if (!a.publishedAt) return false;
       const startOfToday = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
@@ -191,8 +203,9 @@ export default function StudioPage() {
       pendingReview: pending,
       rejected,
       generatedToday: todayAdded,
+      missingImagesCount: missingImage,
+      displayable: Math.max(0, published - missingImage),
       storageFileCount: total,
-      downloadCount: 0,
     };
   };
 
@@ -203,6 +216,17 @@ export default function StudioPage() {
     const text = (asset.title + " " + asset.tags.join(" ")).toLowerCase();
     const lqTerms = ["star", "circle", "abstract", "monochrome", "low_quality", "図形", "幾何", "単色"];
     return lqTerms.some(term => text.includes(term));
+  };
+
+  const getLowQualityReasons = (asset: Asset) => {
+    const text = (asset.title + " " + asset.tags.join(" ")).toLowerCase();
+    const reasons = [];
+    if (text.includes("star") || text.includes("星")) reasons.push("タイトル/タグに星(star)を含む");
+    if (text.includes("circle") || text.includes("丸")) reasons.push("タイトル/タグに丸(circle)を含む");
+    if (text.includes("abstract") || text.includes("抽象")) reasons.push("抽象図形の疑い");
+    if (text.includes("monochrome") || text.includes("単色")) reasons.push("単色の疑い");
+    if (text.includes("low_quality") || text.includes("幾何") || text.includes("図形")) reasons.push("幾何/図形/低品質タグを含む");
+    return reasons;
   };
 
   const filteredAssets = localAssets.filter(asset => {
@@ -225,7 +249,58 @@ export default function StudioPage() {
   };
 
   // Quick Action: Change Status manually securely via backend
+  const runQAAudit = async (assetId: string) => {
+    try {
+      setIsLoading(true);
+      const res = await fetch("/api/admin/qa-audit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ assetId }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error);
+
+      alert(`✅ Vision QA 完了\nVision: ${data.qaResult.visionScore}\nCommercial: ${data.qaResult.commercialScore}\nSEO: ${data.qaResult.seoScore}\n${data.autoPended ? '⚠️ 低品質のため自動で確認待ちに変更されました。' : ''}`);
+      
+      // Update local asset
+      setLocalAssets(prev => prev.map(a => 
+        a.id === assetId ? {
+          ...a,
+          visionScore: data.qaResult.visionScore,
+          commercialScore: data.qaResult.commercialScore,
+          seoScore: data.qaResult.seoScore,
+          qualityFlags: data.qaResult.qualityFlags,
+          lowQualityReason: data.qaResult.lowQualityReason,
+          reviewStatus: data.autoPended ? "pending" : a.reviewStatus
+        } : a
+      ));
+
+      if (selectedAsset?.id === assetId) {
+        setSelectedAsset(prev => prev ? {
+          ...prev,
+          visionScore: data.qaResult.visionScore,
+          commercialScore: data.qaResult.commercialScore,
+          seoScore: data.qaResult.seoScore,
+          qualityFlags: data.qaResult.qualityFlags,
+          lowQualityReason: data.qaResult.lowQualityReason,
+          reviewStatus: data.autoPended ? "pending" : prev.reviewStatus
+        } : null);
+      }
+
+    } catch (e: any) {
+      console.error(e);
+      alert(`❌ QA監査失敗: ${e.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const updateStatus = async (id: string, newStatus: "approved" | "pending" | "rejected") => {
+    if (newStatus !== "approved") {
+      const msg = newStatus === "rejected" ? "この素材を公開停止（却下）しますか？公開サイトに表示されなくなります。" : "この素材を確認待ちに戻しますか？公開サイトに表示されなくなります。";
+      if (!window.confirm(msg)) return;
+    }
+
     try {
       const res = await fetch('/api/admin/asset-status', {
         method: 'POST',
@@ -351,11 +426,14 @@ export default function StudioPage() {
         <div>
           <div className="flex items-center gap-2 text-purple-400 text-xs font-black uppercase tracking-widest mb-1.5">
             <Sparkles className="w-3.5 h-3.5" />
-            AI Asset Factory Console
+            AI素材工場コンソール
           </div>
           <h1 className="text-3xl font-black tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-zinc-200 to-zinc-400">
-            STUDIO WORKSPACE OS
+            スタジオ管理OS
           </h1>
+          <p className="text-xs text-zinc-400 mt-2 max-w-xl leading-relaxed">
+            公開中素材・確認待ち素材・低品質疑い素材を確認し、公開停止や確認待ち戻しを行う管理画面です。
+          </p>
         </div>
 
         <div className="flex flex-wrap gap-2.5">
@@ -364,58 +442,84 @@ export default function StudioPage() {
             className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-colors ${
               activeTab === "dashboard" ? "bg-white text-zinc-950" : "bg-white/5 border border-white/5 text-zinc-400 hover:text-white"
             }`}
-          >
-            Dashboard
+           title="素材全体の状態を確認します">
+            ダッシュボード
           </button>
           <button 
             onClick={() => setActiveTab("generate")}
             className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-colors ${
               activeTab === "generate" ? "bg-white text-zinc-950" : "bg-white/5 border border-white/5 text-zinc-400 hover:text-white"
             }`}
-          >
-            Create Gen Job
+           title="新しい素材生成を予約します">
+            生成ジョブ作成
           </button>
           <button 
             onClick={() => setActiveTab("keywords")}
             className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-colors ${
               activeTab === "keywords" ? "bg-white text-zinc-950" : "bg-white/5 border border-white/5 text-zinc-400 hover:text-white"
             }`}
-          >
-            Keyword Radar
+           title="ユーザー検索ワードから不足素材を確認します">
+            検索需要レーダー
           </button>
         </div>
       </div>
 
+            {/* OPERATIONS GUIDE */}
+      <div className="bg-purple-500/10 border border-purple-500/20 rounded-2xl p-6">
+        <h3 className="text-sm font-black text-purple-300 mb-3 flex items-center gap-2">
+          <HelpCircle className="w-4 h-4" /> 操作ガイド
+        </h3>
+        <ol className="list-decimal list-inside space-y-2 text-xs text-zinc-300 font-semibold leading-relaxed">
+          <li>まず「低品質疑い」を押して、星・丸・単色素材を確認します。</li>
+          <li>問題がある素材をクリックします。</li>
+          <li>公開に不適切な場合は「確認待ちに戻す」または「公開停止」を押します。</li>
+          <li>検索欄では、タイトル・タグ・IDで素材を探せます。</li>
+          <li>件数整合性チェックで、DB件数と画面表示件数のズレを確認できます。</li>
+        </ol>
+      </div>
+
       {/* KPI METRICS WIDGETS */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl relative overflow-hidden">
-          <span className="text-[9px] font-black text-zinc-400 tracking-widest uppercase block mb-1">TOTAL IMAGES</span>
-          <h3 className="text-2xl font-black tracking-tight">{kpis.totalAssets}</h3>
-          <span className="text-[8px] text-purple-400 font-bold block mt-1 tracking-wider">ALL CATEGORIES</span>
+          <span className="text-[9px] font-black text-zinc-400 tracking-widest uppercase block mb-1">DB全素材数</span>
+          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : kpis.totalAssets}</h3>
+          <span className="text-[10px] text-zinc-400 font-bold block mt-2">Supabaseのassetsテーブルに登録されている全素材数です。</span>
         </div>
 
         <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl">
-          <span className="text-[9px] font-black text-emerald-400 tracking-widest uppercase block mb-1">APPROVED</span>
-          <h3 className="text-2xl font-black tracking-tight">{kpis.published}</h3>
-          <span className="text-[8px] text-emerald-500/80 font-bold block mt-1 tracking-wider">LIVE IN SITEMAP</span>
+          <span className="text-[9px] font-black text-emerald-400 tracking-widest uppercase block mb-1">公開中</span>
+          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : kpis.published}</h3>
+          <span className="text-[10px] text-emerald-500/80 font-bold block mt-2">現在、公開サイトに表示される素材数です。</span>
         </div>
 
         <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl">
-          <span className="text-[9px] font-black text-amber-400 tracking-widest uppercase block mb-1">PENDING REVIEW</span>
-          <h3 className="text-2xl font-black tracking-tight">{kpis.pendingReview}</h3>
-          <span className="text-[8px] text-amber-500/80 font-bold block mt-1 tracking-wider">NEEDS VISUAL AUDIT</span>
+          <span className="text-[9px] font-black text-amber-400 tracking-widest uppercase block mb-1">確認待ち</span>
+          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : kpis.pendingReview}</h3>
+          <span className="text-[10px] text-amber-500/80 font-bold block mt-2">まだ公開判断が必要な素材です。</span>
         </div>
 
         <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl">
-          <span className="text-[9px] font-black text-red-400 tracking-widest uppercase block mb-1">REJECTED</span>
-          <h3 className="text-2xl font-black tracking-tight">{kpis.rejected}</h3>
-          <span className="text-[8px] text-red-500/80 font-bold block mt-1 tracking-wider">TRADEMARK RISKS</span>
+          <span className="text-[9px] font-black text-rose-400 tracking-widest uppercase block mb-1">却下</span>
+          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : kpis.rejected}</h3>
+          <span className="text-[10px] text-rose-500/80 font-bold block mt-2">品質・権利・用途の観点で公開しない素材です。</span>
         </div>
 
         <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl relative overflow-hidden">
-          <span className="text-[9px] font-black text-cyan-400 tracking-widest uppercase block mb-1">GENERATED TODAY</span>
-          <h3 className="text-2xl font-black tracking-tight">+{kpis.generatedToday}</h3>
-          <span className="text-[8px] text-cyan-500/80 font-bold block mt-1 tracking-wider">AI OPS QUEUE</span>
+          <span className="text-[9px] font-black text-red-500 tracking-widest uppercase block mb-1">画像URL欠損</span>
+          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : kpis.missingImagesCount}</h3>
+          <span className="text-[10px] text-red-500/80 font-bold block mt-2">画像が見つからない異常なデータです。</span>
+        </div>
+
+        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl relative overflow-hidden">
+          <span className="text-[9px] font-black text-emerald-500 tracking-widest uppercase block mb-1">表示可能素材</span>
+          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : kpis.displayable}</h3>
+          <span className="text-[10px] text-emerald-500/80 font-bold block mt-2">公開中で画像URLが存在する安全な素材です。</span>
+        </div>
+
+        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl relative overflow-hidden">
+          <span className="text-[9px] font-black text-cyan-400 tracking-widest uppercase block mb-1">本日生成</span>
+          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : `+${kpis.generatedToday}`}</h3>
+          <span className="text-[10px] text-cyan-500/80 font-bold block mt-2">本日新しく登録された素材数です。</span>
         </div>
       </div>
 
@@ -424,18 +528,21 @@ export default function StudioPage() {
         <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-2xl pointer-events-none" />
         <h3 className="text-xs font-black text-purple-400 uppercase tracking-widest mb-4 flex items-center gap-2">
           <Gauge className="w-4 h-4" />
-          Real-Time Count Discrepancy Auditor (データ整合性監査システム)
+          件数整合性チェック
         </h3>
+        <p className="text-[10px] text-zinc-400 mb-6 -mt-2">
+          DB、Storage、画面表示の件数にズレがないか確認します。
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* 1. DB vs Storage */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider font-mono">DB vs Storage Audit</span>
+              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider font-mono">DBとStorageの差分確認</span>
               {kpis.published === kpis.storageFileCount ? (
-                <span className="bg-emerald-500/10 text-emerald-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-emerald-500/15">MATCHED</span>
+                <span className="bg-emerald-500/10 text-emerald-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-emerald-500/15">一致</span>
               ) : (
-                <span className="bg-amber-500/10 text-amber-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-amber-500/15">MISMATCH</span>
+                <span className="bg-amber-500/10 text-amber-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-amber-500/15">不一致</span>
               )}
             </div>
             <p className="text-xs font-semibold text-zinc-300 leading-relaxed">
@@ -451,11 +558,11 @@ export default function StudioPage() {
           {/* 2. DB vs Display Count */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider font-mono">DB vs UI Display Audit</span>
+              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider font-mono">DBと画面表示の差分確認</span>
               {kpis.published === localAssets.filter(a => a.reviewStatus === 'approved' && a.imageUrl).length ? (
-                <span className="bg-emerald-500/10 text-emerald-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-emerald-500/15">MATCHED</span>
+                <span className="bg-emerald-500/10 text-emerald-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-emerald-500/15">一致</span>
               ) : (
-                <span className="bg-amber-500/10 text-amber-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-amber-500/15">DISPLAY MISSING</span>
+                <span className="bg-amber-500/10 text-amber-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-amber-500/15">不一致</span>
               )}
             </div>
             <p className="text-xs font-semibold text-zinc-300 leading-relaxed">
@@ -471,8 +578,8 @@ export default function StudioPage() {
           {/* 3. Today Added Sync Check */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider font-mono">Today Added Dynamic Bind</span>
-              <span className="bg-emerald-500/10 text-emerald-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-emerald-500/15">SECURE</span>
+              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider font-mono">本日追加分の確認</span>
+              <span className="bg-emerald-500/10 text-emerald-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-emerald-500/15">安全</span>
             </div>
             <p className="text-xs font-semibold text-zinc-300 leading-relaxed">
               本日追加数: <span className="text-white font-bold">+{kpis.generatedToday}件</span> / トップ表示: <span className="text-white font-bold">+{kpis.generatedToday}件</span>
@@ -493,25 +600,33 @@ export default function StudioPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h2 className="text-md font-black uppercase tracking-wider flex items-center gap-2">
                 <Layers className="w-4 h-4 text-purple-400" />
-                Asset Verification Pipeline Grid
+                素材品質確認一覧
               </h2>
+              <p className="text-[10px] text-zinc-400">
+                各素材の画像・品質ランク・SEOスコア・公開状態を確認できます。低品質な素材は公開停止または確認待ちに戻してください。
+              </p>
               
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setShowLowQualityOnly(!showLowQualityOnly)}
-                  className={`px-3 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-colors border ${
-                    showLowQualityOnly ? 'bg-amber-500/20 text-amber-300 border-amber-500/50' : 'bg-zinc-900 text-zinc-400 border-white/5 hover:bg-zinc-800'
-                  }`}
-                >
-                  <AlertTriangle className="w-3.5 h-3.5 inline-block mr-1" />
-                  低品質疑い
-                </button>
+                <div className="flex flex-col gap-1 items-end">
+                  <button
+                    onClick={() => setShowLowQualityOnly(!showLowQualityOnly)}
+                    className={`px-3 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-colors border ${
+                      showLowQualityOnly ? 'bg-amber-500/20 text-amber-300 border-amber-500/50' : 'bg-zinc-900 text-zinc-400 border-white/5 hover:bg-zinc-800'
+                    }`}
+                  >
+                    <AlertTriangle className="w-3.5 h-3.5 inline-block mr-1" />
+                    低品質疑い
+                  </button>
+                  <p className="text-[9px] text-amber-400/80 max-w-xs text-right leading-relaxed">
+                    星・丸・単色・抽象図形など、商用素材として弱い可能性がある素材を自動抽出します。最終判断は目視で行ってください。
+                  </p>
+                </div>
                 {/* Search Bar */}
                 <div className="relative max-w-xs w-full">
                   <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input 
                     type="text"
-                    placeholder="Filter by title, tag, ID..."
+                    placeholder="タイトル・タグ・IDで検索"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full bg-zinc-900 border border-white/5 pl-10 pr-4 py-2 rounded-full text-xs text-white focus:outline-none focus:border-purple-500/40"
@@ -542,17 +657,17 @@ export default function StudioPage() {
                     <div className="absolute top-2 right-2 z-20">
                       {asset.reviewStatus === "approved" && (
                         <span className="bg-emerald-500/20 text-emerald-400 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border border-emerald-500/25">
-                          APPROVED
+                          公開中
                         </span>
                       )}
                       {asset.reviewStatus === "pending" && (
                         <span className="bg-amber-500/20 text-amber-400 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border border-amber-500/25">
-                          PENDING
+                          確認待ち
                         </span>
                       )}
                       {asset.reviewStatus === "rejected" && (
                         <span className="bg-red-500/20 text-red-400 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border border-red-500/25">
-                          REJECTED
+                          却下
                         </span>
                       )}
                     </div>
@@ -566,23 +681,65 @@ export default function StudioPage() {
                           asset.qualityRank === "B" ? "bg-amber-500/20 text-amber-300 border-amber-500/30" :
                           "bg-zinc-800 text-zinc-400 border-zinc-700"
                         }`}>
-                          {asset.qualityRank} RANK
+                          {asset.qualityRank}ランク
                         </span>
                       </div>
                     )}
 
                     {/* SEO score bottom badge */}
+                    {asset.visionScore !== undefined && (
+                      <div className="absolute top-2 left-20 z-20">
+                        <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border ${
+                          asset.visionScore >= 70 ? "bg-purple-500/20 text-purple-300 border-purple-500/30" :
+                          asset.visionScore >= 40 ? "bg-amber-500/20 text-amber-300 border-amber-500/30" :
+                          "bg-red-500/20 text-red-300 border-red-500/30"
+                        }`}>
+                          QA: {asset.visionScore}
+                        </span>
+                      </div>
+                    )}
+
                     {asset.seoScore !== undefined && (
                       <div className="absolute bottom-2 left-2 z-20 bg-black/80 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/5 text-[9px] font-mono font-bold text-zinc-300">
-                        SEO: {asset.seoScore}
+                        SEOスコア: {asset.seoScore}
                       </div>
                     )}
                   </div>
 
                   <h4 className="text-[11px] font-black text-white truncate">{asset.title}</h4>
-                  <div className="flex items-center justify-between text-[9px] text-white/50 mt-1 font-semibold">
+                  <div className="flex items-center justify-between text-[9px] text-white/50 mt-1 mb-2 font-semibold">
                     <span>{asset.category}</span>
                     <span>{asset.fileSize}</span>
+                  </div>
+
+                  {isLowQuality(asset) && (
+                    <div className="mb-2 p-1.5 bg-amber-500/10 border border-amber-500/20 rounded-md">
+                      <span className="text-[9px] text-amber-400 font-bold block mb-1">【低品質疑い】</span>
+                      {getLowQualityReasons(asset).map((r, i) => (
+                        <span key={i} className="text-[8px] text-amber-300 block leading-tight">・{r}</span>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="mt-auto space-y-1.5 flex flex-col">
+                    <button onClick={(e) => { e.stopPropagation(); setSelectedAsset(asset); }} className="w-full py-1 text-[9px] font-bold bg-white/5 hover:bg-white/10 rounded">
+                      👆 クリックで詳細を見る
+                    </button>
+                    {asset.reviewStatus !== 'pending' && (
+                      <button onClick={(e) => { e.stopPropagation(); updateStatus(asset.id, 'pending'); }} className="w-full py-1 text-[9px] font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 rounded">
+                        確認待ちに戻す
+                      </button>
+                    )}
+                    {asset.reviewStatus === 'approved' && (
+                      <button onClick={(e) => { e.stopPropagation(); updateStatus(asset.id, 'rejected'); }} className="w-full py-1 text-[9px] font-bold bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded">
+                        公開停止
+                      </button>
+                    )}
+                    {asset.reviewStatus !== 'approved' && (
+                      <button onClick={(e) => { e.stopPropagation(); updateStatus(asset.id, 'approved'); }} className="w-full py-1 text-[9px] font-bold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded">
+                        公開する
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -840,7 +997,7 @@ export default function StudioPage() {
                       className="flex-1 bg-emerald-600 hover:bg-emerald-700 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
                     >
                       <CheckCircle className="w-3.5 h-3.5" />
-                      Approve Live
+                      公開する
                     </button>
                     
                     <button
@@ -848,7 +1005,7 @@ export default function StudioPage() {
                       className="flex-1 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/10 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5"
                     >
                       <XCircle className="w-3.5 h-3.5" />
-                      Reject / Quarantine
+                      公開停止 / 却下
                     </button>
                   </div>
 

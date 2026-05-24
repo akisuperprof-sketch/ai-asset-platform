@@ -41,6 +41,15 @@ export interface Asset {
 
   // SEO Score (0-100)
   seoScore?: number;
+
+  // Vision Commercial QA OS
+  visionScore?: number;
+  commercialScore?: number;
+  qualityFlags?: string[];
+  lowQualityReason?: string;
+  visionLastCheckedAt?: string;
+  visionModel?: string;
+  qaStatus?: "pending" | "passed" | "failed";
 }
 
 export interface Category {

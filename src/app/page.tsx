@@ -102,6 +102,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
               initialCount={assetCount} 
               todayAdded={todayAdded} 
               categoryCounts={categoryCounts}
+              premiumAssets={premiumAssets}
             />
             
             {/* 1. NEW PREMIUM ASSETS SECTION */}

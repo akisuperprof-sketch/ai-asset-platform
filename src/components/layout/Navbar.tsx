@@ -39,12 +39,12 @@ export function Navbar() {
           
           <div className="hidden md:flex items-center gap-4 select-none">
             <button 
-              onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: 'PRO PLAN' } }))}
+              onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: 'PRO: Unlimited Downloads / Priority Assets / Commercial Pack' } }))}
               className="bg-white/[0.02] border border-white/5 hover:border-amber-500/30 hover:bg-amber-500/5 px-4 py-2 rounded-full text-[9px] font-black text-amber-400 uppercase tracking-[0.25em] transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(245,158,11,0.02)] cursor-not-allowed opacity-80"
               aria-disabled="true"
             >
               <Sparkles className="w-3.5 h-3.5 fill-amber-500/10 text-amber-400" />
-              PRO PLAN
+              PRO
             </button>
             <button 
               onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: 'ログイン' } }))}
@@ -55,10 +55,10 @@ export function Navbar() {
             </button>
             <button 
               onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: '新規登録' } }))}
-              className="bg-ai-gradient px-8 py-3 rounded-full text-[11px] font-black text-white/90 uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-ai-purple/20 cursor-not-allowed opacity-95"
+              className="bg-ai-gradient px-8 py-3 rounded-full text-[10px] sm:text-[11px] font-black text-white/90 uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-ai-purple/20 cursor-not-allowed opacity-95"
               aria-disabled="true"
             >
-              無料で登録
+              Download Free PNGs
             </button>
           </div>
 

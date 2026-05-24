@@ -1,16 +1,20 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Zap, ShieldCheck, Globe, Download, Heart, Compass, Sparkles, Terminal, Cpu } from "lucide-react";
+import { Search, Zap, ShieldCheck, Globe, Download, Heart, Compass, Sparkles, Terminal, Cpu, Flame } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+
+import { Asset } from "@/types";
+import { AssetCard } from "@/components/assets/AssetCard";
 
 interface HeroSectionProps {
   onSearch?: (query: string) => void;
   initialCount?: number;
   todayAdded?: number;
   categoryCounts?: Record<string, number>;
+  premiumAssets?: Asset[];
 }
 
 const formatCountBadge = (count: number) => {
@@ -25,7 +29,8 @@ export function HeroSection({
   onSearch, 
   initialCount = 30, 
   todayAdded = 0, 
-  categoryCounts = {} 
+  categoryCounts = {},
+  premiumAssets = []
 }: HeroSectionProps) {
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -39,19 +44,9 @@ export function HeroSection({
   const [trendingTags, setTrendingTags] = useState<string[]>(["寿司", "ラーメン", "和柄", "富士山", "ビジネス"]);
   
   // Cyber Live simulation engines
-  const [nowGenerating, setNowGenerating] = useState({
-    title: "極上うな重セット",
-    progress: 12,
-    phase: "AI_GENERATING",
-    category: "日本の食"
-  });
+  
 
-  const [logs, setLogs] = useState<string[]>([
-    "STEALTH LINK ESTABLISHED: SECURE CORRIDOR ENGAGED",
-    "SCANNING SUPABASE NODE... 30 PNGS DETECTED",
-    "R2 CLOUD CACHE STATUS: 100% HEALTHY",
-    "READY FOR NEURAL TRANSLATION PROCESS"
-  ]);
+  
 
   const searchInputRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
@@ -88,67 +83,7 @@ export function HeroSection({
     return () => clearInterval(interval);
   }, [initialCount, todayAdded]);
 
-  // NOW GENERATING Simulation loop (Changes target every 6 seconds)
-  useEffect(() => {
-    const items = [
-      { title: "極上うな重セット", cat: "日本の食" },
-      { title: "満開の染井吉野", cat: "年中行事・祭り" },
-      { title: "伝統的な金屏風", cat: "和の伝統素材" },
-      { title: "グローバル商談風景", cat: "ビジネス" },
-      { title: "最先端MRI検査機", cat: "医療・ヘルスケア" },
-      { title: "特選天ぷら盛り合わせ", cat: "日本の食" },
-      { title: "日本庭園の灯篭", cat: "和の伝統素材" }
-    ];
-
-    let currentIdx = 0;
-    
-    // Smooth progress increment simulator
-    const progressInterval = setInterval(() => {
-      setNowGenerating(prev => {
-        if (prev.progress >= 100) {
-          // Switch to next item when complete
-          currentIdx = (currentIdx + 1) % items.length;
-          
-          // Log completion in console
-          const timeStr = new Date().toLocaleTimeString();
-          const target = items[currentIdx];
-          
-          setLogs(logList => {
-            const newLogs = [
-              `[${timeStr}] SUCCESS: '${prev.title}' background auto-removal completed (quality_score=94)`,
-              `[${timeStr}] SYNCHRONIZED: '${prev.title}' uploaded to Cloudflare R2 Edge`,
-              `[${timeStr}] DB_INSERTION: Registered asset securely into public.assets`,
-              `[${timeStr}] INITIATED: Generating high-fidelity '${target.title}' via Stability AI`,
-              ...logList
-            ].slice(0, 15);
-            return newLogs;
-          });
-
-          return {
-            title: target.title,
-            progress: 0,
-            phase: "AI_GENERATING",
-            category: target.cat
-          };
-        }
-
-        const step = Math.floor(Math.random() * 8) + 4;
-        const newProgress = Math.min(100, prev.progress + step);
-        
-        let phase = "AI_GENERATING";
-        if (newProgress > 40 && newProgress < 85) phase = "REMBG_PROCESSING";
-        else if (newProgress >= 85) phase = "COMPILER_SEO_QA";
-
-        return {
-          ...prev,
-          progress: newProgress,
-          phase
-        };
-      });
-    }, 450);
-
-    return () => clearInterval(progressInterval);
-  }, []);
+  
 
   // Handle actual query search
   const handleSearch = (searchQuery: string) => {
@@ -352,7 +287,7 @@ export function HeroSection({
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onFocus={() => setIsFocused(true)}
-                  placeholder="和食、桜、富士山、医療をニューラル検索..."
+                  placeholder="Search: sakura / ramen / torii gate / matcha / onigiri ..."
                   className="w-full h-full bg-transparent px-8 pl-14 lg:pl-16 text-white placeholder-white/20 focus:outline-none text-[14px] lg:text-[15px] font-semibold tracking-wide"
                 />
 
@@ -464,7 +399,7 @@ export function HeroSection({
               </AnimatePresence>
             </form>
 
-            {/* Searching Status Indicator & Live Asset Engine OS Panel (Phase-002) */}
+            {/* Popular Assets Showcase */}
             <div className="mt-4 w-full">
               <AnimatePresence mode="wait">
                 {isSearching ? (
@@ -473,68 +408,30 @@ export function HeroSection({
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="text-[9px] font-black text-ai-cyan tracking-[0.2em] uppercase flex items-center gap-1.5"
+                      className="text-[10px] font-black text-white/40 tracking-[0.2em] uppercase flex items-center gap-2"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-ai-cyan animate-ping" />
-                      SEARCHING NEURAL DATASPACES...
+                      <span className="w-1.5 h-1.5 rounded-full bg-white/40 animate-ping" />
+                      SEARCHING ASSETS...
                     </motion.span>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full text-left">
-                    
-                    {/* Panel Left: NOW GENERATING */}
-                    <div className="glass border border-white/5 rounded-2xl p-4 bg-black/60 backdrop-blur-md relative overflow-hidden flex flex-col justify-between h-[82px]">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[8px] font-black text-ai-cyan tracking-[0.2em] uppercase flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-ai-cyan animate-pulse" />
-                          NOW GENERATING
-                        </span>
-                        <span className="text-[8px] font-mono text-white/30 uppercase">
-                          {nowGenerating.phase}
+                  <>
+                    {/* Popular Assets Horizontal Scroll (Premium UX) */}
+                    <div className="w-full mt-6 text-left">
+                      <div className="flex items-center justify-between mb-4 px-2">
+                        <span className="text-[11px] font-black text-white/60 tracking-widest uppercase flex items-center gap-2">
+                          <Flame className="w-3.5 h-3.5 text-orange-400" /> POPULAR ASSETS
                         </span>
                       </div>
-                      
-                      <div className="flex justify-between items-end my-1">
-                        <span className="text-[11px] font-bold text-white tracking-wide truncate max-w-[70%]">
-                          [{nowGenerating.category}] {nowGenerating.title}
-                        </span>
-                        <span className="text-[10px] font-black text-ai-cyan font-mono">
-                          {nowGenerating.progress}%
-                        </span>
-                      </div>
-
-                      {/* Micro neon progress bar */}
-                      <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden relative">
-                        <div 
-                          className="h-full bg-ai-gradient rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(0,200,255,0.6)]"
-                          style={{ width: `${nowGenerating.progress}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Panel Right: LIVE INDEX STATUS */}
-                    <div className="glass border border-white/5 rounded-2xl p-4 bg-black/60 backdrop-blur-md relative overflow-hidden flex flex-col justify-between h-[82px]">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[8px] font-black text-amber-500/80 tracking-[0.2em] uppercase flex items-center gap-1.5">
-                          <span className="w-1 h-1 rounded-full bg-amber-500 animate-ping" />
-                          LIVE INDEX STATUS
-                        </span>
-                        <span className="text-[8px] font-mono text-white/30 uppercase">
-                          DB_LATENCY: 12ms
-                        </span>
-                      </div>
-                      
-                      {/* Scrolling Console log */}
-                      <div className="flex-1 overflow-hidden font-mono text-[8px] leading-relaxed text-white/50 flex flex-col gap-0.5 max-h-[46px] select-text">
-                        {logs.slice(0, 3).map((log, index) => (
-                          <div key={index} className="truncate whitespace-nowrap">
-                            <span className="text-[#00ffaa]/80 mr-1">&gt;</span> {log}
+                      <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 px-2 -mx-2 snap-x">
+                        {premiumAssets && premiumAssets.slice(0, 5).map(asset => (
+                          <div key={asset.id} className="min-w-[200px] sm:min-w-[240px] snap-start">
+                            <AssetCard asset={asset} className="!h-[280px]" />
                           </div>
                         ))}
                       </div>
                     </div>
-
-                  </div>
+                  </>
                 )}
               </AnimatePresence>
             </div>
@@ -546,59 +443,43 @@ export function HeroSection({
         {/* ========================================== */}
         <div className="flex flex-col w-full z-20 mt-auto pb-1">
           
-          {/* Dock型カテゴリOS - Upgraded to genuine Mac-style Dock with hover expansions DOCK-001/002/003 */}
-          <div className="w-full max-w-4xl mx-auto glass-card rounded-[2rem] border-white/5 p-3 mb-3 relative overflow-visible shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
-            <div className="flex gap-4 overflow-x-auto no-scrollbar justify-start md:justify-center items-center px-4 py-1 relative">
+          
+          {/* Modern Category Cards instead of Dock */}
+          <div className="w-full max-w-5xl mx-auto mb-6 px-2">
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
               {[
-                { name: "日本の食", label: "日本の食", icon: "🍱", count: categoryCounts["日本の食"] || 0 },
-                { name: "和の伝統素材", label: "和の伝統素材", icon: "🏮", count: categoryCounts["和の伝統素材"] || 0 },
-                { name: "年中行事・祭り", label: "年中行事・祭り", icon: "🌸", count: categoryCounts["年中行事・祭り"] || 0 },
-                { name: "ビジネス", label: "ビジネス", icon: "💼", count: categoryCounts["ビジネス"] || 0 },
-                { name: "医療・ヘルスケア", label: "医療", icon: "🏥", count: categoryCounts["医療・ヘルスケア"] || categoryCounts["医療"] || 0 },
-                { name: "More", label: "全素材一覧", icon: "✦", count: initialCount },
+                { name: "日本の食", label: "Japanese Food", icon: "🍜" },
+                { name: "和の伝統素材", label: "Traditional", icon: "⛩️" },
+                { name: "年中行事・祭り", label: "Seasonal", icon: "🌸" },
+                { name: "ビジネス", label: "Business", icon: "💼" },
+                { name: "医療・ヘルスケア", label: "Medical", icon: "🏥" },
+                { name: "すべて", label: "Patterns & More", icon: "🎨" },
               ].map((cat) => (
                 <button 
                   key={cat.name}
-                  onClick={() => cat.name === "More" ? router.push('/?cat=すべて') : router.push(`/?cat=${encodeURIComponent(cat.name)}`)}
-                  className="flex flex-col items-center gap-1.5 group shrink-0 relative transition-transform duration-300"
+                  onClick={() => router.push(`/?cat=${encodeURIComponent(cat.name)}`)}
+                  className="flex flex-col items-center justify-center gap-2 group bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 hover:border-white/20 rounded-2xl p-4 transition-all duration-300"
                 >
-                  <motion.div 
-                    whileHover={{ scale: 1.12, y: -6 }}
-                    className="w-12 h-12 rounded-full bg-black/70 border border-white/10 flex items-center justify-center text-xl group-hover:bg-ai-gradient group-hover:border-transparent group-hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] active:scale-90 transition-all duration-300 relative"
-                  >
-                    <span className="transition-transform duration-300 group-hover:scale-105">{cat.icon}</span>
-                    
-                    {/* Tooltip Count badge */}
-                    <span className="absolute -top-1 -right-1 bg-black/90 border border-white/15 px-1.5 py-0.5 rounded-full text-[7px] font-black text-secondary group-hover:text-white group-hover:border-purple-500/50 transition-colors">
-                      {cat.count}
-                    </span>
-                  </motion.div>
-                  <span className="text-[9px] font-black tracking-wider text-secondary group-hover:text-white transition-colors">{cat.label}</span>
+                  <span className="text-2xl group-hover:scale-110 group-hover:-translate-y-1 transition-transform duration-300">{cat.icon}</span>
+                  <span className="text-[9px] font-bold tracking-wider text-white/60 group-hover:text-white transition-colors text-center whitespace-nowrap">{cat.label}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Premium OS Live Status Footer - Completely aligned with Phase 3 */}
-          <div className="flex justify-between items-center w-full max-w-5xl mx-auto border-t border-white/5 pt-2.5 text-[9px] lg:text-[10px] font-black tracking-[0.22em] text-white/35">
-            <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-success animate-pulse shadow-[0_0_6px_rgba(48,209,88,0.8)]" />
-              SYSTEM ONLINE
-            </span>
-            <span className="hidden sm:inline text-white/10">|</span>
-            <span className="hover:text-ai-purple transition-colors uppercase">
-              {formatCountBadge(initialCount)} PNGS INDEXED
-            </span>
-            <span className="hidden sm:inline text-white/10">|</span>
-            <span className="hover:text-ai-cyan transition-colors uppercase flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-500/80" />
-              QUALITY VERIFIED ASSETS
-            </span>
-            <span className="hidden md:inline text-white/10">|</span>
-            <span className="flex items-center gap-2 hover:text-white transition-colors">
-              <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping" />
-              TOKYO JP EDGE NODE
-            </span>
+          {/* SEO & Discoverability Minimal Footer */}
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 items-center w-full max-w-5xl mx-auto border-t border-white/5 pt-4 pb-2 text-[10px] font-medium tracking-wide text-white/30">
+            <span>transparent png</span>
+            <span className="hidden sm:inline text-white/5">•</span>
+            <span>commercial use png</span>
+            <span className="hidden sm:inline text-white/5">•</span>
+            <span>japanese png</span>
+            <span className="hidden sm:inline text-white/5">•</span>
+            <span>png assets</span>
+            <span className="hidden sm:inline text-white/5">•</span>
+            <span>cutout png</span>
+            <span className="hidden sm:inline text-white/5">•</span>
+            <span>isolated png</span>
           </div>
 
         </div>
