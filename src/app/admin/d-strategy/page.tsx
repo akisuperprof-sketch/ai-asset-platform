@@ -97,7 +97,7 @@ export default function DStrategyDashboard() {
   return (
     <div className="p-8 pb-32">
       <div className="mb-8">
-        <h1 className="text-2xl font-black uppercase tracking-widest text-white mb-2">D-Strategy OS</h1>
+        <h1 className="text-2xl font-black uppercase tracking-widest text-white mb-2">D作戦OS</h1>
         <p className="text-xs text-secondary">AssetNinja 自律成長型オペレーション・ダッシュボード</p>
       </div>
 
@@ -105,17 +105,17 @@ export default function DStrategyDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         <div className="glass-card p-6 border-white/5 rounded-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[50px]" />
-          <h3 className="text-[10px] text-white/40 font-black uppercase tracking-widest mb-4">Pending Queue</h3>
+          <h3 className="text-[10px] text-white/40 font-black uppercase tracking-widest mb-4">承認待ち</h3>
           <p className="text-4xl font-black text-white">{stats.pending}</p>
         </div>
         <div className="glass-card p-6 border-white/5 rounded-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 blur-[50px]" />
-          <h3 className="text-[10px] text-white/40 font-black uppercase tracking-widest mb-4">Published (Live)</h3>
+          <h3 className="text-[10px] text-white/40 font-black uppercase tracking-widest mb-4">公開中</h3>
           <p className="text-4xl font-black text-white">{stats.approved}</p>
         </div>
         <div className="glass-card p-6 border-white/5 rounded-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/10 blur-[50px]" />
-          <h3 className="text-[10px] text-white/40 font-black uppercase tracking-widest mb-4">Rejected</h3>
+          <h3 className="text-[10px] text-white/40 font-black uppercase tracking-widest mb-4">却下済み</h3>
           <p className="text-4xl font-black text-white">{stats.rejected}</p>
         </div>
       </div>
@@ -125,12 +125,12 @@ export default function DStrategyDashboard() {
         <div className="flex items-center justify-between mb-8 border-b border-white/5 pb-4">
           <div className="flex items-center gap-3">
             <Layers className="w-5 h-5 text-ai-cyan" />
-            <h2 className="text-lg font-black uppercase tracking-widest">Pending Review Queue</h2>
+            <h2 className="text-lg font-black uppercase tracking-widest">審査キュー</h2>
           </div>
           <div className="flex gap-4">
             <button onClick={fetchDashboardData} className="flex items-center gap-2 text-[10px] uppercase font-bold text-secondary hover:text-white transition-colors">
               <RefreshCw className={`w-3 h-3 ${isLoading ? 'animate-spin' : ''}`} />
-              Refresh
+              更新
             </button>
           </div>
         </div>
@@ -138,12 +138,12 @@ export default function DStrategyDashboard() {
         {/* Action Bar */}
         <div className="flex items-center justify-between mb-6 bg-white/5 p-4 rounded-xl border border-white/5">
           <div className="flex items-center gap-4">
-            <span className="text-xs font-bold text-white">{selectedIds.size} Selected</span>
+            <span className="text-xs font-bold text-white">{selectedIds.size} 件選択中</span>
             <button onClick={selectTop20} className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-[10px] font-black uppercase tracking-widest transition-colors">
-              Select Top 20
+              上位20件を選択
             </button>
             <button onClick={() => setSelectedIds(new Set())} className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-[10px] font-black uppercase tracking-widest transition-colors text-white/50">
-              Clear
+              クリア
             </button>
           </div>
           <div className="flex items-center gap-3">
@@ -152,14 +152,14 @@ export default function DStrategyDashboard() {
               onClick={() => setShowConfirm("reject")}
               className="px-6 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-xl text-xs font-black uppercase tracking-widest transition-colors disabled:opacity-30 flex items-center gap-2"
             >
-              <XCircle className="w-4 h-4" /> Bulk Reject
+              <XCircle className="w-4 h-4" /> 一括却下
             </button>
             <button 
               disabled={selectedIds.size === 0 || isProcessing}
               onClick={() => setShowConfirm("approve")}
               className="px-6 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-xl text-xs font-black uppercase tracking-widest transition-colors disabled:opacity-30 flex items-center gap-2"
             >
-              <ShieldCheck className="w-4 h-4" /> Bulk Approve
+              <ShieldCheck className="w-4 h-4" /> 一括承認
             </button>
           </div>
         </div>
@@ -197,7 +197,7 @@ export default function DStrategyDashboard() {
           <div className="bg-ninja-black border border-white/10 p-8 rounded-3xl max-w-md w-full shadow-2xl relative">
             <AlertTriangle className={`w-12 h-12 mb-4 ${showConfirm === 'approve' ? 'text-emerald-400' : 'text-red-400'}`} />
             <h3 className="text-xl font-black uppercase mb-2">
-              Confirm {showConfirm === 'approve' ? 'Approval' : 'Rejection'}
+              {showConfirm === 'approve' ? '承認の確認' : '却下の確認'}
             </h3>
             <p className="text-sm text-secondary mb-8">
               選択された {selectedIds.size} 件のアセットを{showConfirm === 'approve' ? '公開' : '却下'}します。よろしいですか？
@@ -207,7 +207,7 @@ export default function DStrategyDashboard() {
                 onClick={() => setShowConfirm(null)}
                 className="flex-1 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors"
               >
-                Cancel
+                キャンセル
               </button>
               <button 
                 onClick={() => handleBulkAction(`bulk_${showConfirm}` as any)}
@@ -215,7 +215,7 @@ export default function DStrategyDashboard() {
                   showConfirm === 'approve' ? 'bg-emerald-500 hover:bg-emerald-400 text-black' : 'bg-red-500 hover:bg-red-400 text-white'
                 }`}
               >
-                Execute
+                実行
               </button>
             </div>
           </div>

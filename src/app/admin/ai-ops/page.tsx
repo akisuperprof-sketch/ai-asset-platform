@@ -186,7 +186,7 @@ export default function AiOpsPage() {
             AI Operations & Autopilot Monitor
           </div>
           <h1 className="text-3xl font-black tracking-tighter uppercase bg-gradient-to-r from-white via-slate-100 to-cyan-500 bg-clip-text text-transparent">
-            AI OSP / AUTOPILOT WATCH
+            AI稼働監視
           </h1>
         </div>
 
@@ -198,7 +198,7 @@ export default function AiOpsPage() {
             }`}
           >
             <Activity className={`w-3.5 h-3.5 ${isAiActive ? "animate-spin" : ""}`} />
-            Autopilot: {isAiActive ? "RUNNING" : "PAUSED"}
+            自動生成: {isAiActive ? "稼働中" : "停止中"}
           </button>
           
           <button 
@@ -233,7 +233,7 @@ export default function AiOpsPage() {
         <div className="glass-card p-6 rounded-3xl border border-white/5 bg-white/[0.02] flex flex-col justify-between min-h-[160px]">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <span className="text-[10px] font-black text-cyan-400 tracking-wider uppercase block">DB HEALTH STATUS</span>
+              <span className="text-[10px] font-black text-cyan-400 tracking-wider uppercase block">データベース状態</span>
               <h3 className="text-3xl font-black">{data?.db?.total ?? "---"} <span className="text-xs text-white/40 font-normal">assets</span></h3>
             </div>
             <div className="p-2 bg-cyan-500/10 rounded-xl">
@@ -250,7 +250,7 @@ export default function AiOpsPage() {
               <span className="text-amber-400 font-bold">{data?.db?.pending ?? "-"}</span>
             </div>
             <div className="flex justify-between text-rose-400">
-              <span>Rejected / Draft</span>
+              <span>Rejected / Draft (却下/下書き)</span>
               <span className="font-bold">{(data?.db?.rejected ?? 0) + (data?.db?.draft ?? 0)}</span>
             </div>
           </div>
@@ -260,7 +260,7 @@ export default function AiOpsPage() {
         <div className="glass-card p-6 rounded-3xl border border-white/5 bg-white/[0.02] flex flex-col justify-between min-h-[160px]">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <span className="text-[10px] font-black text-purple-400 tracking-wider uppercase block">STORAGE HEALTH</span>
+              <span className="text-[10px] font-black text-purple-400 tracking-wider uppercase block">ストレージ状態</span>
               <h3 className="text-3xl font-black">
                 {data?.storage?.existsInStorageCount ?? "---"}
                 <span className="text-xs text-white/40 font-normal"> / {data?.storage?.totalScanned ?? "---"}</span>
@@ -288,7 +288,7 @@ export default function AiOpsPage() {
         <div className="glass-card p-6 rounded-3xl border border-white/5 bg-white/[0.02] flex flex-col justify-between min-h-[160px]">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <span className="text-[10px] font-black text-emerald-400 tracking-wider uppercase block">BROKEN IMAGES</span>
+              <span className="text-[10px] font-black text-emerald-400 tracking-wider uppercase block">リンク切れ画像</span>
               <h3 className="text-3xl font-black">
                 {data?.brokenImages?.brokenCount ?? "0"}
                 <span className="text-xs text-white/40 font-normal"> detected</span>
@@ -314,7 +314,7 @@ export default function AiOpsPage() {
         <div className="glass-card p-6 rounded-3xl border border-white/5 bg-white/[0.02] flex flex-col justify-between min-h-[160px]">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <span className="text-[10px] font-black text-rose-400 tracking-wider uppercase block">FAILED JOBS</span>
+              <span className="text-[10px] font-black text-rose-400 tracking-wider uppercase block">失敗した生成ジョブ</span>
               <h3 className="text-3xl font-black">
                 {data?.failedJobs?.count ?? "0"}
                 <span className="text-xs text-white/40 font-normal"> errors</span>
@@ -348,7 +348,7 @@ export default function AiOpsPage() {
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-cyan-400 animate-pulse" />
                 <h2 className="text-base font-black uppercase tracking-wider">
-                  Pending Assets Review ({pendingAssets.length})
+                  確認待ちアセット ({pendingAssets.length})
                 </h2>
               </div>
 
@@ -480,7 +480,7 @@ export default function AiOpsPage() {
           <div className="glass-card p-6 rounded-3xl border border-white/5 bg-white/[0.01] space-y-4">
             <h2 className="text-sm font-black uppercase tracking-wider flex items-center gap-2">
               <FileCode2 className="w-4 h-4 text-rose-400" />
-              Failed Pipeline Logs
+              パイプライン失敗ログ
             </h2>
 
             {data?.failedJobs?.list && data.failedJobs.list.length > 0 ? (
@@ -508,7 +508,7 @@ export default function AiOpsPage() {
           <div className="glass-card p-6 rounded-3xl border border-white/5 bg-white/[0.01] space-y-4">
             <h2 className="text-sm font-black uppercase tracking-wider flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-cyan-400" />
-              Market Demand gaps
+              検索需要ギャップ
             </h2>
 
             <div className="text-xs font-semibold space-y-2 text-white/70">

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AssetCard } from "./AssetCard";
 import { Asset } from "@/types";
-import { SearchX, Filter, Grid3X3, List, ChevronRight } from "lucide-react";
+import { SearchX, Filter, Grid3X3, List, ChevronRight, Sparkles } from "lucide-react";
 import { dummyCategories } from "@/lib/dummy-data";
 import Link from "next/link";
 import { NinjaEmptyState } from "@/components/brand/NinjaEmptyState";
@@ -117,18 +117,48 @@ export function AssetGrid({
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="glass-card py-20 rounded-[40px] text-center"
+          className="glass-card py-20 rounded-[40px] text-center max-w-2xl mx-auto"
         >
-          <NinjaEmptyState message="お探しの忍びは見つかりませんでした。" />
-          <button 
-            onClick={() => {
-              if (onSearchChange) onSearchChange("");
-              if (onCategoryChange) onCategoryChange("すべて");
-            }}
-            className="mt-8 bg-white text-black px-12 py-4 rounded-full text-xs font-black uppercase tracking-widest hover:scale-105 transition-transform active:scale-95"
-          >
-            Reset Search
-          </button>
+          <NinjaEmptyState message="この素材は現在準備中です。" />
+          <p className="text-secondary mt-4 text-sm">
+            1〜2日以内に追加される予定です。<br/>
+            This asset is being prepared. It is expected to be available within 1–2 days.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+            <button 
+              onClick={async () => {
+                if (!searchQuery) return;
+                try {
+                  await fetch('/api/search/track', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                      query: searchQuery, 
+                      hasResults: false,
+                      matchedAssetCount: 0,
+                      sourcePage: window.location.pathname
+                    })
+                  });
+                  alert('リクエストを送信しました！ / Request submitted!');
+                } catch (e) {
+                  console.error(e);
+                }
+              }}
+              className="bg-ai-purple text-white px-10 py-4 rounded-full text-xs font-black uppercase tracking-widest hover:scale-105 transition-transform active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(168,85,247,0.3)]"
+            >
+              <Sparkles className="w-4 h-4" />
+              この素材をリクエスト
+            </button>
+            <button 
+              onClick={() => {
+                if (onSearchChange) onSearchChange("");
+                if (onCategoryChange) onCategoryChange("すべて");
+              }}
+              className="glass text-white px-10 py-4 rounded-full text-xs font-black uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
+            >
+              Reset Search
+            </button>
+          </div>
         </motion.div>
       )}
 

@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { Asset } from "@/types";
 import { dummyAssets, computeQualityGate } from "./dummy-data";
+import { getSynonyms } from './search-normalizer';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -177,8 +178,19 @@ export async function searchAssets(query: string, category: string, limit: numbe
     }
 
     if (query) {
-      // tags ARRAY への検索も含める
-      supabaseQuery = supabaseQuery.or(`title.ilike.%${query}%,description.ilike.%${query}%,tags.cs.{${query}}`);
+      const synonyms = getSynonyms(query);
+      
+      // We will build an OR query string that checks for each synonym
+      // in title, description, or tags.
+      // Supabase .or() syntax: 'title.ilike.%q1%,description.ilike.%q1%,tags.cs.{q1},title.ilike.%q2%,...'
+      
+      const orConditions = synonyms.map(syn => {
+        // We use string replacement to safely escape single quotes if any
+        const safeSyn = syn.replace(/'/g, "''");
+        return `title.ilike.%${safeSyn}%,description.ilike.%${safeSyn}%,tags.cs.{${safeSyn}}`;
+      });
+      
+      supabaseQuery = supabaseQuery.or(orConditions.join(','));
     }
 
     const { data, error } = await supabaseQuery

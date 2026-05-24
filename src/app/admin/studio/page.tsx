@@ -98,6 +98,7 @@ export default function StudioPage() {
   const [previewBg, setPreviewBg] = useState<"checker" | "black" | "white">("checker");
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [showLowQualityOnly, setShowLowQualityOnly] = useState(false);
   
   // Job Creator states
   const [jobCategory, setJobCategory] = useState("寿司");
@@ -197,13 +198,24 @@ export default function StudioPage() {
 
   const kpis = getKpiStats();
 
-  // Filter assets based on search query
-  const filteredAssets = localAssets.filter(asset => 
-    asset.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  // Filter assets based on search query and low quality flag
+  const isLowQuality = (asset: Asset) => {
+    const text = (asset.title + " " + asset.tags.join(" ")).toLowerCase();
+    const lqTerms = ["star", "circle", "abstract", "monochrome", "low_quality", "図形", "幾何", "単色"];
+    return lqTerms.some(term => text.includes(term));
+  };
+
+  const filteredAssets = localAssets.filter(asset => {
+    const matchSearch = asset.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
+      
+    if (showLowQualityOnly) {
+      return matchSearch && isLowQuality(asset);
+    }
+    return matchSearch;
+  });
 
   // Copy helper
   const handleCopyText = (text: string, label: string) => {
@@ -212,18 +224,17 @@ export default function StudioPage() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  // Quick Action: Change Status manually in DB
+  // Quick Action: Change Status manually securely via backend
   const updateStatus = async (id: string, newStatus: "approved" | "pending" | "rejected") => {
     try {
-      const { error } = await supabase
-        .from("assets")
-        .update({ 
-          review_status: newStatus,
-          published_at: newStatus === "approved" ? new Date().toISOString() : null
-        })
-        .eq("id", id);
+      const res = await fetch('/api/admin/asset-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: newStatus })
+      });
+      const data = await res.json();
       
-      if (error) throw error;
+      if (!data.success) throw new Error(data.error);
       
       // Update local state
       setLocalAssets(prev => prev.map(asset => {
@@ -240,46 +251,46 @@ export default function StudioPage() {
         setStats(statsJson);
       }
       
-      alert(`✅ Status successfully updated to: ${newStatus.toUpperCase()}`);
+      alert(`✅ ステータスを更新しました: ${newStatus.toUpperCase()}`);
     } catch (e: any) {
       console.error(e);
-      alert(`❌ Failed to update status: ${e.message}`);
+      alert(`❌ ステータス更新失敗: ${e.message}`);
     }
   };
 
-  // Advanced Action: Update Quality Rank & auto-adjust status / scores in DB
+  // Advanced Action: Update Quality Rank & auto-adjust status / scores securely via backend
   const updateRank = async (id: string, newRank: "S" | "A" | "B" | "C") => {
     try {
       const isReject = newRank === "C";
       const isPending = newRank === "B";
       const newStatus = isReject ? "rejected" : isPending ? "pending" : "approved";
       
-      const updatePayload: any = { 
-        quality_rank: newRank,
-        review_status: newStatus,
-        published_at: newStatus === "approved" ? new Date().toISOString() : null
-      };
+      const payload: any = { id, status: newStatus, qualityRank: newRank };
 
       if (newRank === "S") {
-        updatePayload.composition_score = 98;
-        updatePayload.centering_score = 99;
-        updatePayload.margin_score = 96;
-        updatePayload.white_fringe_score = 100;
-        updatePayload.resolution_score = 100;
-        updatePayload.ai_distortion_score = 98;
-        updatePayload.subject_score = 99;
-        updatePayload.pinterest_score = 97;
-        updatePayload.canva_score = 98;
-        updatePayload.luxury_score = 98;
-        updatePayload.seo_score = 99;
+        payload.scores = {
+          composition_score: 98,
+          centering_score: 99,
+          margin_score: 96,
+          white_fringe_score: 100,
+          resolution_score: 100,
+          ai_distortion_score: 98,
+          subject_score: 99,
+          pinterest_score: 97,
+          canva_score: 98,
+          luxury_score: 98,
+          seo_score: 99
+        };
       }
 
-      const { error } = await supabase
-        .from("assets")
-        .update(updatePayload)
-        .eq("id", id);
+      const res = await fetch('/api/admin/asset-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
       
-      if (error) throw error;
+      if (!data.success) throw new Error(data.error);
 
       // Update local state
       setLocalAssets(prev => prev.map(asset => {
@@ -318,10 +329,10 @@ export default function StudioPage() {
         setStats(statsJson);
       }
 
-      alert(`✅ Rank successfully updated to: ${newRank} and review status updated to: ${newStatus.toUpperCase()}`);
+      alert(`✅ ランクを ${newRank} に、ステータスを ${newStatus.toUpperCase()} に更新しました。`);
     } catch (e: any) {
       console.error(e);
-      alert(`❌ Failed to update rank: ${e.message}`);
+      alert(`❌ ランク更新失敗: ${e.message}`);
     }
   };
 
@@ -485,16 +496,27 @@ export default function StudioPage() {
                 Asset Verification Pipeline Grid
               </h2>
               
-              {/* Search Bar */}
-              <div className="relative max-w-xs w-full">
-                <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input 
-                  type="text"
-                  placeholder="Filter by title, tag, ID..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-zinc-900 border border-white/5 pl-10 pr-4 py-2 rounded-full text-xs text-white focus:outline-none focus:border-purple-500/40"
-                />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowLowQualityOnly(!showLowQualityOnly)}
+                  className={`px-3 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-colors border ${
+                    showLowQualityOnly ? 'bg-amber-500/20 text-amber-300 border-amber-500/50' : 'bg-zinc-900 text-zinc-400 border-white/5 hover:bg-zinc-800'
+                  }`}
+                >
+                  <AlertTriangle className="w-3.5 h-3.5 inline-block mr-1" />
+                  低品質疑い
+                </button>
+                {/* Search Bar */}
+                <div className="relative max-w-xs w-full">
+                  <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input 
+                    type="text"
+                    placeholder="Filter by title, tag, ID..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-zinc-900 border border-white/5 pl-10 pr-4 py-2 rounded-full text-xs text-white focus:outline-none focus:border-purple-500/40"
+                  />
+                </div>
               </div>
             </div>
 

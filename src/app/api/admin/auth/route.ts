@@ -3,17 +3,25 @@ import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
   try {
-    const { key } = await request.json();
+    const body = await request.json();
+    const inputKey = body?.key;
     const serverKey = process.env.D_STRATEGY_KEY;
 
-    if (!serverKey) {
+    if (!serverKey || serverKey.trim() === '') {
       return NextResponse.json(
         { ok: false, error: 'SERVER_KEY_NOT_CONFIGURED' },
         { status: 500 }
       );
     }
 
-    if (key === serverKey) {
+    if (!inputKey || inputKey.trim() === '') {
+      return NextResponse.json(
+        { ok: false, error: 'MISSING_KEY' },
+        { status: 400 }
+      );
+    }
+
+    if (inputKey.trim() === serverKey.trim()) {
       (await cookies()).set('d_strategy_session', 'authenticated', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

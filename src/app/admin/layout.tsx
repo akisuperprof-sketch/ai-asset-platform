@@ -56,6 +56,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       } else {
         if (data.error === 'SERVER_KEY_NOT_CONFIGURED') {
           setError("SYSTEM ERROR: D_STRATEGY_KEY NOT CONFIGURED");
+        } else if (data.error === 'MISSING_KEY') {
+          setError("AUTHENTICATION FAILED: KEY IS REQUIRED");
         } else {
           setError("AUTHENTICATION FAILED: INVALID CRITICAL KEY");
         }
@@ -164,7 +166,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               }`}
             >
               <LayoutDashboard className="w-4 h-4" />
-              Studio Console
+              スタジオ管理
             </Link>
 
             <Link
@@ -176,7 +178,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               }`}
             >
               <Sparkles className="w-4 h-4" />
-              AI Activity Ops
+              AI稼働監視
             </Link>
 
             <div className="text-[9px] font-black text-white/30 uppercase tracking-[0.25em] pl-3 pt-6 mb-2">
@@ -192,31 +194,43 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               }`}
             >
               <TrendingUp className="w-4 h-4" />
-              D-Strategy OS
+              D作戦OS
             </Link>
 
             <Link
-              href="/coming-soon"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black text-secondary hover:text-white hover:bg-white/5 border border-transparent transition-colors"
+              href="/admin/assets-registry"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black transition-colors ${
+                pathname === "/admin/assets-registry"
+                  ? "bg-purple-500/10 border border-purple-500/20 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.05)]" 
+                  : "text-secondary hover:text-white hover:bg-white/5 border border-transparent"
+              }`}
             >
               <Layers className="w-4 h-4" />
-              Assets Registry
+              素材一覧
             </Link>
 
             <Link
-              href="/coming-soon"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black text-secondary hover:text-white hover:bg-white/5 border border-transparent transition-colors"
+              href="/admin/keywords-radar"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black transition-colors ${
+                pathname === "/admin/keywords-radar"
+                  ? "bg-purple-500/10 border border-purple-500/20 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.05)]" 
+                  : "text-secondary hover:text-white hover:bg-white/5 border border-transparent"
+              }`}
             >
               <Search className="w-4 h-4" />
-              Keywords Radar
+              検索需要レーダー
             </Link>
 
             <Link
-              href="/coming-soon"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black text-secondary hover:text-white hover:bg-white/5 border border-transparent transition-colors"
+              href="/admin/revenue-analytics"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black transition-colors ${
+                pathname === "/admin/revenue-analytics"
+                  ? "bg-purple-500/10 border border-purple-500/20 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.05)]" 
+                  : "text-secondary hover:text-white hover:bg-white/5 border border-transparent"
+              }`}
             >
               <DollarSign className="w-4 h-4" />
-              Revenue Analytics
+              収益分析
             </Link>
           </nav>
         </div>
