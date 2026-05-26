@@ -5,8 +5,17 @@ export interface QAResult {
   visionScore: number;
   commercialScore: number;
   seoScore: number;
-  qualityFlags: string[];
-  lowQualityReason: string;
+  transparencyScore: number;
+  subjectClarityScore: number;
+  canvaScore: number;
+  pinterestScore: number;
+  aiArtifactScore: number;
+  compositionScore: number;
+  adobeStockScore: number;
+  thumbnailScore: number;
+  riskLevel: string;
+  qaRecommendedAction: "approve" | "pending" | "reject";
+  qaReasons: string[];
 }
 
 /**
@@ -29,9 +38,6 @@ async function runBasicQA(imageBuffer: Buffer) {
     let hasAlpha = metadata.hasAlpha;
     let alphaStdDev = stats.channels.length > 3 ? stats.channels[3].stdev : 0;
     
-    // If alpha stdev is extremely high or extremely low, it might be a weird cutout
-    // We'll leave the complex judgment to Gemini, but collect basic heuristics
-    
     return {
       avgStdDev,
       isPotentiallyMonochrome,
@@ -49,7 +55,7 @@ async function runBasicQA(imageBuffer: Buffer) {
 /**
  * Runs Commercial and Semantic QA using Gemini Vision
  */
-async function runCommercialQA(imageBuffer: Buffer, mimeType: string) {
+async function runCommercialQA(imageBuffer: Buffer, mimeType: string): Promise<QAResult> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY is not configured.");
@@ -58,25 +64,30 @@ async function runCommercialQA(imageBuffer: Buffer, mimeType: string) {
   const ai = new GoogleGenAI({ apiKey });
   
   const prompt = `
-  You are an expert Chief Quality Auditor for a premium Stock Photo and UI Asset marketplace (like Adobe Stock or Canva).
-  Your job is to rigorously evaluate this AI-generated transparent PNG asset.
+  You are an expert Chief Quality Auditor serving as an "Adobe Stock Reviewer", "Canva Asset Reviewer", and "Pinterest CTR Auditor".
+  Your job is to rigorously evaluate this AI-generated transparent PNG asset for COMMERCIAL VIABILITY.
+  DO NOT just describe what is in the image. Evaluate its usefulness as a commercial stock asset.
   
-  Please analyze the image and score it strictly out of 100 on three dimensions:
-  1. visionScore (0-100): Visual quality. Deduct points heavily for: single-color shapes (circles, stars, flat vectors), blurred edges, weird AI distortions, white-fringes on transparent edges.
-  2. commercialScore (0-100): Utility for designers. Deduct points heavily if: the object is unidentifiable, the use-case is unknown, or it looks "cheap". A simple plain yellow star or red circle is NOT commercially viable (score < 20).
-  3. seoScore (0-100): Search value. Is this something people would search for and use? 
-
-  Also, identify any "qualityFlags" (e.g., "単色率高", "図形疑い", "用途不明", "白フチ", "AI崩れ").
-  If the image is poor quality, provide a concise "lowQualityReason" in Japanese.
-
-  For example:
-  - If it's a simple solid color circle or star: visionScore < 30, commercialScore < 20, flags: ["単色率高", "図形疑い", "用途不明"].
-  - If it's a well-rendered ramen bowl with clean transparency: visionScore > 80, commercialScore > 85, flags: [].
+  Please analyze the image and score it strictly out of 100 on the following dimensions:
+  1. commercial_score (0-100): Commercial utility for designers. Deduct heavily if unidentifiable or simple shapes (e.g. basic circle/star score < 20).
+  2. transparency_score (0-100): Edge quality. Is it a clean cutout? Deduct for white fringing or messy edges.
+  3. subject_clarity (0-100): Is the main subject clearly identifiable without context?
+  4. canva_score (0-100): How useful is this as a drag-and-drop element in Canva?
+  5. pinterest_score (0-100): How high is the CTR appeal on Pinterest?
+  6. ai_artifact_score (0-100): How obvious are AI artifacts? (High score = bad artifacts. e.g., melted structures, extra fingers. 0 = perfect).
+  7. composition_score (0-100): Quality of framing and composition.
+  8. adobe_stock_score (0-100): Does this meet the high bar of Adobe Stock premium assets?
+  9. thumbnail_score (0-100): SEO thumbnail strength. Does it pop at small sizes?
+  
+  Also provide:
+  - risk_level: "low", "medium", or "high". (High if it violates quality standards).
+  - recommended_action: "approve", "pending", or "reject". 
+    - Rule: If commercial_score < 60 or ai_artifact_score > 70, you MUST return "pending" or "reject".
+  - reasons: Array of strings in Japanese explaining the evaluation (e.g., ["被写体が明確で商用利用に最適", "Pinterestでのクリック率が期待できる"] or ["単色の丸形であり商用価値がない", "AI特有の崩れがある"]).
   `;
 
-  // Provide the image buffer to Gemini
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash', // Using latest lightweight multimodal model
+    model: 'gemini-2.5-flash',
     contents: [
       { text: prompt },
       { inlineData: { data: imageBuffer.toString("base64"), mimeType } }
@@ -87,13 +98,24 @@ async function runCommercialQA(imageBuffer: Buffer, mimeType: string) {
       responseSchema: {
         type: Type.OBJECT,
         properties: {
-          visionScore: { type: Type.INTEGER, description: "Vision quality score 0-100" },
-          commercialScore: { type: Type.INTEGER, description: "Commercial utility score 0-100" },
-          seoScore: { type: Type.INTEGER, description: "SEO and search demand score 0-100" },
-          qualityFlags: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Array of Japanese flags" },
-          lowQualityReason: { type: Type.STRING, description: "Reason for low quality in Japanese, or empty if OK" },
+          commercial_score: { type: Type.INTEGER },
+          transparency_score: { type: Type.INTEGER },
+          subject_clarity: { type: Type.INTEGER },
+          canva_score: { type: Type.INTEGER },
+          pinterest_score: { type: Type.INTEGER },
+          ai_artifact_score: { type: Type.INTEGER },
+          composition_score: { type: Type.INTEGER },
+          adobe_stock_score: { type: Type.INTEGER },
+          thumbnail_score: { type: Type.INTEGER },
+          risk_level: { type: Type.STRING },
+          recommended_action: { type: Type.STRING },
+          reasons: { type: Type.ARRAY, items: { type: Type.STRING } },
         },
-        required: ["visionScore", "commercialScore", "seoScore", "qualityFlags", "lowQualityReason"]
+        required: [
+          "commercial_score", "transparency_score", "subject_clarity", "canva_score", "pinterest_score",
+          "ai_artifact_score", "composition_score", "adobe_stock_score", "thumbnail_score",
+          "risk_level", "recommended_action", "reasons"
+        ]
       }
     }
   });
@@ -103,7 +125,24 @@ async function runCommercialQA(imageBuffer: Buffer, mimeType: string) {
     throw new Error("Gemini API returned empty response");
   }
 
-  return JSON.parse(text) as QAResult;
+  const raw = JSON.parse(text);
+  
+  return {
+    visionScore: Math.floor((raw.commercial_score + raw.adobe_stock_score + raw.composition_score) / 3),
+    commercialScore: raw.commercial_score,
+    seoScore: Math.floor((raw.pinterest_score + raw.thumbnail_score) / 2),
+    transparencyScore: raw.transparency_score,
+    subjectClarityScore: raw.subject_clarity,
+    canvaScore: raw.canva_score,
+    pinterestScore: raw.pinterest_score,
+    aiArtifactScore: raw.ai_artifact_score,
+    compositionScore: raw.composition_score,
+    adobeStockScore: raw.adobe_stock_score,
+    thumbnailScore: raw.thumbnail_score,
+    riskLevel: raw.risk_level,
+    qaRecommendedAction: raw.recommended_action as any,
+    qaReasons: raw.reasons
+  };
 }
 
 /**
@@ -129,13 +168,13 @@ export async function runVisionQA(imageUrl: string): Promise<QAResult> {
 
     // Merge heuristics if necessary
     if (basicInfo && basicInfo.isPotentiallyMonochrome) {
-      if (!qaResult.qualityFlags.includes("単色率高")) {
-        qaResult.qualityFlags.push("単色率高");
-      }
+      qaResult.qaReasons.push("単色・単純図形の疑いが強い（自動解析）");
       // Severely penalize simple shapes mathematically as a fallback
       qaResult.visionScore = Math.min(qaResult.visionScore, 40);
       qaResult.commercialScore = Math.min(qaResult.commercialScore, 30);
-      qaResult.lowQualityReason = qaResult.lowQualityReason || "単色・単純図形の疑いが強いため自動減点しました";
+      qaResult.canvaScore = Math.min(qaResult.canvaScore, 20);
+      qaResult.adobeStockScore = Math.min(qaResult.adobeStockScore, 20);
+      qaResult.qaRecommendedAction = "pending";
     }
 
     return qaResult;
@@ -146,8 +185,17 @@ export async function runVisionQA(imageUrl: string): Promise<QAResult> {
       visionScore: 0,
       commercialScore: 0,
       seoScore: 0,
-      qualityFlags: ["QA ERROR"],
-      lowQualityReason: "AI監査システムへの接続に失敗しました"
+      transparencyScore: 0,
+      subjectClarityScore: 0,
+      canvaScore: 0,
+      pinterestScore: 0,
+      aiArtifactScore: 100, // max artifacts on error to force safety
+      compositionScore: 0,
+      adobeStockScore: 0,
+      thumbnailScore: 0,
+      riskLevel: "high",
+      qaRecommendedAction: "pending",
+      qaReasons: ["AI監査システムへの接続に失敗しました"]
     };
   }
 }

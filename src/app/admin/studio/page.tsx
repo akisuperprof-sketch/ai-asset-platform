@@ -978,67 +978,85 @@ export default function StudioPage() {
                     Premium QA Audit OS
                   </span>
 
-                  <div className="text-[10px] space-y-2 text-zinc-400 font-semibold leading-relaxed">
-                    <p className="flex items-center gap-2">
-                      <span className="w-4 h-4 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center">✓</span> 用途が明確
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <span className="w-4 h-4 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center">✓</span> Canva利用可能
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <span className="w-4 h-4 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center">✓</span> Pinterest向き
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <span className="w-4 h-4 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center">✓</span> 高品質透過
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <span className="w-4 h-4 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center">✓</span> AI感が弱い
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <span className="w-4 h-4 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center">✓</span> Adobe Stock基準
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <span className="w-4 h-4 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center">✓</span> 商用利用価値
-                    </p>
-                  </div>
-                  
                   <div className="mt-4 pt-4 border-t border-white/5 space-y-3">
                     <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest flex items-center gap-1.5">
                       <Zap className="w-4 h-4" />
                       Vision QA Scores
                     </span>
-                    <div className="grid grid-cols-3 gap-2">
-                      <div className="bg-black/50 p-2 rounded-lg border border-white/5 text-center">
-                        <div className="text-white font-black text-xs">82</div>
-                        <div className="text-[8px] text-zinc-500 uppercase mt-1">Vision QA</div>
-                      </div>
-                      <div className="bg-black/50 p-2 rounded-lg border border-white/5 text-center">
-                        <div className="text-white font-black text-xs">91</div>
-                        <div className="text-[8px] text-zinc-500 uppercase mt-1">Commercial</div>
-                      </div>
-                      <div className="bg-black/50 p-2 rounded-lg border border-white/5 text-center">
-                        <div className="text-white font-black text-xs">74</div>
-                        <div className="text-[8px] text-zinc-500 uppercase mt-1">SEO</div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4 pt-4 border-t border-white/5 space-y-2">
-                    <span className="text-[10px] font-black text-red-400 uppercase tracking-widest flex items-center gap-1.5">
-                      <Flame className="w-4 h-4" />
-                      危険フラグ
-                    </span>
-                    <ul className="list-disc pl-4 text-[10px] text-zinc-500 space-y-1">
-                      <li>単色率高 (チェック対象)</li>
-                      <li>用途不明 (チェック対象)</li>
-                      <li>抽象図形疑い (チェック対象)</li>
-                    </ul>
-                  </div>
+                    
+                    {selectedAsset.qaCheckedAt ? (
+                      <>
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className={`bg-black/50 p-2 rounded-lg border text-center ${selectedAsset.visionScore && selectedAsset.visionScore >= 90 ? 'border-emerald-500/30' : selectedAsset.visionScore && selectedAsset.visionScore >= 70 ? 'border-amber-500/30' : 'border-red-500/30'}`}>
+                            <div className={`font-black text-xs ${selectedAsset.visionScore && selectedAsset.visionScore >= 90 ? 'text-emerald-400' : selectedAsset.visionScore && selectedAsset.visionScore >= 70 ? 'text-amber-400' : 'text-red-400'}`}>{selectedAsset.visionScore || 0}</div>
+                            <div className="text-[8px] text-zinc-500 uppercase mt-1">Vision QA</div>
+                          </div>
+                          <div className={`bg-black/50 p-2 rounded-lg border text-center ${selectedAsset.commercialScore && selectedAsset.commercialScore >= 90 ? 'border-emerald-500/30' : selectedAsset.commercialScore && selectedAsset.commercialScore >= 70 ? 'border-amber-500/30' : 'border-red-500/30'}`}>
+                            <div className={`font-black text-xs ${selectedAsset.commercialScore && selectedAsset.commercialScore >= 90 ? 'text-emerald-400' : selectedAsset.commercialScore && selectedAsset.commercialScore >= 70 ? 'text-amber-400' : 'text-red-400'}`}>{selectedAsset.commercialScore || 0}</div>
+                            <div className="text-[8px] text-zinc-500 uppercase mt-1">Commercial</div>
+                          </div>
+                          <div className={`bg-black/50 p-2 rounded-lg border text-center ${selectedAsset.seoScore && selectedAsset.seoScore >= 90 ? 'border-emerald-500/30' : selectedAsset.seoScore && selectedAsset.seoScore >= 70 ? 'border-amber-500/30' : 'border-red-500/30'}`}>
+                            <div className={`font-black text-xs ${selectedAsset.seoScore && selectedAsset.seoScore >= 90 ? 'text-emerald-400' : selectedAsset.seoScore && selectedAsset.seoScore >= 70 ? 'text-amber-400' : 'text-red-400'}`}>{selectedAsset.seoScore || 0}</div>
+                            <div className="text-[8px] text-zinc-500 uppercase mt-1">SEO</div>
+                          </div>
+                          <div className={`bg-black/50 p-2 rounded-lg border text-center ${selectedAsset.canvaScore && selectedAsset.canvaScore >= 90 ? 'border-emerald-500/30' : selectedAsset.canvaScore && selectedAsset.canvaScore >= 70 ? 'border-amber-500/30' : 'border-red-500/30'}`}>
+                            <div className={`font-black text-xs ${selectedAsset.canvaScore && selectedAsset.canvaScore >= 90 ? 'text-emerald-400' : selectedAsset.canvaScore && selectedAsset.canvaScore >= 70 ? 'text-amber-400' : 'text-red-400'}`}>{selectedAsset.canvaScore || 0}</div>
+                            <div className="text-[8px] text-zinc-500 uppercase mt-1">Canva</div>
+                          </div>
+                          <div className={`bg-black/50 p-2 rounded-lg border text-center ${selectedAsset.pinterestScore && selectedAsset.pinterestScore >= 90 ? 'border-emerald-500/30' : selectedAsset.pinterestScore && selectedAsset.pinterestScore >= 70 ? 'border-amber-500/30' : 'border-red-500/30'}`}>
+                            <div className={`font-black text-xs ${selectedAsset.pinterestScore && selectedAsset.pinterestScore >= 90 ? 'text-emerald-400' : selectedAsset.pinterestScore && selectedAsset.pinterestScore >= 70 ? 'text-amber-400' : 'text-red-400'}`}>{selectedAsset.pinterestScore || 0}</div>
+                            <div className="text-[8px] text-zinc-500 uppercase mt-1">Pinterest</div>
+                          </div>
+                          <div className={`bg-black/50 p-2 rounded-lg border text-center ${selectedAsset.aiArtifactScore && selectedAsset.aiArtifactScore <= 10 ? 'border-emerald-500/30' : selectedAsset.aiArtifactScore && selectedAsset.aiArtifactScore <= 40 ? 'border-amber-500/30' : 'border-red-500/30'}`}>
+                            <div className={`font-black text-xs ${selectedAsset.aiArtifactScore && selectedAsset.aiArtifactScore <= 10 ? 'text-emerald-400' : selectedAsset.aiArtifactScore && selectedAsset.aiArtifactScore <= 40 ? 'text-amber-400' : 'text-red-400'}`}>{selectedAsset.aiArtifactScore || 0}</div>
+                            <div className="text-[8px] text-zinc-500 uppercase mt-1">AI Artifact</div>
+                          </div>
+                        </div>
 
-                  <div className="mt-4 pt-4 border-t border-white/5 flex flex-wrap gap-2">
-                    <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase px-2 py-1 rounded">公開推奨</span>
-                    <span className="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-black uppercase px-2 py-1 rounded">pending推奨</span>
-                    <span className="bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black uppercase px-2 py-1 rounded">reject推奨</span>
+                        {selectedAsset.qaReasons && selectedAsset.qaReasons.length > 0 && (
+                          <div className="mt-4 pt-4 border-t border-white/5 space-y-2">
+                            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest flex items-center gap-1.5">
+                              <Flame className="w-4 h-4" />
+                              監査理由 / 危険フラグ
+                            </span>
+                            <ul className="list-disc pl-4 text-[10px] text-zinc-400 space-y-1">
+                              {selectedAsset.qaReasons.map((reason, i) => (
+                                <li key={i}>{reason}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        <div className="mt-4 pt-4 border-t border-white/5 flex flex-wrap gap-2 items-center">
+                          {selectedAsset.qaRecommendedAction === "approve" && (
+                            <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase px-2 py-1 rounded">公開推奨</span>
+                          )}
+                          {selectedAsset.qaRecommendedAction === "pending" && (
+                            <span className="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-black uppercase px-2 py-1 rounded">pending推奨</span>
+                          )}
+                          {selectedAsset.qaRecommendedAction === "reject" && (
+                            <span className="bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black uppercase px-2 py-1 rounded">reject推奨</span>
+                          )}
+                          
+                          {selectedAsset.qaRecommendedAction === "pending" && selectedAsset.reviewStatus !== "pending" && (
+                            <button 
+                              onClick={() => updateStatus(selectedAsset.id, "pending")}
+                              className="ml-auto bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 text-[10px] font-black uppercase px-3 py-1 rounded border border-amber-500/30 transition-colors"
+                            >
+                              手動でPendingへ戻す
+                            </button>
+                          )}
+                        </div>
+                        <div className="mt-2 text-[8px] text-zinc-500 flex justify-between">
+                          <span>Model: {selectedAsset.qaModel || "-"}</span>
+                          <span>{selectedAsset.qaMode === "dry-run" ? "[DRY-RUN]" : ""}</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-center text-xs text-zinc-500 py-4 font-bold">
+                        Vision QA は未実行です
+                      </div>
+                    )}
                   </div>
                 </div>
 

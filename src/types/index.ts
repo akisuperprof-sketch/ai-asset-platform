@@ -18,15 +18,12 @@ export interface Asset {
   publishedAt?: string;
 
   // Quality Gate Scores (0-100)
-  compositionScore?: number;
   centeringScore?: number;
   marginScore?: number;
   whiteFringeScore?: number;
   resolutionScore?: number;
   aiDistortionScore?: number;
   subjectScore?: number;
-  pinterestScore?: number;
-  canvaScore?: number;
   luxuryScore?: number;
   
   // Quality Rank
@@ -39,12 +36,25 @@ export interface Asset {
   pinterestTitle?: string;
   pinterestDescription?: string;
 
-  // SEO Score (0-100)
-  seoScore?: number;
-
   // Vision Commercial QA OS
   visionScore?: number;
   commercialScore?: number;
+  seoScore?: number;
+  transparencyScore?: number;
+  subjectClarityScore?: number;
+  canvaScore?: number;
+  pinterestScore?: number;
+  aiArtifactScore?: number;
+  compositionScore?: number;
+  adobeStockScore?: number;
+  thumbnailScore?: number;
+  riskLevel?: string;
+  qaRecommendedAction?: "approve" | "pending" | "reject";
+  qaReasons?: string[];
+  qaResult?: any;
+  qaCheckedAt?: string;
+  qaModel?: string;
+  qaMode?: string;
   qualityFlags?: string[];
   lowQualityReason?: string;
   visionLastCheckedAt?: string;

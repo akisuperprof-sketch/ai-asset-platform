@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
 
     // 2. Parse request payload
-    const { assetId } = await req.json();
+    const { assetId, dryRun = true } = await req.json();
     if (!assetId) {
       return NextResponse.json({ success: false, error: "Missing assetId" }, { status: 400 });
     }
@@ -37,31 +37,53 @@ export async function POST(req: Request) {
     // 4. Run Vision Commercial QA
     const qaResult = await runVisionQA(asset.image_url);
 
-    // 5. Determine if status needs auto-adjustment (Auto Moderation)
-    // As per user instructions: "score < 30 is pending candidate, score < 15 is reject candidate, but no auto-reject yet, only auto-pending"
+    // 5. Determine Recommended Action & Potential Status Update
     let newStatus = asset.review_status;
-    if (qaResult.visionScore < 30 || qaResult.commercialScore < 30) {
-      // If it's already rejected, leave it. Otherwise, force to pending.
-      if (newStatus !== "rejected") {
-        newStatus = "pending";
-      }
+    let autoPended = false;
+
+    // Enforce stricter pending candidate logic:
+    if (qaResult.commercialScore < 60 || qaResult.aiArtifactScore > 70) {
+      qaResult.qaRecommendedAction = "pending";
     }
 
     // Determine QA status mapping
     let qaStatus = "passed";
-    if (qaResult.visionScore < 30 || qaResult.commercialScore < 30) qaStatus = "failed";
+    if (qaResult.qaRecommendedAction === "pending" || qaResult.qaRecommendedAction === "reject") {
+      qaStatus = "failed";
+    }
+
+    // If NOT dryRun, actually change the status
+    if (!dryRun) {
+      if (qaResult.qaRecommendedAction === "pending" || qaResult.qaRecommendedAction === "reject") {
+        if (newStatus !== "rejected") {
+          newStatus = "pending";
+          autoPended = true;
+        }
+      }
+    }
 
     // 6. Save QA metrics back to Supabase
-    const { error: updateError } = await adminClient!
+    const { error: updateError } = await adminClient
       .from("assets")
       .update({
         vision_score: qaResult.visionScore,
         commercial_score: qaResult.commercialScore,
         seo_score: qaResult.seoScore,
-        quality_flags: qaResult.qualityFlags,
-        low_quality_reason: qaResult.lowQualityReason,
-        vision_last_checked_at: new Date().toISOString(),
-        vision_model: "gemini-2.5-flash+sharp",
+        transparency_score: qaResult.transparencyScore,
+        subject_clarity_score: qaResult.subjectClarityScore,
+        canva_score: qaResult.canvaScore,
+        pinterest_score: qaResult.pinterestScore,
+        ai_artifact_score: qaResult.aiArtifactScore,
+        composition_score: qaResult.compositionScore,
+        adobe_stock_score: qaResult.adobeStockScore,
+        thumbnail_score: qaResult.thumbnailScore,
+        risk_level: qaResult.riskLevel,
+        qa_recommended_action: qaResult.qaRecommendedAction,
+        qa_reasons: qaResult.qaReasons,
+        qa_result: qaResult,
+        qa_checked_at: new Date().toISOString(),
+        qa_model: "gemini-2.5-flash",
+        qa_mode: dryRun ? "dry-run" : "enforce",
         qa_status: qaStatus,
         review_status: newStatus
       })
@@ -69,13 +91,15 @@ export async function POST(req: Request) {
 
     if (updateError) {
       console.error("[QA API] DB Update Error:", updateError);
-      return NextResponse.json({ success: false, error: "Failed to save QA results" }, { status: 500 });
+      // Even if DB fails, return what we found, but as an error
+      return NextResponse.json({ success: false, error: "Failed to save QA results", details: updateError.message }, { status: 500 });
     }
 
     return NextResponse.json({
       success: true,
       qaResult,
-      autoPended: newStatus === "pending" && asset.review_status !== "pending"
+      dryRun,
+      autoPended
     });
 
   } catch (error: any) {
