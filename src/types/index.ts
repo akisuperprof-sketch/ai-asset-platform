@@ -27,7 +27,7 @@ export interface Asset {
   luxuryScore?: number;
   
   // Quality Rank
-  qualityRank?: "S" | "A" | "B" | "C";
+  qualityRank?: "S" | "A" | "B" | "C" | "D";
   
   // Reject reason if B or C
   rejectReason?: string;

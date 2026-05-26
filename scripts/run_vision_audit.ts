@@ -9,22 +9,51 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function main() {
   const args = process.argv.slice(2);
+  
+  // Parsed arguments
   const limit = args.includes("--limit") ? parseInt(args[args.indexOf("--limit") + 1]) : 10;
-  // User asked for 10 limit test in Phase 3
+  const statusArg = args.includes("--status") ? args[args.indexOf("--status") + 1] : "all";
+  const force = args.includes("--force");
   
-  console.log(`[Batch Audit] Starting Vision QA Batch Audit... (Limit: ${limit})`);
+  // By default, dryRun is true. It can only be turned off by explicitly setting --dry-run false
+  let dryRun = true;
+  if (args.includes("--dry-run")) {
+    const drValue = args[args.indexOf("--dry-run") + 1];
+    if (drValue === "false") dryRun = false;
+  }
   
-  // Find assets to audit (where qa_checked_at is null, or we just take the first N)
-  // For the test, we'll pick some pending/approved assets
-  const { data: assets, error } = await supabase
-    .from("assets")
-    .select("id, title, image_url, review_status, qa_checked_at")
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  console.log(`\n======================================================`);
+  console.log(`[Batch Audit] Starting Vision Commercial QA Batch Audit`);
+  console.log(`======================================================`);
+  console.log(`- Limit:       ${limit}`);
+  console.log(`- Status:      ${statusArg}`);
+  console.log(`- Dry-Run:     ${dryRun}`);
+  console.log(`- Force:       ${force}`);
+  console.log(`------------------------------------------------------`);
+  
+  let query = supabase.from("assets").select("id, title, image_url, review_status, qa_checked_at").order("created_at", { ascending: false });
+
+  if (statusArg !== "all") {
+    query = query.eq("review_status", statusArg);
+  }
+
+  // Unless force is provided, skip already audited assets
+  if (!force) {
+    query = query.is("qa_checked_at", null);
+  }
+  
+  query = query.limit(limit);
+
+  const { data: assets, error } = await query;
 
   if (error || !assets) {
     console.error("Failed to fetch assets", error);
     process.exit(1);
+  }
+
+  if (assets.length === 0) {
+    console.log(`[Batch Audit] No assets found matching criteria. Exiting.`);
+    process.exit(0);
   }
 
   console.log(`[Batch Audit] Found ${assets.length} assets to process.`);
@@ -35,62 +64,63 @@ async function main() {
     process.exit(1);
   }
 
-  for (const asset of assets) {
-    console.log(`\n---------------------------------`);
-    console.log(`Auditing Asset: ${asset.title} (${asset.id})`);
-    console.log(`Current Status: ${asset.review_status}, QA Checked: ${asset.qa_checked_at ? 'Yes' : 'No'}`);
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  let successCount = 0;
+  let errorCount = 0;
 
-    // Call the API endpoint. In local script, we might not have the server running.
-    // If the server is not running, we could call runVisionQA directly, but since we are asked to test the API,
-    // we'll assume the API is accessible at some URL or we should just invoke the function.
-    // Wait, the API requires cookies for authentication. In a script it's tricky to pass cookies.
-    // So we just mock the request or hit a deployed URL.
-    
-    // Instead of HTTP fetch to API (which requires Next.js server to be running and cookie auth),
-    // let's do a direct Supabase + Gemini call here for the batch script, OR
-    // pass the cookie in headers if we point to localhost.
-    
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-    console.log(`Requesting QA API: ${baseUrl}/api/admin/qa-audit`);
+  for (let i = 0; i < assets.length; i++) {
+    const asset = assets[i];
+    console.log(`\n[${i+1}/${assets.length}] Auditing Asset: ${asset.title} (${asset.id})`);
+    console.log(`Current Status: ${asset.review_status}, QA Checked: ${asset.qa_checked_at ? 'Yes' : 'No'}`);
     
     try {
       const res = await fetch(`${baseUrl}/api/admin/qa-audit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // The API expects cookie "D_STRATEGY_KEY"
           "Cookie": `D_STRATEGY_KEY=${strategyKey}`
         },
         body: JSON.stringify({
           assetId: asset.id,
-          dryRun: true // DRY RUN MODE BY DEFAULT
+          dryRun: dryRun
         })
       });
 
       const json = await res.json() as any;
       
       if (json.success) {
-        console.log(`[SUCCESS] Result for ${asset.title}:`);
-        console.log(`  Vision Score:     ${json.qaResult.visionScore}`);
-        console.log(`  Commercial Score: ${json.qaResult.commercialScore}`);
-        console.log(`  Artifact Score:   ${json.qaResult.aiArtifactScore}`);
-        console.log(`  Recommended Act:  ${json.qaResult.qaRecommendedAction}`);
-        console.log(`  Reasons:          ${json.qaResult.qaReasons.join(", ")}`);
+        console.log(`  [SUCCESS]`);
+        console.log(`    Vision Score:     ${json.qaResult.visionScore}`);
+        console.log(`    Commercial Score: ${json.qaResult.commercialScore}`);
+        console.log(`    Canva Score:      ${json.qaResult.canvaScore}`);
+        console.log(`    Pinterest Score:  ${json.qaResult.pinterestScore}`);
+        console.log(`    AI Artifacts:     ${json.qaResult.aiArtifactScore}`);
+        console.log(`    Recommended Act:  ${json.qaResult.qaRecommendedAction}`);
+        console.log(`    Reasons:          ${json.qaResult.qaReasons.join(", ")}`);
         if (json.autoPended) {
-          console.log(`  -> ⚠️ AUTO PENDED (but wait, we are in dryRun, this should be false)`);
+          console.log(`    -> ⚠️ AUTO PENDED (Status changed to pending)`);
         }
+        successCount++;
       } else {
-        console.error(`[FAILED] ${asset.title}:`, json.error);
+        console.error(`  [FAILED]:`, json.error || json.details);
+        errorCount++;
       }
     } catch (err: any) {
-      console.error(`[ERROR] API request failed:`, err.message);
+      console.error(`  [ERROR] API request failed:`, err.message);
+      errorCount++;
     }
     
-    // Small delay to avoid rate limits
-    await new Promise(r => setTimeout(r, 2000));
+    // Rate limit mitigation: 2 seconds delay between API calls to Gemini
+    if (i < assets.length - 1) {
+      await new Promise(r => setTimeout(r, 2000));
+    }
   }
   
-  console.log(`\n[Batch Audit] Completed.`);
+  console.log(`\n======================================================`);
+  console.log(`[Batch Audit] Completed.`);
+  console.log(`- Success: ${successCount}`);
+  console.log(`- Failed:  ${errorCount}`);
+  console.log(`======================================================\n`);
 }
 
 main();

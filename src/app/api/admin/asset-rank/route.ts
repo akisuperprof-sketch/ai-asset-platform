@@ -11,9 +11,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Unauthorized QA Access" }, { status: 401 });
     }
 
-    const { assetId, status } = await req.json();
+    const { assetId, rank } = await req.json();
 
-    if (!assetId || !status) {
+    if (!assetId || !rank) {
       return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
     }
 
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
     const { error } = await adminClient
       .from("assets")
-      .update({ review_status: status })
+      .update({ quality_rank: rank })
       .eq("id", assetId);
 
     if (error) {
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error("[API Error] asset-status:", error);
+    console.error("[API Error] asset-rank:", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }

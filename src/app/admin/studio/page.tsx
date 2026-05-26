@@ -98,6 +98,7 @@ export default function StudioPage() {
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
   const [previewBg, setPreviewBg] = useState<"checker" | "black" | "white">("checker");
   const [searchQuery, setSearchQuery] = useState("");
+  const [qaFilter, setQaFilter] = useState("all");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showLowQualityOnly, setShowLowQualityOnly] = useState(false);
   
@@ -212,6 +213,14 @@ export default function StudioPage() {
 
   const kpis = getKpiStats();
 
+  const qaStats = {
+    untested: localAssets.filter(a => !a.qaCheckedAt).length,
+    pendingRec: localAssets.filter(a => a.qaRecommendedAction === 'pending').length,
+    rejectRec: localAssets.filter(a => a.qaRecommendedAction === 'reject').length,
+    approveRec: localAssets.filter(a => a.qaRecommendedAction === 'approve').length,
+    highPinterest: localAssets.filter(a => (a.pinterestScore || 0) >= 70).length
+  };
+
   // Filter assets based on search query and low quality flag
   const isLowQuality = (asset: Asset) => {
     const text = (asset.title + " " + asset.tags.join(" ")).toLowerCase();
@@ -236,10 +245,25 @@ export default function StudioPage() {
       asset.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
       asset.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
       
-    if (showLowQualityOnly) {
-      return matchSearch && isLowQuality(asset);
+    if (!matchSearch) return false;
+    
+    if (showLowQualityOnly && !isLowQuality(asset)) return false;
+
+    switch(qaFilter) {
+      case "untested": return !asset.qaCheckedAt;
+      case "qa_done": return !!asset.qaCheckedAt;
+      case "rec_approve": return asset.qaRecommendedAction === "approve";
+      case "rec_pending": return asset.qaRecommendedAction === "pending";
+      case "rec_reject": return asset.qaRecommendedAction === "reject";
+      case "high_risk": return asset.riskLevel === "high";
+      case "comm_low": return (asset.commercialScore || 0) < 60;
+      case "ai_high": return (asset.aiArtifactScore || 0) > 70;
+      case "pin_high": return (asset.pinterestScore || 0) >= 70;
+      case "rank_s": return asset.qualityRank === "S";
+      case "rank_d": return asset.qualityRank === "D";
     }
-    return matchSearch;
+
+    return true;
   });
 
   // Copy helper
@@ -296,38 +320,38 @@ export default function StudioPage() {
     }
   };
 
-  const updateStatus = async (id: string, newStatus: "approved" | "pending" | "rejected") => {
-    if (newStatus !== "approved") {
-      const msg = newStatus === "rejected" ? "この素材を公開停止（却下）しますか？公開サイトに表示されなくなります。" : "この素材を確認待ちに戻しますか？公開サイトに表示されなくなります。";
-      if (!window.confirm(msg)) return;
+  const updateStatus = async (id: string, newStatus: string) => {
+    if (newStatus === "rejected") {
+      if (!window.confirm("この素材を却下しますか？公開一覧から除外されます。")) return;
+    } else if (newStatus === "pending") {
+      if (!window.confirm("この素材を確認待ちに戻しますか？公開サイトに表示されなくなります。")) return;
     }
 
     try {
       const res = await fetch('/api/admin/asset-status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, status: newStatus })
+        body: JSON.stringify({ assetId: id, status: newStatus })
       });
       const data = await res.json();
       
       if (!data.success) throw new Error(data.error);
       
-      // Update local state
       setLocalAssets(prev => prev.map(asset => {
         if (asset.id === id) {
-          return { ...asset, reviewStatus: newStatus, publishedAt: newStatus === "approved" ? new Date().toISOString() : undefined } as Asset;
+          return { ...asset, reviewStatus: newStatus as any, publishedAt: newStatus === "approved" ? new Date().toISOString() : undefined } as any;
         }
         return asset;
       }));
       
-      // Re-fetch stats to sync KPI
-      const statsRes = await fetch("/api/stats");
-      const statsJson = await statsRes.json();
-      if (statsJson.success) {
-        setStats(statsJson);
+      if (selectedAsset?.id === id) {
+        setSelectedAsset(prev => prev ? { ...prev, reviewStatus: newStatus as any } : null);
       }
       
-      alert(`✅ ステータスを更新しました: ${newStatus.toUpperCase()}`);
+      const statsRes = await fetch("/api/stats");
+      const statsJson = await statsRes.json();
+      if (statsJson.success) setStats(statsJson);
+      
     } catch (e: any) {
       console.error(e);
       alert(`❌ ステータス更新失敗: ${e.message}`);
@@ -335,77 +359,30 @@ export default function StudioPage() {
   };
 
   // Advanced Action: Update Quality Rank & auto-adjust status / scores securely via backend
-  const updateRank = async (id: string, newRank: "S" | "A" | "B" | "C") => {
+  const updateRank = async (id: string, newRank: string) => {
+    if (newRank === "D") {
+      if (!window.confirm("この素材を「D Reject」ランクに変更しますか？")) return;
+    }
     try {
-      const isReject = newRank === "C";
-      const isPending = newRank === "B";
-      const newStatus = isReject ? "rejected" : isPending ? "pending" : "approved";
-      
-      const payload: any = { id, status: newStatus, qualityRank: newRank };
-
-      if (newRank === "S") {
-        payload.scores = {
-          composition_score: 98,
-          centering_score: 99,
-          margin_score: 96,
-          white_fringe_score: 100,
-          resolution_score: 100,
-          ai_distortion_score: 98,
-          subject_score: 99,
-          pinterest_score: 97,
-          canva_score: 98,
-          luxury_score: 98,
-          seo_score: 99
-        };
-      }
-
-      const res = await fetch('/api/admin/asset-status', {
+      const res = await fetch('/api/admin/asset-rank', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ assetId: id, rank: newRank })
       });
       const data = await res.json();
-      
       if (!data.success) throw new Error(data.error);
-
-      // Update local state
+      
       setLocalAssets(prev => prev.map(asset => {
         if (asset.id === id) {
-          let updated: Asset = {
-            ...asset,
-            qualityRank: newRank,
-            reviewStatus: newStatus,
-            publishedAt: newStatus === "approved" ? new Date().toISOString() : undefined
-          };
-          if (newRank === "S") {
-            updated = {
-              ...updated,
-              compositionScore: 98,
-              centeringScore: 99,
-              marginScore: 96,
-              whiteFringeScore: 100,
-              resolutionScore: 100,
-              aiDistortionScore: 98,
-              subjectScore: 99,
-              pinterestScore: 97,
-              canvaScore: 98,
-              luxuryScore: 98,
-              seoScore: 99
-            };
-          }
-          return updated;
+          return { ...asset, qualityRank: newRank as any };
         }
         return asset;
       }));
 
-      // Re-fetch stats
-      const statsRes = await fetch("/api/stats");
-      const statsJson = await statsRes.json();
-      if (statsJson.success) {
-        setStats(statsJson);
+      if (selectedAsset?.id === id) {
+        setSelectedAsset(prev => prev ? { ...prev, qualityRank: newRank as any } : null);
       }
-
-      alert(`✅ ランクを ${newRank} に、ステータスを ${newStatus.toUpperCase()} に更新しました。`);
+      
     } catch (e: any) {
       console.error(e);
       alert(`❌ ランク更新失敗: ${e.message}`);
@@ -421,6 +398,34 @@ export default function StudioPage() {
 
   return (
     <div className="p-8 space-y-8 font-sans bg-zinc-950 text-white min-h-screen">
+      
+      {/* PHASE 7: Dashboard Tasks */}
+      <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/5 border border-indigo-500/20 rounded-2xl p-6 relative overflow-hidden mb-8">
+        <div className="absolute top-0 right-0 p-8 opacity-20">
+          <CheckCircle className="w-32 h-32 text-indigo-400" />
+        </div>
+        <h2 className="text-xl font-black mb-4 flex items-center gap-2 text-indigo-300">
+          <Layers className="w-5 h-5" />
+          本日の推奨作業 (Today's Tasks)
+        </h2>
+        <div className="flex flex-wrap gap-3">
+          <button onClick={() => setQaFilter("untested")} className="bg-black/40 hover:bg-black/60 border border-white/10 px-4 py-2 rounded-xl text-sm font-bold transition">
+            未監査素材: <span className="text-white">{qaStats.untested}件</span>
+          </button>
+          <button onClick={() => setQaFilter("rec_pending")} className="bg-black/40 hover:bg-black/60 border border-amber-500/20 px-4 py-2 rounded-xl text-sm font-bold transition">
+            pending推奨: <span className="text-amber-400">{qaStats.pendingRec}件</span>
+          </button>
+          <button onClick={() => setQaFilter("rec_reject")} className="bg-black/40 hover:bg-black/60 border border-red-500/20 px-4 py-2 rounded-xl text-sm font-bold transition">
+            reject推奨: <span className="text-red-400">{qaStats.rejectRec}件</span>
+          </button>
+          <button onClick={() => setQaFilter("rec_approve")} className="bg-black/40 hover:bg-black/60 border border-emerald-500/20 px-4 py-2 rounded-xl text-sm font-bold transition">
+            公開候補: <span className="text-emerald-400">{qaStats.approveRec}件</span>
+          </button>
+          <button onClick={() => setQaFilter("pin_high")} className="bg-black/40 hover:bg-black/60 border border-pink-500/20 px-4 py-2 rounded-xl text-sm font-bold transition">
+            高Pinterest素材: <span className="text-pink-400">{qaStats.highPinterest}件</span>
+          </button>
+        </div>
+      </div>
       
       {/* Top Banner OS Head */}
       <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/5 pb-6 gap-4">
@@ -1097,11 +1102,23 @@ export default function StudioPage() {
                       <XCircle className="w-3.5 h-3.5" />
                       公開停止 / 却下
                     </button>
+                  
+                    {selectedAsset.qaRecommendedAction && (
+                      <button
+                        onClick={() => {
+                          const newSt = selectedAsset.qaRecommendedAction === 'approve' ? 'approved' : selectedAsset.qaRecommendedAction === 'reject' ? 'rejected' : 'pending';
+                          updateStatus(selectedAsset.id, newSt);
+                        }}
+                        className="flex-1 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/10 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 mt-2 w-full"
+                      >
+                        QA推奨に従う
+                      </button>
+                    )}
                   </div>
 
                   {/* Manual Rank Upgrades */}
                   <div className="grid grid-cols-4 gap-1.5 mt-1 border-t border-white/5 pt-3">
-                    {(["S", "A", "B", "C"] as const).map((r) => (
+                    {(["S", "A", "B", "C", "D"] as const).map((r) => (
                       <button
                         key={r}
                         onClick={() => updateRank(selectedAsset.id, r)}
