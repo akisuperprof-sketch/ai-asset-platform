@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { adminClient } from "@/lib/supabase";
+import { checkRateLimit, getIp } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
@@ -9,6 +10,11 @@ export async function POST(req: Request) {
 
     if (!strategyKey || strategyKey !== process.env.D_STRATEGY_KEY) {
       return NextResponse.json({ success: false, error: "Unauthorized QA Access" }, { status: 401 });
+    }
+
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || '127.0.0.1';
+    if (!checkRateLimit(`admin:${ip}`, 30, 60 * 1000)) {
+      return NextResponse.json({ success: false, error: "Too many admin requests" }, { status: 429 });
     }
 
     const { assetId, status } = await req.json();

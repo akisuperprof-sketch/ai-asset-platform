@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
+import { checkRateLimit, isMaliciousBot, getIp, getUa } from '@/lib/rate-limit';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-// For calling the RPC securely or if we want to bypass RLS, we can use service key.
-// But the RLS allows public inserts, so anon key is fine. 
-// However, the RPC is SECURITY DEFINER, so anon key can call it.
 const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 function hashUserAgent(userAgent: string, ip: string): string {
@@ -14,9 +12,24 @@ function hashUserAgent(userAgent: string, ip: string): string {
 }
 
 export async function POST(request: Request) {
+  if (process.env.SEARCH_TRACKING_ENABLED === 'false') {
+    return NextResponse.json({ ok: false, error: 'Disabled' }, { status: 200 }); // Do not break UI
+  }
+
   try {
     if (!supabase) {
       return NextResponse.json({ ok: false, error: 'SUPABASE_NOT_CONFIGURED' }, { status: 500 });
+    }
+
+    const ip = getIp(request as any);
+    const userAgent = getUa(request as any);
+
+    if (isMaliciousBot(userAgent)) {
+      return NextResponse.json({ ok: false, error: 'BOT_DETECTED' }, { status: 200 }); // Do not break UI
+    }
+
+    if (!checkRateLimit(`search:${ip}`, 20, 60 * 1000)) {
+      return NextResponse.json({ ok: false, error: 'RATE_LIMIT_EXCEEDED' }, { status: 429 });
     }
 
     const body = await request.json();
@@ -30,12 +43,16 @@ export async function POST(request: Request) {
       suggestedCategory 
     } = body;
 
-    if (!query || typeof query !== 'string' || query.trim() === '') {
-      return NextResponse.json({ ok: false, error: 'MISSING_QUERY' }, { status: 400 });
+    // 1~80 chars
+    if (!query || typeof query !== 'string' || query.trim().length === 0 || query.length > 80) {
+      return NextResponse.json({ ok: false, error: 'INVALID_QUERY_LENGTH' }, { status: 400 });
     }
 
-    const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
-    const userAgent = request.headers.get('user-agent') || 'unknown';
+    // Dangerous chars
+    if (/[<>{}\\]/.test(query)) {
+      return NextResponse.json({ ok: false, error: 'INVALID_QUERY_CHARS' }, { status: 400 });
+    }
+
     const userAgentHash = hashUserAgent(userAgent, ip);
 
     // Call the RPC function to upsert/increment priority

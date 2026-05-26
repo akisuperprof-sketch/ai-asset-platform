@@ -6,7 +6,7 @@ export async function GET() {
   try {
     // 1. Auth check
     const cookieStore = await cookies();
-    const adminSession = cookieStore.get('d_strategy_session');
+    const adminSession = cookieStore.get('D_STRATEGY_KEY');
     
     const envKey = process.env.D_STRATEGY_KEY;
     if (!envKey) {

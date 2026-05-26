@@ -11,7 +11,7 @@ const r2Endpoint = process.env.R2_ENDPOINT || "";
 const r2AccessKeyId = process.env.R2_ACCESS_KEY_ID || "";
 const r2SecretAccessKey = process.env.R2_SECRET_ACCESS_KEY || "";
 const r2BucketName = process.env.R2_BUCKET_NAME || "";
-const expiresStr = process.env.DOWNLOAD_URL_EXPIRES_IN || "3600";
+const expiresStr = process.env.DOWNLOAD_URL_EXPIRES_IN || "60";
 const expiresIn = parseInt(expiresStr, 10);
 
 const supabaseBucket = process.env.SUPABASE_STORAGE_BUCKET || "sukashi-assets";

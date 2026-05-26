@@ -2,8 +2,13 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { adminClient } from "@/lib/supabase";
 import { runVisionQA } from "@/lib/vision-qa";
+import { checkRateLimit, getIp } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  if (process.env.QA_AUDIT_ENABLED === 'false') {
+    return NextResponse.json({ success: false, error: "QA Audit is disabled" }, { status: 503 });
+  }
+
   try {
     // 1. Verify Authentication
     const cookieStore = await cookies();
@@ -13,8 +18,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Unauthorized QA Access" }, { status: 401 });
     }
 
-    // 2. Parse request payload
-    const { assetId, dryRun = true } = await req.json();
+    // 2. Rate Limit (Admin but costly) - 5 per minute
+    // Must pass NextRequest or polyfill getIp logic. req is standard Request in Next 13 API.
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || '127.0.0.1';
+    if (!checkRateLimit(`qa:${ip}`, 5, 60 * 1000)) {
+      return NextResponse.json({ success: false, error: "Too many QA requests" }, { status: 429 });
+    }
+
+    // 3. Parse request payload
+    const { assetId, dryRun = true, force = false } = await req.json();
     if (!assetId) {
       return NextResponse.json({ success: false, error: "Missing assetId" }, { status: 400 });
     }
@@ -26,12 +38,16 @@ export async function POST(req: Request) {
 
     const { data: asset, error: fetchError } = await adminClient
       .from("assets")
-      .select("id, image_url, review_status")
+      .select("id, image_url, review_status, qa_checked_at")
       .eq("id", assetId)
       .single();
 
     if (fetchError || !asset || !asset.image_url) {
       return NextResponse.json({ success: false, error: "Asset not found or missing image URL" }, { status: 404 });
+    }
+
+    if (asset.qa_checked_at && !force) {
+      return NextResponse.json({ success: false, error: "Asset already audited. Use force=true to re-audit." }, { status: 400 });
     }
 
     // 4. Run Vision Commercial QA

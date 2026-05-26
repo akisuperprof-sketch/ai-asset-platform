@@ -99,6 +99,7 @@ export default function StudioPage() {
   const [previewBg, setPreviewBg] = useState<"checker" | "black" | "white">("checker");
   const [searchQuery, setSearchQuery] = useState("");
   const [qaFilter, setQaFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showLowQualityOnly, setShowLowQualityOnly] = useState(false);
   
@@ -248,6 +249,8 @@ export default function StudioPage() {
     if (!matchSearch) return false;
     
     if (showLowQualityOnly && !isLowQuality(asset)) return false;
+
+    if (statusFilter !== "all" && asset.reviewStatus !== statusFilter) return false;
 
     switch(qaFilter) {
       case "untested": return !asset.qaCheckedAt;
@@ -613,6 +616,12 @@ export default function StudioPage() {
               </p>
               
               <div className="flex items-center gap-2">
+                <div className="flex gap-1 bg-zinc-900 border border-white/5 p-1 rounded-xl">
+                  <button onClick={() => setStatusFilter("all")} className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-colors ${statusFilter === "all" ? "bg-white text-zinc-900" : "text-zinc-500 hover:text-white"}`}>All</button>
+                  <button onClick={() => setStatusFilter("approved")} className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-colors ${statusFilter === "approved" ? "bg-emerald-500 text-white" : "text-emerald-500/50 hover:text-emerald-400"}`}>公開</button>
+                  <button onClick={() => setStatusFilter("pending")} className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-colors ${statusFilter === "pending" ? "bg-amber-500 text-white" : "text-amber-500/50 hover:text-amber-400"}`}>確認待</button>
+                  <button onClick={() => setStatusFilter("rejected")} className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-colors ${statusFilter === "rejected" ? "bg-red-500 text-white" : "text-red-500/50 hover:text-red-400"}`}>却下</button>
+                </div>
                 <div className="flex flex-col gap-1 items-end">
                   <button
                     onClick={() => setShowLowQualityOnly(!showLowQualityOnly)}
@@ -623,9 +632,6 @@ export default function StudioPage() {
                     <AlertTriangle className="w-3.5 h-3.5 inline-block mr-1" />
                     低品質疑い
                   </button>
-                  <p className="text-[9px] text-amber-400/80 max-w-xs text-right leading-relaxed">
-                    星・丸・単色・抽象図形など、商用素材として弱い可能性がある素材を自動抽出します。最終判断は目視で行ってください。
-                  </p>
                 </div>
                 {/* Search Bar */}
                 <div className="relative max-w-xs w-full">
@@ -752,7 +758,7 @@ export default function StudioPage() {
 
               {filteredAssets.length === 0 && (
                 <div className="col-span-full py-12 text-center text-zinc-500 text-xs font-semibold">
-                  No assets found matching "{searchQuery}"
+                  該当するステータス・条件の素材がありません。
                 </div>
               )}
             </div>
@@ -1150,8 +1156,35 @@ export default function StudioPage() {
           <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/5">
             <Sparkles className="w-6 h-6 text-purple-400 animate-pulse" />
             <div>
-              <h3 className="text-lg font-black uppercase tracking-tight">Create AI Image Generation Job</h3>
-              <p className="text-xs text-zinc-500">Initiate batch transparent PNG generation pipelines with smart prompt weighting</p>
+              <h3 className="text-lg font-black uppercase tracking-tight">Daily Quality Generation Pipeline</h3>
+              <p className="text-xs text-zinc-500">100件生成 → Vision QA → 人間確認 → 10〜30件の厳選公開</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-8">
+            <div className="bg-white/5 p-3 rounded-xl border border-white/10 text-center">
+              <span className="text-[9px] text-zinc-400 font-bold uppercase block mb-1">本日生成数</span>
+              <div className="text-xl font-black text-white">{kpis.generatedToday}</div>
+            </div>
+            <div className="bg-purple-500/10 p-3 rounded-xl border border-purple-500/20 text-center">
+              <span className="text-[9px] text-purple-400 font-bold uppercase block mb-1">QA通過数</span>
+              <div className="text-xl font-black text-purple-300">{qaStats.approveRec + qaStats.pendingRec}</div>
+            </div>
+            <div className="bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20 text-center">
+              <span className="text-[9px] text-emerald-400 font-bold uppercase block mb-1">公開候補数</span>
+              <div className="text-xl font-black text-emerald-300">{qaStats.approveRec}</div>
+            </div>
+            <div className="bg-amber-500/10 p-3 rounded-xl border border-amber-500/20 text-center">
+              <span className="text-[9px] text-amber-400 font-bold uppercase block mb-1">pending推奨</span>
+              <div className="text-xl font-black text-amber-300">{qaStats.pendingRec}</div>
+            </div>
+            <div className="bg-red-500/10 p-3 rounded-xl border border-red-500/20 text-center">
+              <span className="text-[9px] text-red-400 font-bold uppercase block mb-1">reject推奨</span>
+              <div className="text-xl font-black text-red-300">{qaStats.rejectRec}</div>
+            </div>
+            <div className="bg-cyan-500/10 p-3 rounded-xl border border-cyan-500/20 text-center">
+              <span className="text-[9px] text-cyan-400 font-bold uppercase block mb-1">公開済み増加</span>
+              <div className="text-xl font-black text-cyan-300">+{kpis.generatedToday > 0 ? (kpis.generatedToday - (kpis.pendingReview + kpis.rejected)) : 0}</div>
             </div>
           </div>
 
