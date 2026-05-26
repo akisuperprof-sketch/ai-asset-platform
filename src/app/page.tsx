@@ -140,7 +140,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
 
                   <div className="grid grid-cols-12 gap-8">
                     {premiumAssets.map((asset) => (
-                      <AssetCard key={asset.id} asset={asset} />
+                      <AssetCard key={asset.id} asset={asset} className="col-span-12 sm:col-span-6 lg:col-span-4" />
                     ))}
                   </div>
                 </div>

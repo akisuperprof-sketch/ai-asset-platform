@@ -272,7 +272,7 @@ export function HeroSection({
                 <Cpu className="w-3.5 h-3.5 text-ai-cyan animate-pulse" /> CENTRAL SEARCH ENGINE OS
               </span>
               <span className="text-[9px] font-black text-amber-500/80 bg-amber-500/5 border border-amber-500/10 px-3 py-0.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.03)]">
-                {formatCountBadge(realtimeCount)} PREMIUM TRANSPARENT PNG ASSETS
+                CURATED PREMIUM PNG COLLECTION
               </span>
             </div>
 

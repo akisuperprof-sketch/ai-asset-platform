@@ -1,48 +1,51 @@
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config({ path: '.env.local' });
 
-async function audit() {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-  );
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-  const { data: allAssets, error } = await supabase.from('assets').select('*');
+async function run() {
+  const { data, error } = await supabase.from('assets').select('id, title, tags, review_status').eq('review_status', 'approved');
   if (error) {
     console.error(error);
-    process.exit(1);
+    return;
   }
-
-  const total = allAssets.length;
-  let approved = 0, pending = 0, rejected = 0, unknownStatus = 0;
-  let hasImage = 0, missingImage = 0;
-  let publicDisplayable = 0;
-
-  for (const asset of allAssets) {
-    if (asset.review_status === 'approved') approved++;
-    else if (asset.review_status === 'pending') pending++;
-    else if (asset.review_status === 'rejected') rejected++;
-    else unknownStatus++;
-
-    if (asset.image_url) hasImage++;
-    else missingImage++;
-
-    if (asset.review_status === 'approved' && asset.image_url) {
-      publicDisplayable++;
+  
+  let keeping = [];
+  let downgrading = [];
+  
+  const badKeywords = ['abstract', 'shape', 'circle', 'triangle', 'smoke', 'effect', 'fx', 'test', 'unknown', 'gradient', 'sphere', 'cube', 'geometric', 'graphic element', 'background', 'texture'];
+  
+  const goodKeywords = ['sushi', 'ramen', 'matcha', 'takoyaki', 'torii', 'shrine', 'ninja', 'samurai', 'fuji', 'sakura', 'food', 'japanese', 'kimono', 'yakitori', 'onigiri', 'bento'];
+  
+  for (const asset of data) {
+    const text = (asset.title + ' ' + (asset.tags || []).join(' ')).toLowerCase();
+    const isBad = badKeywords.some(kw => text.includes(kw));
+    const isGood = goodKeywords.some(kw => text.includes(kw));
+    
+    if (isBad || (!isGood && Math.random() > 0.3)) {
+      downgrading.push(asset);
+    } else {
+      keeping.push(asset);
     }
   }
-
-  console.log('--- Asset Audit ---');
-  console.log('Total:', total);
-  console.log('Status:');
-  console.log('  Approved:', approved);
-  console.log('  Pending:', pending);
-  console.log('  Rejected:', rejected);
-  console.log('  Unknown:', unknownStatus);
-  console.log('Images:');
-  console.log('  Has URL:', hasImage);
-  console.log('  Missing URL:', missingImage);
-  console.log('Displayable (Approved + Has URL):', publicDisplayable);
+  
+  while(keeping.length < 15 && downgrading.length > 0) {
+     keeping.push(downgrading.pop());
+  }
+  while(keeping.length > 20) {
+     downgrading.push(keeping.pop());
+  }
+  
+  console.log(`Keeping: ${keeping.length}`);
+  console.log(`Downgrading: ${downgrading.length}`);
+  
+  const downIds = downgrading.map(a => a.id);
+  if (downIds.length > 0) {
+    const { error: updErr } = await supabase.from('assets').update({ review_status: 'pending' }).in('id', downIds);
+    if (updErr) console.error("Update error:", updErr);
+    else console.log("Downgraded successfully.");
+  }
 }
-
-audit();
+run();
