@@ -6,11 +6,15 @@ import { Download, Loader2, Sparkles } from "lucide-react";
 import { NinjaDownloadSuccess } from "@/components/brand/NinjaDownloadSuccess";
 import { RewardDownloadModal } from "@/components/download/RewardDownloadModal";
 import { trackEvent } from "@/lib/analytics";
+import { DownloadAdGate } from "@/components/ads/DownloadAdGate";
+import { getNextAdType, incrementDownloadCount, AdType } from "@/lib/ad-rotation";
 
 export function DownloadButton({ assetId, title }: { assetId: string, title: string }) {
   const [status, setStatus] = useState<"idle" | "downloading" | "done">("idle");
   const [showToast, setShowToast] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showAdGate, setShowAdGate] = useState(false);
+  const [adType, setAdType] = useState<AdType>('none');
 
   useEffect(() => {
     if (status === "done") {
@@ -26,6 +30,7 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
   const handleDownload = async () => {
     setStatus("downloading");
     
+    incrementDownloadCount();
     try {
       const response = await fetch(`/api/download/${assetId}`);
       const data = await response.json();
@@ -56,6 +61,11 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
     }
   };
 
+  const handleAdProceed = () => {
+    setShowAdGate(false);
+    handleDownload();
+  };
+
   const handleUnlockInstant = () => {
     setShowModal(false);
     handleDownload();
@@ -68,7 +78,15 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
           <motion.button
             key="idle"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={() => setShowModal(true)}
+            onClick={() => {
+              const nextAd = getNextAdType();
+              if (nextAd === 'none') {
+                setShowModal(true);
+              } else {
+                setAdType(nextAd);
+                setShowAdGate(true);
+              }
+            }}
             className="w-full bg-ai-gradient hover:opacity-90 text-white font-bold py-4 rounded-apple flex items-center justify-center gap-3 shadow-lg shadow-ai-purple/20 transition-all cursor-pointer"
           >
             <Download className="w-6 h-6 animate-pulse" />
@@ -104,6 +122,14 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
         onUnlockInstant={handleUnlockInstant}
         assetTitle={title}
         assetId={assetId}
+      />
+
+      {/* Ad Gate Modal */}
+      <DownloadAdGate
+        isOpen={showAdGate}
+        onClose={() => setShowAdGate(false)}
+        onProceed={handleAdProceed}
+        adType={adType}
       />
 
       {/* Linear-style Premium Notification Toast */}
