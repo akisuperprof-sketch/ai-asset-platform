@@ -10,6 +10,7 @@ import { CategorySection } from "@/components/layout/CategorySection";
 import { getAssets, searchAssets } from "@/lib/assets";
 import { Zap, MessageCircle, Play, Camera, ChevronRight, Sparkles, Flame, MapPin } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { SplashWrapper } from "@/components/layout/SplashWrapper";
 import { ComingSoonButton } from "@/components/ui/ComingSoonButton";
@@ -17,6 +18,10 @@ import { ComingSoonButton } from "@/components/ui/ComingSoonButton";
 const ENABLE_ADMAX_REVIEW_MODE = true;
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ q?: string; cat?: string }> }) {
+  const headersList = await headers();
+  const userAgent = headersList.get('user-agent') || '';
+  const isMobile = /mobile|android|iphone|ipad|ipod/i.test(userAgent);
+
   const { q, cat } = await searchParams;
   const currentCategory = cat || "すべて";
   const allAssets = await getAssets(100, 0); // Need 100 for homepage sections
@@ -117,17 +122,17 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
             {/* STATIC ADMAX AD FOR BOT APPROVAL (SSR MUST RENDER THIS) - MOVED TO TOP */}
             {ENABLE_ADMAX_REVIEW_MODE && (
               <div className="w-full flex flex-col items-center justify-center pt-28 pb-8 gap-4 bg-[#0a0a0a] border-b border-white/10 relative z-50">
-                <span className="text-[10px] text-gray-500 tracking-widest uppercase mb-2">スポンサー広告</span>
+                <span className="text-[10px] text-gray-500 tracking-widest uppercase mb-2">スポンサー広告 (AdMax確認中)</span>
                 
-                {/* PC 300x250 */}
-                <div className="hidden md:flex items-center justify-center min-w-[300px] min-h-[250px] bg-[#111111] border border-white/10 relative overflow-hidden">
-                  <div dangerouslySetInnerHTML={{ __html: '<script src="https://adm.shinobi.jp/s/40d12e183086a55c7451794352a281c2"></script>' }} />
-                </div>
-                
-                {/* SP 320x50 */}
-                <div className="flex md:hidden items-center justify-center min-w-[320px] min-h-[50px] bg-[#111111] border border-white/10 relative overflow-hidden">
-                  <div dangerouslySetInnerHTML={{ __html: '<script src="https://adm.shinobi.jp/s/35317cead3271f0eeda52a630e9f6aa6"></script>' }} />
-                </div>
+                {!isMobile ? (
+                  <div className="flex items-center justify-center min-w-[300px] min-h-[250px] bg-[#111111] border border-white/10 relative">
+                    <div dangerouslySetInnerHTML={{ __html: '<script src="https://adm.shinobi.jp/s/40d12e183086a55c7451794352a281c2"></script>' }} />
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center min-w-[320px] min-h-[50px] bg-[#111111] border border-white/10 relative">
+                    <div dangerouslySetInnerHTML={{ __html: '<script src="https://adm.shinobi.jp/s/35317cead3271f0eeda52a630e9f6aa6"></script>' }} />
+                  </div>
+                )}
               </div>
             )}
 
