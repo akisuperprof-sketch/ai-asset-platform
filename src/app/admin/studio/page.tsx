@@ -104,13 +104,22 @@ export default function StudioPage() {
   const [showLowQualityOnly, setShowLowQualityOnly] = useState(false);
   
   // Job Creator states
-  const [jobCategory, setJobCategory] = useState("寿司");
   const [jobCount, setJobCount] = useState(10);
   const [jobPrompt, setJobPrompt] = useState("");
   const [jobTags, setJobTags] = useState("");
   const [modelType, setModelType] = useState("stability-sdxl-1.0");
 
   const [activeTab, setActiveTab] = useState<"dashboard" | "generate" | "keywords">("dashboard");
+  const [jobCategory, setJobCategory] = useState("sushi");
+  const [jobBatchSize, setJobBatchSize] = useState("10");
+  const [generationStats, setGenerationStats] = useState<{
+    generatedToday: number;
+    qaPassed: number;
+    qaFailed: number;
+    pendingRec: number;
+    rejectRec: number;
+    categoryStats: Record<string, number>;
+  } | null>(null);
 
   const [stats, setStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -315,9 +324,16 @@ export default function StudioPage() {
         } : null);
       }
 
-    } catch (e: any) {
-      console.error(e);
-      alert(`❌ QA監査失敗: ${e.message}`);
+      // Fetch generation jobs stats
+      const genRes = await fetch("/api/admin/generation-jobs/stats");
+      if (genRes.ok) {
+        const genData = await genRes.json();
+        setGenerationStats(genData);
+      }
+
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg(err.message || "Failed to load admin data");
     } finally {
       setIsLoading(false);
     }
@@ -1164,23 +1180,23 @@ export default function StudioPage() {
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-8">
             <div className="bg-white/5 p-3 rounded-xl border border-white/10 text-center">
               <span className="text-[9px] text-zinc-400 font-bold uppercase block mb-1">本日生成数</span>
-              <div className="text-xl font-black text-white">{kpis.generatedToday}</div>
+              <div className="text-xl font-black text-white">{generationStats?.generatedToday || 0}</div>
             </div>
             <div className="bg-purple-500/10 p-3 rounded-xl border border-purple-500/20 text-center">
               <span className="text-[9px] text-purple-400 font-bold uppercase block mb-1">QA通過数</span>
-              <div className="text-xl font-black text-purple-300">{qaStats.approveRec + qaStats.pendingRec}</div>
+              <div className="text-xl font-black text-purple-300">{generationStats?.qaPassed || 0}</div>
             </div>
             <div className="bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20 text-center">
               <span className="text-[9px] text-emerald-400 font-bold uppercase block mb-1">公開候補数</span>
-              <div className="text-xl font-black text-emerald-300">{qaStats.approveRec}</div>
+              <div className="text-xl font-black text-emerald-300">{generationStats?.qaPassed || 0}</div>
             </div>
             <div className="bg-amber-500/10 p-3 rounded-xl border border-amber-500/20 text-center">
               <span className="text-[9px] text-amber-400 font-bold uppercase block mb-1">pending推奨</span>
-              <div className="text-xl font-black text-amber-300">{qaStats.pendingRec}</div>
+              <div className="text-xl font-black text-amber-300">{generationStats?.pendingRec || 0}</div>
             </div>
             <div className="bg-red-500/10 p-3 rounded-xl border border-red-500/20 text-center">
               <span className="text-[9px] text-red-400 font-bold uppercase block mb-1">reject推奨</span>
-              <div className="text-xl font-black text-red-300">{qaStats.rejectRec}</div>
+              <div className="text-xl font-black text-red-300">{generationStats?.rejectRec || 0}</div>
             </div>
             <div className="bg-cyan-500/10 p-3 rounded-xl border border-cyan-500/20 text-center">
               <span className="text-[9px] text-cyan-400 font-bold uppercase block mb-1">公開済み増加</span>
