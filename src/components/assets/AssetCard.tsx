@@ -44,98 +44,54 @@ export function AssetCard({ asset, className = "col-span-12 sm:col-span-6 md:col
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
-      className={`glass-card group rounded-3xl overflow-hidden flex flex-col h-[480px] relative border border-white/5 transition-all duration-500 hover:border-purple-500/20 hover:shadow-[0_20px_50px_rgba(168,85,247,0.12)] ${className}`}
+      className={`glass-card group rounded-2xl overflow-hidden flex flex-col aspect-[4/5] relative border border-white/5 transition-all duration-500 hover:border-white/10 hover:shadow-[0_0_40px_rgba(255,255,255,0.06)] hover:-translate-y-1 ${className}`}
       style={{ touchAction: "pan-y" }} // Optimize mobile scrolling/swiping
     >
-      <Link href={`/items/${asset.id}`} className="relative flex-1 bg-[#0a0a0a] flex items-center justify-center p-8 overflow-hidden cursor-pointer group/link">
-        {/* Checkerboard Pattern */}
-        <div className="absolute inset-0 bg-checkerboard opacity-[0.06] transition-opacity group-hover/link:opacity-10" />
+      <Link href={`/items/${asset.id}`} className="relative flex flex-col h-full bg-[#050505] cursor-pointer group/link">
         
-        {/* Shadow Gradient */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black via-black/80 to-transparent z-10" />
-        
-        {/* Genuine Skeleton Loader */}
-        {!isLoaded && (
-          <div className="absolute inset-0 bg-white/[0.02] animate-pulse flex items-center justify-center z-15">
-            <div className="w-12 h-12 border-2 border-white/5 border-t-ai-cyan rounded-full animate-spin" style={{ animationDuration: '1.2s' }} />
-          </div>
-        )}
-
-        <motion.img 
-          src={asset.imageUrl} 
-          alt={seoAlt}
-          loading="lazy"
-          onLoad={() => setIsLoaded(true)}
-          whileHover={{ scale: 1.08 }}
-          transition={{ type: "spring", stiffness: 260, damping: 22 }}
-          className={`relative z-20 max-w-[80%] max-h-[80%] object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.85)] transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`} 
-        />
-
         {/* Top Badges */}
-        <div className="absolute top-5 left-5 z-40 flex items-center gap-2">
-          <div className="bg-ai-gradient px-3 py-1 rounded-full text-[9px] font-black text-white uppercase tracking-widest shadow-lg">
+        <div className="absolute top-4 left-4 z-40 flex items-center gap-2">
+          <div className="bg-white/5 backdrop-blur-md px-2.5 py-1 rounded-full text-[9px] font-black text-white uppercase tracking-widest border border-white/10 shadow-lg">
             NEW
           </div>
         </div>
         
-        <div className="absolute top-5 right-5 z-40">
-          <ComingSoonButton 
-            feature="お気に入り登録"
-            className="w-10 h-10 glass rounded-xl flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all pointer-events-auto cursor-pointer"
-          >
-            <Heart className="w-4 h-4 text-white/50 group-hover:text-red-500 transition-colors" />
-          </ComingSoonButton>
+        {/* Image Area - Taking up most space */}
+        <div className="relative flex-1 w-full flex items-center justify-center p-6 sm:p-8 overflow-hidden">
+          {/* Checkerboard Pattern for transparent PNG feel */}
+          <div className="absolute inset-0 bg-checkerboard opacity-[0.02] transition-opacity duration-500 group-hover/link:opacity-[0.05]" />
+          
+          {/* Subtle Bottom Gradient for Text Readability */}
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent z-10" />
+          
+          {/* Genuine Skeleton Loader */}
+          {!isLoaded && (
+            <div className="absolute inset-0 bg-white/[0.01] animate-pulse flex items-center justify-center z-15">
+              <div className="w-8 h-8 border-2 border-white/5 border-t-white/30 rounded-full animate-spin" style={{ animationDuration: '1.2s' }} />
+            </div>
+          )}
+
+          <motion.img 
+            src={asset.imageUrl} 
+            alt={seoAlt}
+            loading="lazy"
+            onLoad={() => setIsLoaded(true)}
+            whileHover={{ scale: 1.06, rotate: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className={`relative z-20 w-full h-full object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)] transition-opacity duration-700 ${isLoaded ? "opacity-100" : "opacity-0"}`} 
+          />
+        </div>
+
+        {/* Minimal Text Area */}
+        <div className="relative z-20 p-5 pt-0 bg-transparent flex flex-col gap-1.5 justify-end">
+          <p className="text-[9px] sm:text-[10px] text-white/40 font-bold uppercase tracking-wider truncate">
+            {asset.category} {asset.tags.length > 0 ? `・ ${asset.tags[0]}` : ""}
+          </p>
+          <h3 className="text-sm sm:text-base font-bold text-white/90 group-hover:text-white transition-colors line-clamp-2 leading-snug drop-shadow-md">
+            {asset.title}
+          </h3>
         </div>
       </Link>
-
-      <div className="relative z-20 p-6 bg-ninja-black/90 backdrop-blur-2xl border-t border-white/5">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <p className="text-[9px] text-ai-cyan font-black uppercase tracking-widest mb-1">
-              {asset.category} {asset.tags.length > 0 ? `・ ${asset.tags[0]}` : ""}
-            </p>
-            <h3 className="text-base font-bold text-white group-hover:text-ai-cyan transition-colors line-clamp-1">
-              {asset.title}
-            </h3>
-          </div>
-        </div>
-
-        
-        <div className="flex flex-col gap-2 mt-auto pt-3 border-t border-white/5">
-          <div className="flex flex-wrap gap-1.5">
-            <div className="bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded text-[8px] font-black text-emerald-400 uppercase tracking-widest">
-              Commercial OK
-            </div>
-            <div className="bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-white/60 uppercase tracking-widest">
-              Transparent PNG
-            </div>
-            <div className="bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-[8px] font-bold text-white/40 uppercase">
-              4096×4096
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between pt-1">
-            <div className="text-[9px] font-medium text-white/40 truncate flex-1 pr-2">
-              Used for: Canva / Poster / Web
-            </div>
-            <div className="flex items-center gap-2.5 text-secondary shrink-0">
-              {isTrending && (
-                <div className="flex items-center gap-1 text-orange-400">
-                  <Flame className="w-3 h-3" />
-                </div>
-              )}
-              <div className="flex items-center gap-1" title="Downloads">
-                <ArrowDown className="w-3 h-3 text-ai-cyan" />
-                <span className="text-[10px] font-bold text-white/70">{downloadSeed}</span>
-              </div>
-              <div className="flex items-center gap-1" title="Favorites">
-                <Heart className="w-3 h-3 text-red-500/80" />
-                <span className="text-[10px] font-bold text-white/70">{favoriteSeed}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </motion.div>
   );
 }
