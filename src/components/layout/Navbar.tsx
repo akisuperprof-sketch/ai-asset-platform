@@ -7,7 +7,14 @@ import Link from "next/link";
 const FEATURES_ENABLED = {
   pro: false,
   login: false,
-  aiGeneration: false
+  aiGeneration: false,
+  // New feature flags to minimize nav
+  ENABLE_NEW_NAV: false,
+  ENABLE_POPULAR_NAV: false,
+  ENABLE_DOWNLOAD_CTA: false,
+  ENABLE_EXPLORE_NAV: false, // "素材を探す"
+  ENABLE_CATEGORY_NAV: false, // "カテゴリ"
+  ENABLE_HAMBURGER: false // "ハンバーガーメニュー"
 };
 
 export function Navbar() {
@@ -30,10 +37,18 @@ export function Navbar() {
           </Link>
 
           <div className="hidden lg:flex items-center gap-8">
-            <Link href="/#assets" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">素材を探す</Link>
-            <Link href="/#categories" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">カテゴリ</Link>
-            <Link href="/coming-soon" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">新着素材</Link>
-            <Link href="/coming-soon" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">人気素材</Link>
+            {FEATURES_ENABLED.ENABLE_EXPLORE_NAV && (
+              <Link href="/#assets" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">素材を探す</Link>
+            )}
+            {FEATURES_ENABLED.ENABLE_CATEGORY_NAV && (
+              <Link href="/#categories" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">カテゴリ</Link>
+            )}
+            {FEATURES_ENABLED.ENABLE_NEW_NAV && (
+              <Link href="/coming-soon" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">新着素材</Link>
+            )}
+            {FEATURES_ENABLED.ENABLE_POPULAR_NAV && (
+              <Link href="/coming-soon" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">人気素材</Link>
+            )}
             {FEATURES_ENABLED.aiGeneration && (
               <Link href="/coming-soon" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">AI生成について</Link>
             )}
@@ -65,20 +80,25 @@ export function Navbar() {
                 ログイン
               </button>
             )}
-            <button 
-              onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: '新規登録' } }))}
-              className="bg-ai-gradient px-8 py-3 rounded-full text-[10px] sm:text-[11px] font-black text-white/90 uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-ai-purple/20 cursor-not-allowed opacity-95"
-              aria-disabled="true"
-            >
-              Download Free PNGs
-            </button>
+            {FEATURES_ENABLED.ENABLE_DOWNLOAD_CTA && (
+              <button 
+                onClick={() => window.dispatchEvent(new CustomEvent('show-coming-soon', { detail: { feature: '新規登録' } }))}
+                className="bg-ai-gradient px-8 py-3 rounded-full text-[10px] sm:text-[11px] font-black text-white/90 uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-ai-purple/20 cursor-not-allowed opacity-95"
+                aria-disabled="true"
+              >
+                Download Free PNGs
+              </button>
+            )}
           </div>
 
-          <button className="lg:hidden text-white">
-            <Menu className="w-6 h-6" />
-          </button>
+          {FEATURES_ENABLED.ENABLE_HAMBURGER && (
+            <button className="lg:hidden text-white">
+              <Menu className="w-6 h-6" />
+            </button>
+          )}
         </div>
       </div>
     </motion.nav>
   );
 }
+
