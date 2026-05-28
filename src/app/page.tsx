@@ -126,11 +126,18 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
                 
                 {!isMobile ? (
                   <div className="flex items-center justify-center min-w-[300px] min-h-[250px] bg-[#111111] border border-white/10 relative">
-                    <div dangerouslySetInnerHTML={{ __html: '<script src="https://adm.shinobi.jp/s/40d12e183086a55c7451794352a281c2"></script>' }} />
+                    <div dangerouslySetInnerHTML={{ __html: `
+<div class="admax-ads" data-admax-id="40d12e183086a55c7451794352a281c2" style="display:inline-block;width:300px;height:250px;"></div>
+<script type="text/javascript">(admaxads = window.admaxads || []).push({admax_id: "40d12e183086a55c7451794352a281c2",type: "banner"});</script>
+<script type="text/javascript" charset="utf-8" src="https://adm.shinobi.jp/st/t.js" async></script>
+                    ` }} />
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center min-w-[320px] min-h-[50px] bg-[#111111] border border-white/10 relative">
-                    <div dangerouslySetInnerHTML={{ __html: '<script src="https://adm.shinobi.jp/s/35317cead3271f0eeda52a630e9f6aa6"></script>' }} />
+                  <div className="w-full">
+                    <div dangerouslySetInnerHTML={{ __html: `
+<script type="text/javascript">(admaxads = window.admaxads || []).push({admax_id: "35317cead3271f0eeda52a630e9f6aa6",type: "overlay"});</script>
+<script type="text/javascript" charset="utf-8" src="https://adm.shinobi.jp/st/t.js" async></script>
+                    ` }} />
                   </div>
                 )}
               </div>

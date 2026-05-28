@@ -22,18 +22,24 @@ export default function AdTestPage() {
           {/* PC Ad */}
           <div className="space-y-2">
             <h2 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">PC (300×250)</h2>
-            <div className="border border-white/10 bg-white/5 p-4 rounded-xl flex items-center justify-center min-w-[300px] min-h-[250px] overflow-hidden">
-               {/* @ts-ignore */}
-               <script src="https://adm.shinobi.jp/s/40d12e183086a55c7451794352a281c2"></script>
+            <div className="border border-white/10 bg-white/5 p-4 rounded-xl flex items-center justify-center min-w-[300px] min-h-[250px]">
+               <div dangerouslySetInnerHTML={{ __html: `
+<div class="admax-ads" data-admax-id="40d12e183086a55c7451794352a281c2" style="display:inline-block;width:300px;height:250px;"></div>
+<script type="text/javascript">(admaxads = window.admaxads || []).push({admax_id: "40d12e183086a55c7451794352a281c2",type: "banner"});</script>
+<script type="text/javascript" charset="utf-8" src="https://adm.shinobi.jp/st/t.js" async></script>
+               ` }} />
             </div>
           </div>
 
           {/* SP Ad */}
           <div className="space-y-2">
-            <h2 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">SP (320×50)</h2>
-            <div className="border border-white/10 bg-white/5 p-4 rounded-xl flex items-center justify-center min-w-[320px] min-h-[50px] overflow-hidden">
-               {/* @ts-ignore */}
-               <script src="https://adm.shinobi.jp/s/35317cead3271f0eeda52a630e9f6aa6"></script>
+            <h2 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">SP (Overlay)</h2>
+            <div className="border border-white/10 bg-white/5 p-4 rounded-xl flex items-center justify-center w-full min-h-[50px]">
+               <div dangerouslySetInnerHTML={{ __html: `
+<script type="text/javascript">(admaxads = window.admaxads || []).push({admax_id: "35317cead3271f0eeda52a630e9f6aa6",type: "overlay"});</script>
+<script type="text/javascript" charset="utf-8" src="https://adm.shinobi.jp/st/t.js" async></script>
+               ` }} />
+               <span className="text-zinc-500 text-sm">SP Overlay (Checks Network loading, visual element overlays the screen)</span>
             </div>
           </div>
         </div>
