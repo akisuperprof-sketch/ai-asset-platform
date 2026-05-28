@@ -15,7 +15,7 @@ import Link from "next/link";
 import { SplashWrapper } from "@/components/layout/SplashWrapper";
 import { ComingSoonButton } from "@/components/ui/ComingSoonButton";
 
-const ENABLE_ADMAX_REVIEW_MODE = true;
+const ENABLE_ADMAX_REVIEW_MODE = false;
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ q?: string; cat?: string }> }) {
   const headersList = await headers();
