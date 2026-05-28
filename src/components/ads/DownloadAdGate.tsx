@@ -79,13 +79,12 @@ export function DownloadAdGate({
           <h3 className="text-xl font-black text-white tracking-tight mb-2">
             Free PNG Download
           </h3>
-          <p className="text-[12px] text-secondary font-medium leading-relaxed max-w-sm mx-auto mb-1">
-            このPNGは無料でダウンロードできます。<br/>
-            広告表示後にダウンロードが開始されます。
+          <p className="text-[14px] text-white/90 font-medium leading-relaxed max-w-sm mx-auto mb-1">
+            Your free PNG is ready.<br/>
+            Please view the sponsor area, then continue your download.
           </p>
           <p className="text-[10px] text-white/40 mb-6">
-            Your free PNG download is almost ready.<br/>
-            Please view the sponsor area, then continue.
+            スポンサーエリア確認後、ボタンを押すとダウンロードできます。
           </p>
 
           {/* Ad Area */}
@@ -127,7 +126,7 @@ export function DownloadAdGate({
             
             <div className="flex justify-center items-center gap-1.5 text-[9px] text-white/30 tracking-wider">
               <Sparkles className="w-3 h-3" />
-              Quality Verified • Virus Free
+              Quality Verified • Virus Free • Transparent PNG
             </div>
           </div>
 
