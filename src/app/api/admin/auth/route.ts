@@ -22,11 +22,11 @@ export async function POST(request: Request) {
     }
 
     if (inputKey.trim() === serverKey.trim()) {
-      (await cookies()).set('d_strategy_session', 'authenticated', {
+      (await cookies()).set('D_STRATEGY_KEY', serverKey.trim(), {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
-        path: '/admin',
+        path: '/',
         maxAge: 60 * 60 * 24 // 1 day
       });
       return NextResponse.json({ ok: true });
@@ -45,14 +45,15 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  const session = (await cookies()).get('d_strategy_session');
-  if (session?.value === 'authenticated') {
+  const session = (await cookies()).get('D_STRATEGY_KEY');
+  const serverKey = process.env.D_STRATEGY_KEY;
+  if (session?.value && serverKey && session.value === serverKey.trim()) {
     return NextResponse.json({ ok: true });
   }
   return NextResponse.json({ ok: false }, { status: 401 });
 }
 
 export async function DELETE() {
-  (await cookies()).delete('d_strategy_session');
+  (await cookies()).delete('D_STRATEGY_KEY');
   return NextResponse.json({ ok: true });
 }

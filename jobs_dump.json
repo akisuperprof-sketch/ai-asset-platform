@@ -1,0 +1,602 @@
+[
+  {
+    "keyword": "Salmon Nigiri",
+    "category": "sushi",
+    "prompt": "A perfect, isolated salmon nigiri sushi, vibrant orange fish on white rice, professionally lit, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Tuna Maki",
+    "category": "sushi",
+    "prompt": "A perfectly rolled tuna maki sushi cut, showing red tuna, rice, and nori, sharp focus, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Ebi Nigiri",
+    "category": "sushi",
+    "prompt": "A single, perfectly cooked shrimp ebi nigiri, bright pink shrimp, pristine white rice, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "California Roll",
+    "category": "sushi",
+    "prompt": "A classic California roll slice, crab, avocado, cucumber, roe, rice, nori, isolated, studio lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Gari Ginger",
+    "category": "sushi",
+    "prompt": "A small, artfully arranged pile of delicate pink gari (pickled ginger), crisp, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Wasabi Dollop",
+    "category": "sushi",
+    "prompt": "A vibrant green, perfectly formed dollop of fresh wasabi paste, textured, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Soy Sauce Dish",
+    "category": "sushi",
+    "prompt": "A small, minimalist ceramic soy sauce dish, empty and clean, isolated, soft studio lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Chopsticks Pair",
+    "category": "sushi",
+    "prompt": "A clean, elegant pair of wooden chopsticks, poised, isolated, natural light, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Spicy Tuna Roll",
+    "category": "sushi",
+    "prompt": "A single, vibrant spicy tuna roll cut, topped with sriracha mayo, sesame seeds, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Ikura Nigiri",
+    "category": "sushi",
+    "prompt": "A vibrant ikura (salmon roe) nigiri, glistening orange pearls on rice, nori wrap, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Chashu Slice",
+    "category": "ramen",
+    "prompt": "A perfectly seared chashu pork belly slice, caramelized edges, tender texture, isolated, studio light, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Ajitama Egg",
+    "category": "ramen",
+    "prompt": "A halved ajitama (marinated soft-boiled egg) with a rich, creamy yolk, isolated, professional lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Nori Sheet",
+    "category": "ramen",
+    "prompt": "A crisp, dark green sheet of nori seaweed, gently folded, isolated, clean studio shot, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Narutomaki Swirl",
+    "category": "ramen",
+    "prompt": "A single narutomaki fish cake slice with its iconic pink swirl, isolated, sharp focus, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Scallions Chopped",
+    "category": "ramen",
+    "prompt": "A sprinkle of freshly chopped green scallions, vibrant and crisp, isolated, overhead shot, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Menma Bamboo",
+    "category": "ramen",
+    "prompt": "Tender, marinated menma (bamboo shoots), rich brown color, isolated, soft studio lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Ramen Noodles",
+    "category": "ramen",
+    "prompt": "A delicate swirl of perfectly cooked ramen noodles, slightly glistening, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Tonkotsu Broth",
+    "category": "ramen",
+    "prompt": "A small, clear glass bowl of creamy, rich tonkotsu ramen broth, isolated, soft lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Ramen Ladle",
+    "category": "ramen",
+    "prompt": "A clean, polished metal ramen ladle, empty, isolated, minimalist studio shot, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Shrimp Tempura",
+    "category": "tempura",
+    "prompt": "A golden-brown, crispy shrimp tempura, perfectly fried, delicate batter, isolated, studio light, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Broccoli Tempura",
+    "category": "tempura",
+    "prompt": "A light, airy broccoli floret tempura, golden crisp batter, isolated, professional studio shot, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Sweet Potato Tempura",
+    "category": "tempura",
+    "prompt": "A vibrant orange sweet potato slice tempura, golden-fried, isolated, soft lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Mushroom Tempura",
+    "category": "tempura",
+    "prompt": "A savory shiitake mushroom tempura, crisp batter, earthy tones, isolated, studio light, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Pumpkin Tempura",
+    "category": "tempura",
+    "prompt": "A tender pumpkin slice tempura, beautifully golden, isolated, clean background, transparent PNG., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Asparagus Tempura",
+    "category": "tempura",
+    "prompt": "A long, slender asparagus spear tempura, perfectly fried, isolated, bright studio lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Bell Pepper Tempura",
+    "category": "tempura",
+    "prompt": "A colorful bell pepper ring tempura, vibrant and crisp, isolated, soft shadows, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Tempura Sauce",
+    "category": "tempura",
+    "prompt": "A small, elegant ceramic bowl filled with dark tentsuyu tempura dipping sauce, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Tempura Plate",
+    "category": "tempura",
+    "prompt": "A minimalist white ceramic plate with a delicate paper liner, empty, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Chicken Thigh Yakitori",
+    "category": "yakitori",
+    "prompt": "A perfectly grilled chicken thigh yakitori skewer, caramelized glaze, isolated, studio lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Chicken Meatball Yakitori",
+    "category": "yakitori",
+    "prompt": "Two flavorful chicken meatball yakitori skewers (tsukune), glazed, isolated, professional lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Leek Yakitori",
+    "category": "yakitori",
+    "prompt": "A vibrant green leek yakitori skewer, lightly charred, isolated, natural light, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Mushroom Yakitori",
+    "category": "yakitori",
+    "prompt": "Earthy shiitake mushroom yakitori skewer, perfectly grilled, isolated, soft studio lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Chicken Skin Yakitori",
+    "category": "yakitori",
+    "prompt": "Crispy, golden-brown chicken skin yakitori skewer, glistening, isolated, sharp focus, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Chicken Breast Yakitori",
+    "category": "yakitori",
+    "prompt": "Lean, tender chicken breast yakitori skewer, lightly seasoned, isolated, clean studio shot, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Asparagus Bacon Yakitori",
+    "category": "yakitori",
+    "prompt": "A savory asparagus wrapped in bacon yakitori skewer, perfectly grilled, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Quail Egg Yakitori",
+    "category": "yakitori",
+    "prompt": "Delicate quail egg yakitori skewer, lightly browned, isolated, soft lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Yakitori Grill",
+    "category": "yakitori",
+    "prompt": "A section of a traditional yakitori grill grate, black cast iron, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Salmon Onigiri",
+    "category": "onigiri",
+    "prompt": "A perfectly formed triangular salmon onigiri, wrapped in nori, flaky salmon filling, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Tuna Mayo Onigiri",
+    "category": "onigiri",
+    "prompt": "A classic tuna mayo onigiri, triangular shape, nori wrap, creamy filling, isolated, studio light, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Umeboshi Onigiri",
+    "category": "onigiri",
+    "prompt": "A simple umeboshi (pickled plum) onigiri, white rice, small red ume, isolated, natural light, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Plain Onigiri",
+    "category": "onigiri",
+    "prompt": "A perfectly shaped plain triangular onigiri, pristine white rice, isolated, soft studio lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Cylindrical Onigiri",
+    "category": "onigiri",
+    "prompt": "A minimalist cylindrical onigiri, clean white rice, isolated, sharp focus, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Onigiri Basket",
+    "category": "onigiri",
+    "prompt": "A small, traditional woven bamboo basket, empty, perfect for holding onigiri, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Teriyaki Chicken Onigiri",
+    "category": "onigiri",
+    "prompt": "A savory teriyaki chicken onigiri, triangular, nori strip, isolated, professional lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Kombu Onigiri",
+    "category": "onigiri",
+    "prompt": "A flavorful kombu (kelp) onigiri, triangular shape, subtle dark filling, isolated, clean studio shot, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Onigiri Stamp",
+    "category": "onigiri",
+    "prompt": "A simple plastic onigiri mold/press, empty, isolated, clean white object, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Matcha Bowl",
+    "category": "matcha",
+    "prompt": "A traditional ceramic matcha chawan (bowl), empty, earthy tones, isolated, soft studio lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Bamboo Whisk",
+    "category": "matcha",
+    "prompt": "A delicate bamboo matcha chasen (whisk), intricately crafted, isolated, natural light, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Matcha Scoop",
+    "category": "matcha",
+    "prompt": "A slender bamboo matcha chashaku (scoop), elegant curve, isolated, clean studio shot, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Matcha Powder",
+    "category": "matcha",
+    "prompt": "A small, vibrant green pile of finely ground matcha powder, rich texture, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Whisked Matcha",
+    "category": "matcha",
+    "prompt": "A bowl of perfectly whisked bright green matcha tea, frothy top, isolated, soft lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Matcha Latte",
+    "category": "matcha",
+    "prompt": "A glass of creamy matcha latte with delicate foam art, vibrant green, isolated, studio light, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Matcha Tea Set",
+    "category": "matcha",
+    "prompt": "A simple ceramic tray with empty matcha tools (whisk, scoop), isolated, minimalist, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Matcha Pastry",
+    "category": "matcha",
+    "prompt": "A delicate matcha-flavored mochi or small pastry, vibrant green, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Matcha Ceramic Container",
+    "category": "matcha",
+    "prompt": "A small, traditional ceramic container for matcha powder, dark glaze, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Sakura Branch",
+    "category": "sakura",
+    "prompt": "A delicate cherry blossom sakura branch with several soft pink flowers, isolated, natural light, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Falling Petals",
+    "category": "sakura",
+    "prompt": "A scattering of individual pink sakura petals, gently falling, isolated, soft focus, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Single Sakura Bloom",
+    "category": "sakura",
+    "prompt": "A single perfect sakura cherry blossom flower, intricate details, soft pink, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Sakura Buds",
+    "category": "sakura",
+    "prompt": "A small cluster of unopened sakura cherry blossom buds on a branch, delicate, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Sakura Leaf",
+    "category": "sakura",
+    "prompt": "A fresh green sakura leaf, distinct shape, isolated, crisp detail, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Sakura Twig",
+    "category": "sakura",
+    "prompt": "A small, bare sakura twig with a few emerging pink blossoms, isolated, minimalist, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Sakura Garland",
+    "category": "sakura",
+    "prompt": "A delicate string of stylized sakura flowers, light pink, isolated, decorative element, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Sakura Petal Pile",
+    "category": "sakura",
+    "prompt": "A small, artful pile of soft pink sakura petals, gentle texture, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Sakura Blossom Cluster",
+    "category": "sakura",
+    "prompt": "A dense cluster of fully bloomed sakura flowers on a short stem, vibrant pink, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Red Torii Gate",
+    "category": "torii gate",
+    "prompt": "A classic bright red wooden torii gate, perfectly isolated, traditional style, vibrant, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Stone Torii Gate",
+    "category": "torii gate",
+    "prompt": "An ancient-looking grey stone torii gate, weathered texture, moss accents, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Miniature Torii",
+    "category": "torii gate",
+    "prompt": "A small, intricately crafted miniature torii gate, detailed wood grain, isolated, soft lighting, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Modern Torii Gate",
+    "category": "torii gate",
+    "prompt": "A sleek, minimalist black torii gate, clean lines, contemporary style, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Floating Torii Gate",
+    "category": "torii gate",
+    "prompt": "A stylized, iconic red floating torii gate, serene, isolated, artistic render, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Rustic Torii Gate",
+    "category": "torii gate",
+    "prompt": "A weathered, rustic wooden torii gate, faded red paint, isolated, natural light, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Torii Gate Silhouette",
+    "category": "torii gate",
+    "prompt": "A sharp, clean silhouette of a traditional torii gate, black against white, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Torii Gate Post",
+    "category": "torii gate",
+    "prompt": "A single, sturdy vermilion torii gate post, traditional design, isolated, detailed texture, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Small Torii Gate",
+    "category": "torii gate",
+    "prompt": "A simple, small wooden torii gate, bright red, isolated, clean studio shot, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Mount Fuji Snow",
+    "category": "mount fuji",
+    "prompt": "The iconic snow-capped peak of Mount Fuji, majestic and pristine, isolated, clear sky, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Mount Fuji Clouds",
+    "category": "mount fuji",
+    "prompt": "Mount Fuji's majestic silhouette partially obscured by wispy clouds, ethereal, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Stylized Mount Fuji",
+    "category": "mount fuji",
+    "prompt": "A minimalist, stylized rendition of Mount Fuji, clean lines, serene blue tones, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Autumn Mount Fuji",
+    "category": "mount fuji",
+    "prompt": "Mount Fuji with hints of autumn foliage at its base, subtle colors, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Mount Fuji Silhouette",
+    "category": "mount fuji",
+    "prompt": "A clean, sharp silhouette of Mount Fuji, black against white, iconic shape, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Mount Fuji Reflection",
+    "category": "mount fuji",
+    "prompt": "The upper half of Mount Fuji, with a subtle, stylized water reflection below, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Mount Fuji Sunrise",
+    "category": "mount fuji",
+    "prompt": "Mount Fuji bathed in soft, warm sunrise hues, gentle glow, isolated, artistic rendering, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Mount Fuji Outline",
+    "category": "mount fuji",
+    "prompt": "A simple, elegant line art outline of Mount Fuji, minimalist, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Mount Fuji Peak",
+    "category": "mount fuji",
+    "prompt": "A close-up view of Mount Fuji's snow-covered peak, detailed texture, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Seigaiha Pattern",
+    "category": "japanese pattern",
+    "prompt": "A seamless, elegant blue seigaiha (wave) pattern tile, intricate lines, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Asanoha Pattern",
+    "category": "japanese pattern",
+    "prompt": "A classic green asanoha (hemp leaf) pattern, geometric and symmetrical, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Kikko Pattern",
+    "category": "japanese pattern",
+    "prompt": "A traditional kikko (tortoise shell) pattern, hexagonal grid, subtle gold lines, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Shippo Pattern",
+    "category": "japanese pattern",
+    "prompt": "An intricate shippo (seven treasures) pattern, interlocking circles, elegant, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Sakura Pattern",
+    "category": "japanese pattern",
+    "prompt": "A delicate pink sakura cherry blossom pattern, scattered flowers, subtle, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Crane Pattern",
+    "category": "japanese pattern",
+    "prompt": "A flying red crane pattern, elegant and graceful, traditional Japanese art style, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Ichimatsu Pattern",
+    "category": "japanese pattern",
+    "prompt": "A simple, bold black and white ichimatsu (checkerboard) pattern, graphic, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Yagasuri Pattern",
+    "category": "japanese pattern",
+    "prompt": "A traditional yagasuri (arrow fletching) pattern, geometric, repeating arrows, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Kanoko Shibori Pattern",
+    "category": "japanese pattern",
+    "prompt": "A soft, dotted kanoko shibori (fawn spot tie-dye) pattern, organic texture, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "White Maneki Neko",
+    "category": "maneki neko",
+    "prompt": "A cute white maneki neko (beckoning cat) with a raised left paw, golden coin, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Black Maneki Neko",
+    "category": "maneki neko",
+    "prompt": "A sleek black maneki neko with a raised right paw, gold bell collar, isolated, studio light, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Golden Maneki Neko",
+    "category": "maneki neko",
+    "prompt": "A shimmering golden maneki neko, traditional design, raised paw, isolated, opulent, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Calico Maneki Neko",
+    "category": "maneki neko",
+    "prompt": "A charming calico maneki neko, tri-color fur, raised paw, happy expression, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Maneki Neko Coin",
+    "category": "maneki neko",
+    "prompt": "A traditional Japanese koban coin, golden, oval shape, isolated, detailed inscription, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Maneki Neko Bell",
+    "category": "maneki neko",
+    "prompt": "A small, shiny golden bell with a red ribbon, typically worn by maneki neko, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Smiling Maneki Neko",
+    "category": "maneki neko",
+    "prompt": "A cheerful maneki neko with a wide, friendly smile, both paws down, isolated, bright, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Modern Maneki Neko",
+    "category": "maneki neko",
+    "prompt": "A minimalist, stylized maneki neko, clean lines, single color, raised paw, isolated, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  },
+  {
+    "keyword": "Lucky Cat Pair",
+    "category": "maneki neko",
+    "prompt": "A pair of small maneki neko, one with left paw up, one with right, isolated, studio light, transparent background., premium transparent PNG asset, Adobe Stock quality, Canva-ready, Pinterest-friendly, commercial-use design resource, clean cutout edges, isolated object, no background, no white fringe, sharp details, professional studio lighting, centered composition",
+    "negativePrompt": "abstract, geometric, monochrome, low poly, random shape, ai art, text logo, simple icon, circle, star, smoke only, text, watermark, messy edges, blurry edge"
+  }
+]

@@ -12,7 +12,8 @@ export function getNextAdType(): AdType {
   // Extract env config
   const adsEnabled = process.env.NEXT_PUBLIC_ADS_ENABLED !== 'false'; // default true if not set
   const admaxEnabled = process.env.NEXT_PUBLIC_ADMAX_ENABLED !== 'false';
-  const popadsEnabled = process.env.NEXT_PUBLIC_POPADS_ENABLED === 'true'; // default false
+  // HARDCODED FALSE for AdMax Static Approval Mode
+  const popadsEnabled = false; // process.env.NEXT_PUBLIC_POPADS_ENABLED === 'true';
   
   if (!adsEnabled) return 'none';
 

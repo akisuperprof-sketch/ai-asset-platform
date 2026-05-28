@@ -22,21 +22,27 @@ const PREMIUM_MODIFIERS = [
 ];
 
 const NEGATIVE_PROMPT = [
+  "cartoon",
+  "clipart",
+  "lowpoly",
+  "fake texture",
+  "ai generated look",
+  "plastic material",
+  "watermark",
+  "blurry edge",
+  "oversaturated",
+  "toy-like",
+  "unrealistic lighting",
+  "extra objects",
+  "messy composition",
   "abstract",
   "geometric",
   "monochrome",
-  "low poly",
   "random shape",
   "ai art",
   "text logo",
   "simple icon",
-  "circle",
-  "star",
-  "smoke only",
-  "text",
-  "watermark",
-  "messy edges",
-  "blurry edge"
+  "text"
 ].join(", ");
 
 export interface PromptGenerationResult {

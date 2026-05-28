@@ -112,12 +112,26 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
         {/* On home page, HeroSection takes the full viewport. Below it, the scrollable showroom begins. */}
         {isHome ? (
           <div className="relative">
+            {/* STATIC ADMAX AD FOR BOT APPROVAL (SSR MUST RENDER THIS) - MOVED TO TOP */}
+            <div className="w-full flex flex-col items-center justify-center pt-24 pb-8 gap-4 bg-black relative z-50">
+              <span className="text-[10px] text-gray-600 tracking-widest uppercase mb-2">Advertisement</span>
+              {/* PC 300x250 */}
+              <div className="hidden md:block w-[300px] h-[250px] bg-black"
+                dangerouslySetInnerHTML={{ __html: '<script src="https://adm.shinobi.jp/s/40d12e183086a55c7451794352a281c2"></script>' }}
+              />
+              {/* SP 320x50 */}
+              <div className="block md:hidden w-[320px] h-[50px] bg-black"
+                dangerouslySetInnerHTML={{ __html: '<script src="https://adm.shinobi.jp/s/35317cead3271f0eeda52a630e9f6aa6"></script>' }}
+              />
+            </div>
+
             <HeroSection 
               initialCount={assetCount} 
               todayAdded={todayAdded} 
               categoryCounts={categoryCounts}
               premiumAssets={premiumAssets}
             />
+
             
             {/* 1. NEW PREMIUM ASSETS SECTION */}
             {premiumAssets.length > 0 && (
