@@ -6,26 +6,22 @@ import { ArrowRight, Tag, Bookmark, Pizza, Coffee, User, HeartPulse, Dog, TreePi
 
 const categoryIcons: Record<string, any> = {
   "日本の食": Pizza,
-  "食べ物": Pizza,
-  "飲み物": Coffee,
-  "人物": User,
+  "和風・和柄": Bookmark,
+  "桜・祭り": Zap,
+  "神社・鳥居": Bookmark,
+  "富士山・自然": TreePine,
   "医療・ヘルスケア": HeartPulse,
-  "動物・ペット": Dog,
-  "自然・風景": TreePine,
-  "乗り物・交通": Car,
-  "建物・施設": Bookmark,
-  "事務用品・文具": PenTool,
-  "年中行事・祭り": Zap,
+  "ビジネス": User,
 };
 
-// Map categories to specific image concepts for visual richness
 const categoryImages: Record<string, string> = {
   "日本の食": "https://images.unsplash.com/photo-1582450871972-ab5ca641643d?auto=format&fit=crop&q=80&w=300",
-  "和の伝統素材": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=300",
-  "年中行事・祭り": "https://images.unsplash.com/photo-1512389142860-9c449e58a543?auto=format&fit=crop&q=80&w=300",
+  "和風・和柄": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=300",
+  "桜・祭り": "https://images.unsplash.com/photo-1512389142860-9c449e58a543?auto=format&fit=crop&q=80&w=300",
+  "神社・鳥居": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=300",
+  "富士山・自然": "https://images.unsplash.com/photo-1512389142860-9c449e58a543?auto=format&fit=crop&q=80&w=300",
   "ビジネス": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=300",
   "医療・ヘルスケア": "https://images.unsplash.com/photo-1505751172107-573225a91703?auto=format&fit=crop&q=80&w=300",
-  "事務用品・文具": "https://images.unsplash.com/photo-1586075010633-24701bd6e8b4?auto=format&fit=crop&q=80&w=300",
 };
 
 interface CategorySectionProps {

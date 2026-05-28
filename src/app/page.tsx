@@ -33,11 +33,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
   // Extract category counts dynamically from active published assets
   const categoryCounts: Record<string, number> = {
     "日本の食": 0,
-    "和の伝統素材": 0,
-    "年中行事・祭り": 0,
-    "ビジネス": 0,
+    "和風・和柄": 0,
+    "桜・祭り": 0,
+    "神社・鳥居": 0,
+    "富士山・自然": 0,
     "医療・ヘルスケア": 0,
-    "事務用品・文具": 0,
+    "ビジネス": 0,
   };
 
   allAssets.forEach(asset => {
@@ -51,11 +52,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
 
   const categoriesList = [
     { id: "1", name: "日本の食", slug: "food", count: categoryCounts["日本の食"] || 0 },
-    { id: "2", name: "和の伝統素材", slug: "japan", count: categoryCounts["和の伝統素材"] || 0 },
-    { id: "3", name: "年中行事・祭り", slug: "festival", count: categoryCounts["年中行事・祭り"] || 0 },
-    { id: "4", name: "ビジネス", slug: "business", count: categoryCounts["ビジネス"] || 0 },
-    { id: "5", name: "医療・ヘルスケア", slug: "medical", count: categoryCounts["医療・ヘルスケア"] || 0 },
-    { id: "6", name: "事務用品・文具", slug: "stationery", count: categoryCounts["事務用品・文具"] || 0 },
+    { id: "2", name: "和風・和柄", slug: "japan", count: categoryCounts["和風・和柄"] || 0 },
+    { id: "3", name: "桜・祭り", slug: "festival", count: categoryCounts["桜・祭り"] || 0 },
+    { id: "4", name: "神社・鳥居", slug: "torii", count: categoryCounts["神社・鳥居"] || 0 },
+    { id: "5", name: "富士山・自然", slug: "nature", count: categoryCounts["富士山・自然"] || 0 },
+    { id: "6", name: "医療・ヘルスケア", slug: "medical", count: categoryCounts["医療・ヘルスケア"] || 0 },
+    { id: "7", name: "ビジネス", slug: "business", count: categoryCounts["ビジネス"] || 0 },
   ];
 
   // Extract popular tags dynamically from real assets
@@ -78,11 +80,23 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
 
   const isHome = !q && !cat;
 
-  // Extract the 10 First Premium Assets (All real assets, sorted by latest)
-  const premiumAssets = allAssets.filter(a => a.imageUrl).slice(0, 10);
+  // Premium Top Page Strategy: Filter to specific high-quality categories
+  const premiumTopKeywords = ["sushi", "ramen", "sakura", "torii", "japanese pattern", "maneki neko"];
+  const isPremiumTopMatch = (asset: any) => {
+    const raw = (asset.prompt || asset.title || "").toLowerCase();
+    return premiumTopKeywords.some(kw => raw.includes(kw)) || premiumTopKeywords.includes(asset.categoryRaw);
+  };
+  
+  // Extract the 10 First Premium Assets (All real assets, sorted by latest, filtered by premium strategy)
+  const premiumAssets = allAssets.filter(a => a.imageUrl && isPremiumTopMatch(a)).slice(0, 10);
+  // Fallback to latest if not enough premium items
+  if (premiumAssets.length < 10) {
+    const additional = allAssets.filter(a => a.imageUrl && !premiumAssets.find(p => p.id === a.id)).slice(0, 10 - premiumAssets.length);
+    premiumAssets.push(...additional);
+  }
   
   // Extract 6 representative Japanese traditional items for "LATEST FROM JAPAN"
-  const latestJapanAssets = allAssets.filter(a => a.imageUrl && (a.category === "和の伝統素材" || a.category === "年中行事・祭り")).slice(0, 6);
+  const latestJapanAssets = allAssets.filter(a => a.imageUrl && (a.category === "和風・和柄" || a.category === "桜・祭り" || a.category === "神社・鳥居")).slice(0, 6);
 
   // Extract 6 trending items for "TRENDING PNG"
   const trendingAssets = allAssets.filter(a => a.imageUrl && a.category === "日本の食").slice(0, 6);

@@ -448,12 +448,12 @@ export function HeroSection({
           <div className="w-full max-w-5xl mx-auto mb-6 px-2">
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
               {[
-                { name: "日本の食", label: "Japanese Food", icon: "🍜" },
-                { name: "和の伝統素材", label: "Traditional", icon: "⛩️" },
-                { name: "年中行事・祭り", label: "Seasonal", icon: "🌸" },
-                { name: "ビジネス", label: "Business", icon: "💼" },
+                { name: "日本の食", label: "Japanese Food", icon: "🍣" },
+                { name: "和風・和柄", label: "Traditional", icon: "⛩️" },
+                { name: "桜・祭り", label: "Festivals", icon: "🌸" },
+                { name: "富士山・自然", label: "Mt. Fuji", icon: "🗻" },
                 { name: "医療・ヘルスケア", label: "Medical", icon: "🏥" },
-                { name: "すべて", label: "Patterns & More", icon: "🎨" },
+                { name: "ビジネス", label: "Business", icon: "💼" },
               ].map((cat) => (
                 <button 
                   key={cat.name}
