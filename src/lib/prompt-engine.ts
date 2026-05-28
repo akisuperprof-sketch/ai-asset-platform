@@ -1,39 +1,42 @@
 import { GoogleGenAI, Type } from '@google/genai';
 
 const S_CATEGORIES = [
-  'ramen', 'sushi', 'yakitori', 'tempura', 'takoyaki', 
-  'matcha', 'onigiri', 'torii gate', 'maneki neko', 
-  'mount fuji', 'sakura', 'japanese pattern'
+  'sushi', 'ramen', 'tempura', 'yakitori', 'onigiri', 
+  'matcha', 'sakura', 'torii gate', 'mount fuji', 
+  'japanese pattern', 'maneki neko'
 ];
 
 const PREMIUM_MODIFIERS = [
-  "transparent PNG",
-  "isolated object",
-  "commercial stock asset",
+  "premium transparent PNG asset",
   "Adobe Stock quality",
   "Canva-ready",
   "Pinterest-friendly",
-  "studio lighting",
-  "clean edges",
+  "commercial-use design resource",
+  "clean cutout edges",
+  "isolated object",
   "no background",
   "no white fringe",
-  "high detail",
-  "useful for poster, SNS, YouTube, presentation, web"
+  "sharp details",
+  "professional studio lighting",
+  "centered composition"
 ];
 
 const NEGATIVE_PROMPT = [
-  "abstract shape",
-  "flat icon",
-  "simple circle",
-  "simple star",
-  "low quality",
-  "blur",
-  "white background",
+  "abstract",
+  "geometric",
+  "monochrome",
+  "low poly",
+  "random shape",
+  "ai art",
+  "text logo",
+  "simple icon",
+  "circle",
+  "star",
+  "smoke only",
   "text",
-  "logo",
   "watermark",
   "messy edges",
-  "AI artifacts"
+  "blurry edge"
 ].join(", ");
 
 export interface PromptGenerationResult {

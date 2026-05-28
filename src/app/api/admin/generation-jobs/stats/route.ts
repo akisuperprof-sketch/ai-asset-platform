@@ -25,12 +25,24 @@ export async function GET() {
     const todayStr = new Date().toISOString().split('T')[0];
     const todaysJobs = jobs.filter(j => j.created_at.startsWith(todayStr));
 
+    const totalJobs = todaysJobs.length;
+    const actualGenerated = todaysJobs.filter(j => ['generated', 'qa_passed', 'qa_failed'].includes(j.status)).length;
+    const qaPassed = todaysJobs.filter(j => j.status === 'qa_passed').length;
+    const qaFailed = todaysJobs.filter(j => j.status === 'qa_failed').length;
+    const passRate = actualGenerated > 0 ? ((qaPassed / actualGenerated) * 100).toFixed(1) : "0.0";
+    
+    // Estimate cost (assume 3 yen per image for realistic quality API + 0.5 yen for QA)
+    const costEstimateYen = actualGenerated * 3.5; 
+
     const stats = {
-      generatedToday: todaysJobs.length,
-      qaPassed: todaysJobs.filter(j => j.status === 'qa_passed').length,
-      qaFailed: todaysJobs.filter(j => j.status === 'qa_failed').length,
-      pendingRec: todaysJobs.filter(j => j.status === 'qa_passed').length, // In this model, qa_passed equates to pending recommendation
-      rejectRec: todaysJobs.filter(j => j.status === 'qa_failed').length,
+      candidatesToday: totalJobs,
+      actualGenerated: actualGenerated,
+      qaPassed: qaPassed,
+      qaFailed: qaFailed,
+      passRate: passRate,
+      costEstimateYen: costEstimateYen,
+      premiumCandidates: qaPassed, // For UI clarity
+      rejectImmediately: qaFailed,
       categoryStats: todaysJobs.reduce((acc: Record<string, number>, curr) => {
         acc[curr.category] = (acc[curr.category] || 0) + 1;
         return acc;

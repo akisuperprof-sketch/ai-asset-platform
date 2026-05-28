@@ -22,6 +22,10 @@ async function runDailyGeneration() {
     console.log("🛑 GENERATION_ENABLED is false. Stopping immediately.");
     return;
   }
+  if (process.env.QA_AUDIT_ENABLED === "false") {
+    console.log("🛑 QA_AUDIT_ENABLED is false. Stopping generation to prevent unchecked assets.");
+    return;
+  }
 
   const TARGET_COUNT = 100;
   
@@ -65,7 +69,7 @@ async function runDailyGeneration() {
     .from('generation_jobs')
     .select('*')
     .eq('status', 'queued')
-    .limit(20); // Process in batches of 20 as an example hour limit
+    .limit(10); // Process only 10 items for initial test per execution
 
   if (!pendingJobs || pendingJobs.length === 0) {
     console.log("ℹ️ No pending jobs to process.");
@@ -80,7 +84,10 @@ async function runDailyGeneration() {
     
     const result = await provider.generate({
       prompt: job.prompt,
-      negativePrompt: job.negative_prompt
+      negativePrompt: job.negative_prompt,
+      // Pass initial target size parameter for cost control (ideally 4000x4000 later)
+      width: 1024,
+      height: 1024
     });
 
     if (result.success && result.imageUrls && result.imageUrls.length > 0) {
@@ -114,22 +121,28 @@ async function runDailyGeneration() {
     for (const job of generatedJobs) {
       // In a real scenario, this would call VisionQA on job.image_url
       // Here we mock a random score to simulate QA gating
-      const mockScore = Math.floor(Math.random() * 40) + 60; // 60 to 100
-      const isPassed = mockScore >= 80;
+      // Real VisionQA integration would run here.
+      const qaScore = Math.floor(Math.random() * 30) + 70; // 70 to 100
+      const commercialScore = Math.floor(Math.random() * 40) + 60; // 60 to 100
+      const aiArtifactScore = Math.floor(Math.random() * 60); // 0 to 60
+
+      // Strict Premium thresholds
+      const isPassed = qaScore >= 85 && commercialScore >= 80 && aiArtifactScore <= 40;
       
       const qaResult = {
-        commercial_score: mockScore,
-        ai_artifact_score: Math.floor(Math.random() * 30),
-        reasoning: "Mock QA evaluation completed"
+        vision_score: qaScore,
+        commercial_score: commercialScore,
+        ai_artifact_score: aiArtifactScore,
+        reasoning: "Mock QA evaluation completed with strict Premium thresholds"
       };
 
       await supabase.from('generation_jobs').update({
         status: isPassed ? 'qa_passed' : 'qa_failed',
-        qa_score: mockScore,
+        qa_score: qaScore,
         qa_result: qaResult
       }).eq('id', job.id);
       
-      console.log(`  🔬 QA for ${job.keyword}: Score ${mockScore} -> ${isPassed ? 'PASSED' : 'FAILED'}`);
+      console.log(`  🔬 QA for ${job.keyword}: QA:${qaScore}, Comm:${commercialScore}, Art:${aiArtifactScore} -> ${isPassed ? 'PASSED (Premium Candidate)' : 'FAILED (Needs Fix/Reject)'}`);
     }
   }
 

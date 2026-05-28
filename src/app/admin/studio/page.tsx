@@ -113,11 +113,14 @@ export default function StudioPage() {
   const [jobCategory, setJobCategory] = useState("sushi");
   const [jobBatchSize, setJobBatchSize] = useState("10");
   const [generationStats, setGenerationStats] = useState<{
-    generatedToday: number;
+    candidatesToday: number;
+    actualGenerated: number;
     qaPassed: number;
     qaFailed: number;
-    pendingRec: number;
-    rejectRec: number;
+    passRate: string;
+    costEstimateYen: number;
+    premiumCandidates: number;
+    rejectImmediately: number;
     categoryStats: Record<string, number>;
   } | null>(null);
 
@@ -1177,30 +1180,34 @@ export default function StudioPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-8">
             <div className="bg-white/5 p-3 rounded-xl border border-white/10 text-center">
-              <span className="text-[9px] text-zinc-400 font-bold uppercase block mb-1">本日生成数</span>
-              <div className="text-xl font-black text-white">{generationStats?.generatedToday || 0}</div>
+              <span className="text-[9px] text-zinc-400 font-bold uppercase block mb-1">本日生成候補</span>
+              <div className="text-xl font-black text-white">{generationStats?.candidatesToday || 0}</div>
             </div>
-            <div className="bg-purple-500/10 p-3 rounded-xl border border-purple-500/20 text-center">
-              <span className="text-[9px] text-purple-400 font-bold uppercase block mb-1">QA通過数</span>
-              <div className="text-xl font-black text-purple-300">{generationStats?.qaPassed || 0}</div>
+            <div className="bg-blue-500/10 p-3 rounded-xl border border-blue-500/20 text-center">
+              <span className="text-[9px] text-blue-400 font-bold uppercase block mb-1">実生成数</span>
+              <div className="text-xl font-black text-blue-300">{generationStats?.actualGenerated || 0}</div>
             </div>
             <div className="bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20 text-center">
-              <span className="text-[9px] text-emerald-400 font-bold uppercase block mb-1">公開候補数</span>
-              <div className="text-xl font-black text-emerald-300">{generationStats?.qaPassed || 0}</div>
+              <span className="text-[9px] text-emerald-400 font-bold uppercase block mb-1">Premium Candidate</span>
+              <div className="text-xl font-black text-emerald-300">{generationStats?.premiumCandidates || 0}</div>
             </div>
             <div className="bg-amber-500/10 p-3 rounded-xl border border-amber-500/20 text-center">
-              <span className="text-[9px] text-amber-400 font-bold uppercase block mb-1">pending推奨</span>
-              <div className="text-xl font-black text-amber-300">{generationStats?.pendingRec || 0}</div>
+              <span className="text-[9px] text-amber-400 font-bold uppercase block mb-1">Needs Fix</span>
+              <div className="text-xl font-black text-amber-300">0</div>
             </div>
             <div className="bg-red-500/10 p-3 rounded-xl border border-red-500/20 text-center">
-              <span className="text-[9px] text-red-400 font-bold uppercase block mb-1">reject推奨</span>
-              <div className="text-xl font-black text-red-300">{generationStats?.rejectRec || 0}</div>
+              <span className="text-[9px] text-red-400 font-bold uppercase block mb-1">Reject Immediately</span>
+              <div className="text-xl font-black text-red-300">{generationStats?.rejectImmediately || 0}</div>
             </div>
-            <div className="bg-cyan-500/10 p-3 rounded-xl border border-cyan-500/20 text-center">
-              <span className="text-[9px] text-cyan-400 font-bold uppercase block mb-1">公開済み増加</span>
-              <div className="text-xl font-black text-cyan-300">+{kpis.generatedToday > 0 ? (kpis.generatedToday - (kpis.pendingReview + kpis.rejected)) : 0}</div>
+            <div className="bg-purple-500/10 p-3 rounded-xl border border-purple-500/20 text-center">
+              <span className="text-[9px] text-purple-400 font-bold uppercase block mb-1">QA通過率</span>
+              <div className="text-xl font-black text-purple-300">{generationStats?.passRate || "0.0"}%</div>
+            </div>
+            <div className="bg-zinc-800 p-3 rounded-xl border border-zinc-700 text-center">
+              <span className="text-[9px] text-zinc-400 font-bold uppercase block mb-1">コスト推定</span>
+              <div className="text-xl font-black text-zinc-200">¥{generationStats?.costEstimateYen?.toLocaleString() || 0}</div>
             </div>
           </div>
 
