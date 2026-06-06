@@ -4,6 +4,8 @@ import { cookies } from 'next/headers';
 import { getGenerationProvider } from '@/lib/generation/provider';
 import { runVisionQA } from '@/lib/vision-qa';
 
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   try {
     const cookieStore = await cookies();
