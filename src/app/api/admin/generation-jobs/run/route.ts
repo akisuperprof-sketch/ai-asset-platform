@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { adminClient } from '@/lib/supabase';
 import { getGenerationProvider } from '@/lib/generation/provider';
 import { runVisionQA } from '@/lib/vision-qa';
-import { processRembg } from '@/lib/generation/rembg';
 
 export const maxDuration = 60;
 
@@ -98,16 +97,6 @@ export async function POST(request: Request) {
             const imageRes = await fetch(finalImageUrl);
             if (!imageRes.ok) throw new Error("Failed to fetch generated image from provider");
             let imageBuffer = Buffer.from(await imageRes.arrayBuffer());
-
-            // --- Background Removal Pipeline ---
-            console.log(`[Job ${job.id}] Running processRembg on downloaded image...`);
-            try {
-              imageBuffer = await processRembg(imageBuffer) as unknown as Buffer;
-              console.log(`[Job ${job.id}] processRembg successful.`);
-            } catch (rembgErr: any) {
-              console.error(`[Job ${job.id}] processRembg failed:`, rembgErr);
-              throw new Error(`Background removal failed: ${rembgErr.message}`);
-            }
 
             const titleSlug = (job.metadata?.categoryDomination?.seoSlug || job.keyword)
               .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
