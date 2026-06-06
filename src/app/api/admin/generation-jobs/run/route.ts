@@ -102,7 +102,7 @@ export async function POST(request: Request) {
             // --- Background Removal Pipeline ---
             console.log(`[Job ${job.id}] Running processRembg on downloaded image...`);
             try {
-              imageBuffer = await processRembg(imageBuffer);
+              imageBuffer = await processRembg(imageBuffer) as unknown as Buffer;
               console.log(`[Job ${job.id}] processRembg successful.`);
             } catch (rembgErr: any) {
               console.error(`[Job ${job.id}] processRembg failed:`, rembgErr);
