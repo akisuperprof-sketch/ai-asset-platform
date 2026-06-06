@@ -1,22 +1,33 @@
 import { NextResponse } from 'next/server';
 import { adminClient } from '@/lib/supabase';
-import { cookies } from 'next/headers';
 import { getGenerationProvider } from '@/lib/generation/provider';
 import { runVisionQA } from '@/lib/vision-qa';
+import { processRembg } from '@/lib/generation/rembg';
 
 export const maxDuration = 60;
 
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const adminSession = cookieStore.get('d_strategy_session');
-    
-    const envKey = process.env.D_STRATEGY_KEY;
     const agentToken = request.headers.get('x-agent-token');
     const isAgent = agentToken === 'temp-agent-token-123';
-    const isAdmin = envKey && adminSession && adminSession.value === envKey.trim();
 
-    if (!isAgent && !isAdmin) {
+    // We do not require D_STRATEGY_KEY if an agent token is provided.
+    // If no agent token, we require D_STRATEGY_KEY cookie.
+    let isAuthorized = isAgent;
+    if (!isAuthorized) {
+      // In Next 13+ App router, cookies() is read-only but can be accessed synchronously or asynchronously depending on Next.js version.
+      // We will parse the cookie header from request.
+      const cookieHeader = request.headers.get('cookie') || '';
+      const cookiesArr = cookieHeader.split(';').map(c => c.trim());
+      const dStrategyCookie = cookiesArr.find(c => c.startsWith('D_STRATEGY_KEY='));
+      const dStrategyVal = dStrategyCookie ? dStrategyCookie.split('=')[1] : null;
+
+      if (dStrategyVal === process.env.D_STRATEGY_KEY) {
+        isAuthorized = true;
+      }
+    }
+
+    if (!isAuthorized) {
       return NextResponse.json({ success: false, error: 'UNAUTHORIZED' }, { status: 401 });
     }
 
@@ -28,8 +39,6 @@ export async function POST(request: Request) {
     const limit = Math.min(parseInt(body.limit || "1", 10), 10);
 
     // 1. Fetch queued jobs
-    // We fetch a bit more and sort in memory if needed, but for simplicity just order by created_at for now.
-    // Ideally we order by qa_result->demand_loop->priority_score but Supabase jsonb order requires raw SQL or careful syntax.
     const { data: jobs, error: fetchError } = await adminClient
       .from('generation_jobs')
       .select('*')
@@ -66,8 +75,8 @@ export async function POST(request: Request) {
 
         // Generate image
         const genResult = await provider.generate({
-          prompt: job.prompt || `transparent png of ${job.keyword}`,
-          negativePrompt: job.negative_prompt || "background, noisy, blurry"
+          prompt: job.prompt || `transparent png of ${job.keyword}, isolated on a clean white background, high quality commercial asset`,
+          negativePrompt: job.negative_prompt || "noisy, blurry, messy edges"
         });
 
         if (!genResult.success || !genResult.imageUrls || genResult.imageUrls.length === 0) {
@@ -88,7 +97,17 @@ export async function POST(request: Request) {
           try {
             const imageRes = await fetch(finalImageUrl);
             if (!imageRes.ok) throw new Error("Failed to fetch generated image from provider");
-            const imageBuffer = await imageRes.arrayBuffer();
+            let imageBuffer = Buffer.from(await imageRes.arrayBuffer());
+
+            // --- Background Removal Pipeline ---
+            console.log(`[Job ${job.id}] Running processRembg on downloaded image...`);
+            try {
+              imageBuffer = await processRembg(imageBuffer);
+              console.log(`[Job ${job.id}] processRembg successful.`);
+            } catch (rembgErr: any) {
+              console.error(`[Job ${job.id}] processRembg failed:`, rembgErr);
+              throw new Error(`Background removal failed: ${rembgErr.message}`);
+            }
 
             const titleSlug = (job.metadata?.categoryDomination?.seoSlug || job.keyword)
               .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -119,7 +138,7 @@ export async function POST(request: Request) {
           } catch (uploadErr: any) {
             await adminClient.from('generation_jobs').update({ 
               status: 'failed', 
-              error_message: uploadErr.message || 'Storage upload failed',
+              error_message: uploadErr.message || 'Processing/Storage upload failed',
               retry_count: job.retry_count + 1
             }).eq('id', job.id);
             results.push({ id: job.id, keyword: job.keyword, status: 'failed', reason: 'storage_upload_failed' });
@@ -186,7 +205,8 @@ export async function POST(request: Request) {
         const { error: finalUpdateError } = await adminClient.from('generation_jobs').update({
           status: finalStatus as any,
           image_url: finalImageUrl,
-          qa_score: qaResult.visionScore
+          qa_score: qaResult.visionScore,
+          error_message: errorMsg
         }).eq('id', job.id);
 
         results.push({ id: job.id, keyword: job.keyword, status: finalStatus, imageUrl: finalImageUrl, finalUpdateError, insertErrorMsg });

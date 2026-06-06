@@ -35,14 +35,20 @@ async function runBasicQA(imageBuffer: Buffer) {
     const isPotentiallyMonochrome = avgStdDev < 25;
 
     // Check transparency edge cases by resizing and looking at the alpha channel standard deviation
-    let hasAlpha = metadata.hasAlpha;
+    let hasAlpha = metadata.hasAlpha || false;
     let alphaStdDev = stats.channels.length > 3 ? stats.channels[3].stdev : 0;
     
+    // Check if alpha channel exists and has transparency (stdev > 0 means it's not all solid)
+    // Actually, check if the mean of alpha is 255 (which means it's entirely opaque)
+    let alphaMean = stats.channels.length > 3 ? stats.channels[3].mean : 255;
+    const isSolidOpaque = !hasAlpha || alphaMean === 255;
+
     return {
       avgStdDev,
       isPotentiallyMonochrome,
       hasAlpha,
       alphaStdDev,
+      isSolidOpaque,
       width: metadata.width,
       height: metadata.height,
     };
@@ -177,6 +183,13 @@ export async function runVisionQA(imageUrl: string): Promise<QAResult> {
       qaResult.qaRecommendedAction = "pending";
     }
 
+    if (basicInfo && basicInfo.isSolidOpaque) {
+      qaResult.qaReasons.push("アルファチャンネルがない、または背景が白・単色で不透過です");
+      qaResult.transparencyScore = 0;
+      qaResult.riskLevel = "high";
+      qaResult.qaRecommendedAction = "reject";
+    }
+
     return qaResult;
   } catch (error) {
     console.error("[QA] Vision QA Failed:", error);
@@ -194,7 +207,7 @@ export async function runVisionQA(imageUrl: string): Promise<QAResult> {
       adobeStockScore: 0,
       thumbnailScore: 0,
       riskLevel: "high",
-      qaRecommendedAction: "pending",
+      qaRecommendedAction: "reject",
       qaReasons: ["AI監査システムへの接続に失敗しました"]
     };
   }
