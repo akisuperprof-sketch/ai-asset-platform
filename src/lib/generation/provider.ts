@@ -111,7 +111,10 @@ export class GoogleNanoBananaProvider implements GenerationProvider {
     }
 
     try {
-      const ai = new GoogleGenAI({ apiKey });
+      const ai = new GoogleGenAI({ 
+        apiKey,
+        httpOptions: { timeout: 60000 } // 60 seconds timeout to prevent UND_ERR_CONNECT_TIMEOUT
+      });
       const model = process.env.GOOGLE_IMAGE_MODEL || 'imagen-4.0-generate-001';
       
       const response = await ai.models.generateImages({

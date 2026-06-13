@@ -4,7 +4,13 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ShieldCheck, Download, Loader2, Sparkles } from "lucide-react";
 import { AdMaxBanner } from "./AdMaxBanner";
-import { AdType } from "@/lib/ad-rotation";
+import { AdType, injectPopAds, isPopAdsEnabled } from "@/lib/ad-rotation";
+
+declare global {
+  interface Window {
+    _pop: any[];
+  }
+}
 
 interface DownloadAdGateProps {
   isOpen: boolean;
@@ -21,6 +27,7 @@ export function DownloadAdGate({
 }: DownloadAdGateProps) {
   const [countdown, setCountdown] = useState(3);
   const [isMobile, setIsMobile] = useState(false);
+  const [isPopAdsSkipped, setIsPopAdsSkipped] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -39,6 +46,41 @@ export function DownloadAdGate({
       return () => clearInterval(timer);
     }
   }, [isOpen, countdown]);
+
+  useEffect(() => {
+    if (isOpen && adType === 'popads') {
+      const STORAGE_KEY = 'assetninja_popads_last_shown';
+      const lastShown = localStorage.getItem(STORAGE_KEY);
+      const now = Date.now();
+      const isWithin24h = lastShown && (now - parseInt(lastShown, 10)) < 24 * 60 * 60 * 1000;
+
+      if (isWithin24h) {
+        console.log('PopAds skipped: already shown within 24h');
+        setIsPopAdsSkipped(true);
+        return;
+      }
+
+      setIsPopAdsSkipped(false);
+
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[AssetNinja Ads] selected adType: popads');
+        console.log('[AssetNinja Ads] PopAds enabled:', isPopAdsEnabled());
+      }
+
+      const timer = setTimeout(() => {
+        injectPopAds();
+        localStorage.setItem(STORAGE_KEY, now.toString());
+        localStorage.setItem('assetninja_last_ad_type', 'popads');
+      }, 100);
+
+      return () => clearTimeout(timer);
+    } else if (isOpen && adType === 'admax') {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[AssetNinja Ads] selected adType: admax');
+      }
+      localStorage.setItem('assetninja_last_ad_type', 'admax');
+    }
+  }, [isOpen, adType]);
 
   if (!isOpen) return null;
 
@@ -92,10 +134,18 @@ export function DownloadAdGate({
             {adType === 'admax' && (
               <AdMaxBanner type={isMobile ? 'sp' : 'pc'} />
             )}
-            {adType === 'popads' && (
-              <div className="w-full h-[250px] bg-white/5 border border-white/10 flex items-center justify-center rounded flex-col gap-2">
-                <Loader2 className="w-5 h-5 text-white/20 animate-spin" />
-                <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Sponsor Space</span>
+            {adType === 'popads' && !isPopAdsSkipped && (
+              <div className="w-full min-h-[4rem] p-4 bg-white/5 border border-white/10 flex items-center justify-center rounded flex-col gap-1 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">Sponsor Space</span>
+                <span className="text-[11px] text-white/60 font-medium text-center leading-relaxed">
+                  Sponsor ad will open in a new tab.<br/>
+                  Your PNG download will continue here.
+                </span>
+              </div>
+            )}
+            {adType === 'popads' && isPopAdsSkipped && (
+              <div className="text-[10px] text-white/20 py-2">
+                Sponsored by Ninja Ad Network
               </div>
             )}
           </div>

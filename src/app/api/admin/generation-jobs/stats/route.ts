@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+import { adminClient } from '@/lib/supabase';
 
 export async function GET() {
   const cookieStore = await cookies();
@@ -15,7 +11,11 @@ export async function GET() {
   }
 
   try {
-    const { data: jobs, error } = await supabase
+    if (!adminClient) {
+      return NextResponse.json({ error: 'Database client not initialized' }, { status: 500 });
+    }
+
+    const { data: jobs, error } = await adminClient
       .from('generation_jobs')
       .select('status, created_at, category');
 
@@ -46,7 +46,11 @@ export async function GET() {
       categoryStats: todaysJobs.reduce((acc: Record<string, number>, curr) => {
         acc[curr.category] = (acc[curr.category] || 0) + 1;
         return acc;
-      }, {})
+      }, {}),
+      globalQueued: jobs.filter(j => j.status === 'queued').length,
+      globalProcessing: jobs.filter(j => j.status === 'generating' || j.status === 'processing').length,
+      globalQaPassed: jobs.filter(j => j.status === 'qa_passed').length,
+      globalQaFailed: jobs.filter(j => j.status === 'qa_failed').length,
     };
 
     return NextResponse.json(stats);

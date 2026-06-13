@@ -21,6 +21,10 @@ import {
   Copy,
   Check
 } from "lucide-react";
+import { adminClient } from '@/lib/supabase';
+import AssetProductionCenter from "./AssetProductionCenter";
+import ProductionDashboard from "./ProductionDashboard";
+import AutoProductionSettings from "./AutoProductionSettings";
 import { supabase } from "@/lib/supabase";
 import { Asset } from "@/types";
 
@@ -109,7 +113,7 @@ export default function StudioPage() {
   const [jobTags, setJobTags] = useState("");
   const [modelType, setModelType] = useState("stability-sdxl-1.0");
 
-  const [activeTab, setActiveTab] = useState<"dashboard" | "generate" | "keywords">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "generate" | "keywords" | "queue">("dashboard");
   const [jobCategory, setJobCategory] = useState("sushi");
   const [jobBatchSize, setJobBatchSize] = useState("10");
   const [generationStats, setGenerationStats] = useState<{
@@ -421,6 +425,10 @@ export default function StudioPage() {
   return (
     <div className="p-8 space-y-8 font-sans bg-zinc-950 text-white min-h-screen">
       
+      <AssetProductionCenter />
+      <ProductionDashboard />
+      <AutoProductionSettings />
+
       {/* PHASE 7: Dashboard Tasks */}
       <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/5 border border-indigo-500/20 rounded-2xl p-6 relative overflow-hidden mb-8">
         <div className="absolute top-0 right-0 p-8 opacity-20">
@@ -482,6 +490,14 @@ export default function StudioPage() {
             生成ジョブ作成
           </button>
           <button 
+            onClick={() => setActiveTab("queue")}
+            className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-colors ${
+              activeTab === "queue" ? "bg-white text-zinc-950" : "bg-white/5 border border-white/5 text-zinc-400 hover:text-white"
+            }`}
+           title="キュー管理">
+            プロダクションキュー
+          </button>
+          <button 
             onClick={() => setActiveTab("keywords")}
             className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-colors ${
               activeTab === "keywords" ? "bg-white text-zinc-950" : "bg-white/5 border border-white/5 text-zinc-400 hover:text-white"
@@ -504,120 +520,6 @@ export default function StudioPage() {
           <li>検索欄では、タイトル・タグ・IDで素材を探せます。</li>
           <li>件数整合性チェックで、DB件数と画面表示件数のズレを確認できます。</li>
         </ol>
-      </div>
-
-      {/* KPI METRICS WIDGETS */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl relative overflow-hidden">
-          <span className="text-[9px] font-black text-zinc-400 tracking-widest uppercase block mb-1">DB全素材数</span>
-          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : kpis.totalAssets}</h3>
-          <span className="text-[10px] text-zinc-400 font-bold block mt-2">Supabaseのassetsテーブルに登録されている全素材数です。</span>
-        </div>
-
-        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl">
-          <span className="text-[9px] font-black text-emerald-400 tracking-widest uppercase block mb-1">公開中</span>
-          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : kpis.published}</h3>
-          <span className="text-[10px] text-emerald-500/80 font-bold block mt-2">現在、公開サイトに表示される素材数です。</span>
-        </div>
-
-        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl">
-          <span className="text-[9px] font-black text-amber-400 tracking-widest uppercase block mb-1">確認待ち</span>
-          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : kpis.pendingReview}</h3>
-          <span className="text-[10px] text-amber-500/80 font-bold block mt-2">まだ公開判断が必要な素材です。</span>
-        </div>
-
-        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl">
-          <span className="text-[9px] font-black text-rose-400 tracking-widest uppercase block mb-1">却下</span>
-          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : kpis.rejected}</h3>
-          <span className="text-[10px] text-rose-500/80 font-bold block mt-2">品質・権利・用途の観点で公開しない素材です。</span>
-        </div>
-
-        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl relative overflow-hidden">
-          <span className="text-[9px] font-black text-red-500 tracking-widest uppercase block mb-1">画像URL欠損</span>
-          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : kpis.missingImagesCount}</h3>
-          <span className="text-[10px] text-red-500/80 font-bold block mt-2">画像が見つからない異常なデータです。</span>
-        </div>
-
-        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl relative overflow-hidden">
-          <span className="text-[9px] font-black text-emerald-500 tracking-widest uppercase block mb-1">表示可能素材</span>
-          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : kpis.displayable}</h3>
-          <span className="text-[10px] text-emerald-500/80 font-bold block mt-2">公開中で画像URLが存在する安全な素材です。</span>
-        </div>
-
-        <div className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl relative overflow-hidden">
-          <span className="text-[9px] font-black text-cyan-400 tracking-widest uppercase block mb-1">本日生成</span>
-          <h3 className="text-2xl font-black tracking-tight">{isLoading ? "取得中" : `+${kpis.generatedToday}`}</h3>
-          <span className="text-[10px] text-cyan-500/80 font-bold block mt-2">本日新しく登録された素材数です。</span>
-        </div>
-      </div>
-
-      {/* Count Auditor Alert Banner */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-2xl pointer-events-none" />
-        <h3 className="text-xs font-black text-purple-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-          <Gauge className="w-4 h-4" />
-          件数整合性チェック
-        </h3>
-        <p className="text-[10px] text-zinc-400 mb-6 -mt-2">
-          DB、Storage、画面表示の件数にズレがないか確認します。
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
-          {/* 1. DB vs Storage */}
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider font-mono">DBとStorageの差分確認</span>
-              {kpis.published === kpis.storageFileCount ? (
-                <span className="bg-emerald-500/10 text-emerald-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-emerald-500/15">一致</span>
-              ) : (
-                <span className="bg-amber-500/10 text-amber-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-amber-500/15">不一致</span>
-              )}
-            </div>
-            <p className="text-xs font-semibold text-zinc-300 leading-relaxed">
-              DB Published: <span className="text-white font-bold">{kpis.published}件</span> / Storage Files: <span className="text-white font-bold">{kpis.storageFileCount}件</span>
-            </p>
-            <span className="text-[9px] font-semibold text-zinc-500 block">
-              {kpis.published === kpis.storageFileCount 
-                ? "✓ すべての公開レコードの画像ファイルがStorageに存在しています。" 
-                : `⚠️ 不整合検出: DBレコード数とStorageのファイル数に ${Math.abs(kpis.published - kpis.storageFileCount)}件 の差異があります。`}
-            </span>
-          </div>
-
-          {/* 2. DB vs Display Count */}
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider font-mono">DBと画面表示の差分確認</span>
-              {kpis.published === localAssets.filter(a => a.reviewStatus === 'approved' && a.imageUrl).length ? (
-                <span className="bg-emerald-500/10 text-emerald-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-emerald-500/15">一致</span>
-              ) : (
-                <span className="bg-amber-500/10 text-amber-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-amber-500/15">不一致</span>
-              )}
-            </div>
-            <p className="text-xs font-semibold text-zinc-300 leading-relaxed">
-              DB Approved: <span className="text-white font-bold">{kpis.published}件</span> / Displayable Assets: <span className="text-white font-bold">{localAssets.filter(a => a.reviewStatus === 'approved' && a.imageUrl).length}件</span>
-            </p>
-            <span className="text-[9px] font-semibold text-zinc-500 block">
-              {kpis.published === localAssets.filter(a => a.reviewStatus === 'approved' && a.imageUrl).length
-                ? "✓ 承認済アセットはすべて有効な画像URLを保持し、表示可能です。"
-                : "⚠️ 不整合検出: 画像URLが欠落している、または取得できないアセットが存在します。"}
-            </span>
-          </div>
-
-          {/* 3. Today Added Sync Check */}
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider font-mono">本日追加分の確認</span>
-              <span className="bg-emerald-500/10 text-emerald-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-emerald-500/15">安全</span>
-            </div>
-            <p className="text-xs font-semibold text-zinc-300 leading-relaxed">
-              本日追加数: <span className="text-white font-bold">+{kpis.generatedToday}件</span> / トップ表示: <span className="text-white font-bold">+{kpis.generatedToday}件</span>
-            </p>
-            <span className="text-[9px] font-semibold text-zinc-500 block">
-              ✓ ダミーの固定値 (+128) は完全に廃止され、本日の追加数は実DBの created_at に100%同期されています。
-            </span>
-          </div>
-
-        </div>
       </div>
 
       {activeTab === "dashboard" && (
@@ -1114,7 +1016,7 @@ export default function StudioPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => updateStatus(selectedAsset.id, "approved")}
-                      className="flex-1 bg-emerald-600 hover:bg-emerald-700 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                      className="flex-1 bg-emerald-600 hover:bg-emerald-700 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(10,185,129,0.15)]"
                     >
                       <CheckCircle className="w-3.5 h-3.5" />
                       公開する

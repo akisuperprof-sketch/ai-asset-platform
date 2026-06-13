@@ -98,13 +98,24 @@ function mapAsset(dbAsset: any): Asset {
     pinterestTitle: dbAsset.pinterest_title || quality.pinterestTitle,
     pinterestDescription: dbAsset.pinterest_description || quality.pinterestDescription,
     seoScore: dbAsset.seo_score || quality.seoScore,
+    categoryDomination: dbAsset.qa_result?.category_domination ? {
+      baseAssetId: dbAsset.qa_result.category_domination.base_asset_id,
+      variationType: dbAsset.qa_result.category_domination.variation_type,
+      angle: dbAsset.qa_result.category_domination.angle,
+      lighting: dbAsset.qa_result.category_domination.lighting,
+      composition: dbAsset.qa_result.category_domination.composition,
+      style: dbAsset.qa_result.category_domination.style,
+      parentCategory: dbAsset.qa_result.category_domination.parent_category,
+      seoSlug: dbAsset.qa_result.category_domination.seo_slug,
+      relatedGroupId: dbAsset.qa_result.category_domination.related_group_id,
+    } : undefined,
   };
 }
 
 export async function getAssets(limit: number = 100, offset: number = 0): Promise<Asset[]> {
   if (!supabase) {
-    console.log("⚠️ [getAssets] Supabase client is not initialized. Returning empty array.");
-    return [];
+    console.log("⚠️ [getAssets] Supabase client is not initialized. Returning dummyAssets.");
+    return dummyAssets.slice(offset, offset + limit);
   }
 
   try {
@@ -135,6 +146,9 @@ export async function getAssets(limit: number = 100, offset: number = 0): Promis
       return asset;
     });
 
+    if (offset === 0) {
+      return [...dummyAssets, ...mapped].slice(0, limit);
+    }
     return mapped;
   } catch (error: any) {
     console.error("❌ Supabase error (getAssets):", error.message || error);
@@ -143,18 +157,33 @@ export async function getAssets(limit: number = 100, offset: number = 0): Promis
 }
 
 export async function getAssetById(id: string): Promise<Asset | null> {
+  const dummyMatch = dummyAssets.find(a => a.id === id);
+  if (dummyMatch) return dummyMatch;
+
   if (!supabase) {
     console.log("⚠️ [getAssetById] Supabase client is not initialized. Returning null.");
     return null;
   }
 
   try {
-    const { data, error } = await applyPublicFilters(
-      supabase.from('assets').select('*').eq('id', id).single()
-    );
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+    let query = supabase.from('assets').select('*');
+
+    if (isUuid) {
+      query = query.eq('id', id);
+    } else {
+      query = query.eq('slug', id);
+    }
+
+    const { data, error } = await applyPublicFilters(query.limit(1).maybeSingle());
 
     if (error) throw error;
-    if (!data) return null;
+    if (!data) {
+      console.log(`[getAssetById] Not found for id/slug: ${id}. Maybe not approved/clean/published.`);
+      return null;
+    }
+    
+    console.log(`[getAssetById] Found asset by ${isUuid ? 'uuid' : 'slug'}: ${id}`);
     return mapAsset(data);
   } catch (error: any) {
     console.error(`❌ Supabase error (getAssetById for ${id}):`, error.message || error);
@@ -164,8 +193,21 @@ export async function getAssetById(id: string): Promise<Asset | null> {
 
 export async function searchAssets(query: string, category: string, limit: number = 100, offset: number = 0): Promise<Asset[]> {
   if (!supabase) {
-    console.log("⚠️ [searchAssets] Supabase client is not initialized. Returning empty array.");
-    return [];
+    console.log("⚠️ [searchAssets] Supabase client is not initialized. Returning dummyAssets.");
+    
+    let filteredDummy = dummyAssets;
+    if (category !== "すべて") {
+      const dbCategory = categoryMap[category] || category;
+      filteredDummy = filteredDummy.filter(a => a.category === dbCategory || a.category === category);
+    }
+    if (query) {
+      const synonyms = getSynonyms(query).map(s => s.toLowerCase());
+      filteredDummy = filteredDummy.filter(a => {
+        const text = (a.title + " " + a.description + " " + (a.tags || []).join(" ")).toLowerCase();
+        return synonyms.some(syn => text.includes(syn));
+      });
+    }
+    return filteredDummy.slice(offset, offset + limit);
   }
 
   try {
@@ -204,7 +246,25 @@ export async function searchAssets(query: string, category: string, limit: numbe
 
     // Filter valid image URLs
     const validData = data.filter(d => !!d.image_url || !!d.storage_key);
-    return validData.map(mapAsset);
+    const dbResults = validData.map(mapAsset);
+
+    let filteredDummy = dummyAssets;
+    if (category !== "すべて") {
+      const dbCategory = categoryMap[category] || category;
+      filteredDummy = filteredDummy.filter(a => a.category === dbCategory || a.category === category);
+    }
+    if (query) {
+      const synonyms = getSynonyms(query).map(s => s.toLowerCase());
+      filteredDummy = filteredDummy.filter(a => {
+        const text = (a.title + " " + a.description + " " + (a.tags || []).join(" ")).toLowerCase();
+        return synonyms.some(syn => text.includes(syn));
+      });
+    }
+
+    if (offset === 0) {
+      return [...filteredDummy, ...dbResults].slice(0, limit);
+    }
+    return dbResults;
   } catch (error: any) {
     console.error("❌ Supabase error (searchAssets):", error.message || error);
     return [];

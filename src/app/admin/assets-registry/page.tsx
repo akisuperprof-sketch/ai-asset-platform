@@ -322,9 +322,13 @@ export default function AssetsRegistryPage() {
                     
                     {/* QA Status & Scores */}
                     <td className="px-4 py-4 max-w-sm whitespace-normal">
-                      {a.qa_checked_at ? (
+                      {a.qa_checked_at || a.qa_result ? (
                         <div className="space-y-2">
                           <div className="flex gap-1.5 flex-wrap">
+                            <span className={`px-1.5 py-0.5 border rounded flex items-center gap-1 ${getScoreBg(a.transparency_score || 0)}`}>
+                              <span className="text-[8px] text-zinc-500">TRP</span>
+                              <span className={`font-black text-[10px] ${getScoreColor(a.transparency_score || 0)}`}>{a.transparency_score || 0}</span>
+                            </span>
                             <span className={`px-1.5 py-0.5 border rounded flex items-center gap-1 ${getScoreBg(a.commercial_score || 0)}`}>
                               <span className="text-[8px] text-zinc-500">COM</span>
                               <span className={`font-black text-[10px] ${getScoreColor(a.commercial_score || 0)}`}>{a.commercial_score || 0}</span>
@@ -343,11 +347,27 @@ export default function AssetsRegistryPage() {
                             </span>
                           </div>
                           
-                          <div className="flex gap-2 items-center text-[10px]">
+                          {/* Transparency Check Result */}
+                          {a.qa_result && (
+                            <div className="flex gap-2 items-center text-[10px] mt-1 bg-white/5 px-2 py-1 rounded">
+                              <span className="font-mono text-zinc-400">Alpha:</span>
+                              {a.qa_result.alpha_ok ? (
+                                <span className="text-emerald-400 font-bold">OK</span>
+                              ) : (
+                                <span className="text-red-400 font-bold flex items-center gap-1"><XCircle className="w-3 h-3"/> NG</span>
+                              )}
+                              {a.qa_result.reason && a.qa_result.reason !== "Passed" && (
+                                <span className="text-red-400 font-bold">({a.qa_result.reason})</span>
+                              )}
+                            </div>
+                          )}
+
+                          <div className="flex gap-2 items-center text-[10px] mt-1">
                             {a.qa_recommended_action === 'approve' && <span className="text-emerald-400 font-bold">公開推奨</span>}
                             {a.qa_recommended_action === 'pending' && <span className="text-amber-400 font-bold">pending推奨</span>}
                             {a.qa_recommended_action === 'reject' && <span className="text-red-400 font-bold">reject推奨</span>}
                             {a.risk_level === 'high' && <span className="bg-red-500/20 text-red-400 px-1 rounded flex items-center gap-1"><AlertOctagon className="w-3 h-3"/> High Risk</span>}
+                            {a.review_status === 'rejected' && a.qa_result && !a.qa_result.alpha_ok && <span className="text-red-400 font-bold">自動隔離中(透過NG)</span>}
                           </div>
                         </div>
                       ) : (

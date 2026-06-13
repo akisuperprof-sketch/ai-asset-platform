@@ -64,6 +64,21 @@ export function AssetGrid({
     }
   };
 
+  useEffect(() => {
+    // Zero Result Tracking Effect
+    if (!isLoading && displayAssets.length === 0 && searchQuery) {
+      fetch('/api/demand/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          event_type: 'zero_result',
+          query: searchQuery,
+          source_page: window.location.pathname
+        })
+      }).catch(e => console.error(e));
+    }
+  }, [isLoading, displayAssets.length, searchQuery]);
+
   return (
     <section id="assets" className="max-w-7xl mx-auto px-6 py-32">
       {/* Premium Filter Header */}
@@ -119,24 +134,27 @@ export function AssetGrid({
           animate={{ opacity: 1, scale: 1 }}
           className="glass-card py-20 rounded-[40px] text-center max-w-2xl mx-auto"
         >
-          <NinjaEmptyState message="この素材は現在準備中です。" />
-          <p className="text-secondary mt-4 text-sm">
-            1〜2日以内に追加される予定です。<br/>
-            This asset is being prepared. It is expected to be available within 1–2 days.
+          <NinjaEmptyState message="This asset is coming soon." />
+          <p className="text-secondary mt-4 text-sm font-bold text-ai-purple">
+            あなたの検索をAIが検知しました。この素材はまもなく生成されます！<br/>
+            (Priority Score +1)
+          </p>
+          <p className="text-zinc-500 mt-2 text-xs">
+            1〜2日以内に追加される予定です。This asset has been queued for auto-generation.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
             <button 
               onClick={async () => {
                 if (!searchQuery) return;
                 try {
-                  await fetch('/api/search/track', {
+                  await fetch('/api/demand/track', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                      query: searchQuery, 
-                      hasResults: false,
-                      matchedAssetCount: 0,
-                      sourcePage: window.location.pathname
+                      event_type: 'search',
+                      query: searchQuery,
+                      source_page: window.location.pathname,
+                      metadata: { userRequested: true }
                     })
                   });
                   alert('リクエストを送信しました！ / Request submitted!');
@@ -147,7 +165,7 @@ export function AssetGrid({
               className="bg-ai-purple text-white px-10 py-4 rounded-full text-xs font-black uppercase tracking-widest hover:scale-105 transition-transform active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(168,85,247,0.3)]"
             >
               <Sparkles className="w-4 h-4" />
-              この素材をリクエスト
+              優先生成をリクエスト (Boost Priority)
             </button>
             <button 
               onClick={() => {

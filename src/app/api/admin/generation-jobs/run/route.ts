@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { adminClient } from '@/lib/supabase';
 import { getGenerationProvider } from '@/lib/generation/provider';
 import { runVisionQA } from '@/lib/vision-qa';
+import { removeBackgroundBiRefNet } from '@/lib/generation/birefnet';
 
 export const maxDuration = 60;
 
@@ -38,16 +39,35 @@ export async function POST(request: Request) {
     const limit = Math.min(parseInt(body.limit || "1", 10), 10);
 
     // 1. Fetch queued jobs
-    const { data: jobs, error: fetchError } = await adminClient
+    const { data: jobsRaw, error: fetchError } = await adminClient
       .from('generation_jobs')
       .select('*')
       .eq('status', 'queued')
       .order('created_at', { ascending: true })
-      .limit(limit);
+      .limit(100); // Fetch up to 100 to sort by priority locally
 
-    if (fetchError || !jobs || jobs.length === 0) {
+    if (fetchError || !jobsRaw || jobsRaw.length === 0) {
       return NextResponse.json({ success: true, results: [], message: 'No queued jobs found' });
     }
+
+    // Determine priority
+    // S tier = 1
+    // A tier = 2
+    // Others = 3
+    const sTier = ['ramen', 'sushi', 'onigiri', 'tempura', 'yakitori', 'matcha'];
+    const aTier = ['daruma', 'torii', 'fuji', 'japanese pattern', 'maneki neko'];
+    
+    const jobsWithPriority = jobsRaw.map(job => {
+      let priority = 3;
+      const lowerCat = (job.category || '').toLowerCase();
+      const lowerKey = (job.keyword || '').toLowerCase();
+      if (sTier.some(t => lowerCat.includes(t) || lowerKey.includes(t))) priority = 1;
+      else if (aTier.some(t => lowerCat.includes(t) || lowerKey.includes(t))) priority = 2;
+      return { ...job, priority };
+    });
+
+    jobsWithPriority.sort((a, b) => a.priority - b.priority || new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+    const jobs = jobsWithPriority.slice(0, limit);
 
     const results = [];
     const provider = getGenerationProvider();
@@ -67,7 +87,7 @@ export async function POST(request: Request) {
           .limit(1);
 
         if (duplicateCheck && duplicateCheck.length > 0) {
-          await adminClient.from('generation_jobs').update({ status: 'failed', error_message: 'duplicate_skipped' }).eq('id', job.id);
+          await adminClient.from('generation_jobs').update({ status: 'failed' }).eq('id', job.id);
           results.push({ id: job.id, keyword: job.keyword, status: 'duplicate_skipped' });
           continue;
         }
@@ -79,10 +99,17 @@ export async function POST(request: Request) {
         });
 
         if (!genResult.success || !genResult.imageUrls || genResult.imageUrls.length === 0) {
+          const is429 = (genResult.error || "").toLowerCase().includes("429") || (genResult.error || "").toLowerCase().includes("exhausted");
+          if (is429) {
+            // Revert back to retry_pending
+            await adminClient.from('generation_jobs').update({ 
+              status: 'retry_pending'
+            }).eq('id', job.id);
+            return NextResponse.json({ success: false, error: 'RATE_LIMIT_WAIT', results });
+          }
+
           await adminClient.from('generation_jobs').update({ 
-            status: 'failed', 
-            error_message: genResult.error || 'Generation failed',
-            retry_count: job.retry_count + 1
+            status: 'failed'
           }).eq('id', job.id);
           results.push({ id: job.id, keyword: job.keyword, status: 'failed', reason: 'generation_failed' });
           continue;
@@ -90,6 +117,7 @@ export async function POST(request: Request) {
 
         let finalImageUrl = genResult.imageUrls[0];
         let storageKey = null;
+        let bgRemoved = false;
 
         // If real provider, download buffer and upload to Supabase Storage
         if (provider.name !== "DRY_RUN") {
@@ -97,6 +125,16 @@ export async function POST(request: Request) {
             const imageRes = await fetch(finalImageUrl);
             if (!imageRes.ok) throw new Error("Failed to fetch generated image from provider");
             let imageBuffer = Buffer.from(await imageRes.arrayBuffer());
+            
+            // Stage 3: BiRefNet Background Removal
+            try {
+              const bgResult = await removeBackgroundBiRefNet(imageBuffer);
+              imageBuffer = bgResult.buffer as any;
+              bgRemoved = true;
+            } catch (bgErr: any) {
+              console.warn(`[BiRefNet Pipeline] Background removal skipped or failed: ${bgErr.message}`);
+              // Fallback to original imageBuffer
+            }
 
             const titleSlug = (job.metadata?.categoryDomination?.seoSlug || job.keyword)
               .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -126,9 +164,7 @@ export async function POST(request: Request) {
             }
           } catch (uploadErr: any) {
             await adminClient.from('generation_jobs').update({ 
-              status: 'failed', 
-              error_message: uploadErr.message || 'Processing/Storage upload failed',
-              retry_count: job.retry_count + 1
+              status: 'failed'
             }).eq('id', job.id);
             results.push({ id: job.id, keyword: job.keyword, status: 'failed', reason: 'storage_upload_failed' });
             continue;
@@ -140,20 +176,24 @@ export async function POST(request: Request) {
           storageKey = 'mock/' + titleSlug + '.png';
         }
 
-        // QA pipeline (alpha check, white bg check, fake transparency)
-        // runVisionQA handles some of this.
-        const qaResult = await runVisionQA(finalImageUrl);
+        // QA pipeline
+        const isPattern = (job.category || "").toLowerCase().includes("pattern") || (job.keyword || "").toLowerCase().includes("pattern");
+        const qaResult = await runVisionQA(finalImageUrl, isPattern);
+        qaResult.background_removed = bgRemoved;
 
         let finalStatus = 'qa_passed';
         let errorMsg = null;
         let newAssetId = null;
         let insertErrorMsg = null;
 
-        if (qaResult.qaRecommendedAction === 'reject' || qaResult.qaRecommendedAction === 'pending') {
+        // Apply Strict Auto-publish rules
+        const isStrictQaPassed = qaResult.commercialScore >= 80 && qaResult.aiArtifactScore <= 20;
+
+        if (qaResult.qaRecommendedAction === 'reject' || !isStrictQaPassed) {
           finalStatus = 'qa_failed';
-          errorMsg = qaResult.qaReasons.join(', ');
+          errorMsg = qaResult.qaReasons.join(', ') || 'Failed strict QA threshold';
         } else {
-          // QA Passed -> Insert into assets table as pending
+          // Strict QA Passed -> Insert into assets table as approved and published
           const title = job.metadata?.categoryDomination?.seoSlug || job.keyword;
           const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
           const { data: insertedAsset, error: insertError } = await adminClient
@@ -165,18 +205,19 @@ export async function POST(request: Request) {
               category: job.category || 'uncategorized_demand',
               tags: [job.keyword, "transparent png", "isolated", ...(job.metadata?.categoryDomination?.tags || [])],
               image_url: finalImageUrl,
-              review_status: 'pending',
+              review_status: 'approved',
+              legal_status: 'clean',
+              published_at: new Date().toISOString(),
               vision_score: qaResult.visionScore,
               commercial_score: qaResult.commercialScore,
               seo_score: qaResult.seoScore,
               transparency_score: qaResult.transparencyScore,
               ai_artifact_score: qaResult.aiArtifactScore,
-              qa_recommended_action: qaResult.qaRecommendedAction,
+              qa_recommended_action: 'approve',
               qa_reasons: qaResult.qaReasons,
               qa_checked_at: new Date().toISOString(),
               qa_result: qaResult,
               is_ai_generated: true,
-              categoryDomination: job.metadata?.categoryDomination || undefined,
             })
             .select('id')
             .single();
@@ -194,17 +235,34 @@ export async function POST(request: Request) {
         const { error: finalUpdateError } = await adminClient.from('generation_jobs').update({
           status: finalStatus as any,
           image_url: finalImageUrl,
-          qa_score: qaResult.visionScore,
-          error_message: errorMsg
+          qa_score: qaResult.visionScore
         }).eq('id', job.id);
 
-        results.push({ id: job.id, keyword: job.keyword, status: finalStatus, imageUrl: finalImageUrl, finalUpdateError, insertErrorMsg });
+        results.push({ 
+          id: job.id, 
+          keyword: job.keyword, 
+          status: finalStatus, 
+          imageUrl: finalImageUrl, 
+          finalUpdateError, 
+          insertErrorMsg, 
+          reason: errorMsg,
+          bgRemoved: qaResult.background_removed,
+          hasAlpha: qaResult.has_alpha,
+          alphaRatio: qaResult.alpha_ratio,
+          cutoutScore: qaResult.cutout_quality_score
+        });
       } catch (err: any) {
         // General Failure for this job
+        const is429 = (err.message || "").toLowerCase().includes("429") || (err.message || "").toLowerCase().includes("exhausted");
+        if (is429) {
+          await adminClient.from('generation_jobs').update({ 
+            status: 'retry_pending'
+          }).eq('id', job.id);
+          return NextResponse.json({ success: false, error: 'RATE_LIMIT_WAIT', results });
+        }
+
         await adminClient.from('generation_jobs').update({ 
-          status: 'failed', 
-          error_message: err.message || 'Unknown error',
-          retry_count: job.retry_count + 1
+          status: 'failed'
         }).eq('id', job.id);
         results.push({ id: job.id, keyword: job.keyword, status: 'failed', reason: err.message });
       }
@@ -216,3 +274,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: 'INTERNAL_ERROR' }, { status: 500 });
   }
 }
+

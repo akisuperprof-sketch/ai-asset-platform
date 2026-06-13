@@ -9,12 +9,32 @@ import { trackEvent } from "@/lib/analytics";
 import { DownloadAdGate } from "@/components/ads/DownloadAdGate";
 import { getNextAdType, incrementDownloadCount, AdType } from "@/lib/ad-rotation";
 
-export function DownloadButton({ assetId, title }: { assetId: string, title: string }) {
+export function DownloadButton({ 
+  assetId, 
+  title, 
+  reviewStatus = 'approved',
+  publishedAt = null,
+  storageKey = null,
+  isDummy = false
+}: { 
+  assetId: string, 
+  title: string,
+  reviewStatus?: string,
+  publishedAt?: string | null,
+  storageKey?: string | null,
+  isDummy?: boolean
+}) {
   const [status, setStatus] = useState<"idle" | "downloading" | "done">("idle");
   const [showToast, setShowToast] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showAdGate, setShowAdGate] = useState(false);
   const [adType, setAdType] = useState<AdType>('none');
+
+  const isMock = storageKey?.startsWith('mock/');
+  const isPending = reviewStatus === 'pending' || reviewStatus === 'qa_passed';
+  const isPublic = reviewStatus === 'approved' && publishedAt !== null;
+
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === "done") {
@@ -29,15 +49,21 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
 
   const handleDownload = async () => {
     setStatus("downloading");
+    setErrorMsg(null);
     
     incrementDownloadCount();
     try {
       const response = await fetch(`/api/download/${assetId}`);
       const data = await response.json();
       
+      if (!response.ok) {
+        throw new Error(data.error || "ダウンロードURLの取得に失敗しました");
+      }
+
       if (data.url) {
         // Get raw image as blob to force instant local save (prevents tab-open behavior)
         const imgResponse = await fetch(data.url);
+        if (!imgResponse.ok) throw new Error("画像データの取得に失敗しました");
         const blob = await imgResponse.blob();
         const blobUrl = window.URL.createObjectURL(blob);
 
@@ -54,9 +80,9 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
       } else {
         throw new Error("Download URL not found");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("ダウンロード中にエラーが発生しました。");
+      setErrorMsg(err.message || "ダウンロード中にエラーが発生しました。");
       setStatus("idle");
     }
   };
@@ -75,23 +101,51 @@ export function DownloadButton({ assetId, title }: { assetId: string, title: str
     <div className="w-full relative">
       <AnimatePresence mode="wait">
         {status === "idle" && (
-          <motion.button
+          <motion.div
             key="idle"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={() => {
-              const nextAd = getNextAdType();
-              if (nextAd === 'none') {
-                setShowModal(true);
-              } else {
-                setAdType(nextAd);
-                setShowAdGate(true);
-              }
-            }}
-            className="w-full bg-ai-gradient hover:opacity-90 text-white font-bold py-4 rounded-apple flex items-center justify-center gap-3 shadow-lg shadow-ai-purple/20 transition-all cursor-pointer"
+            className="w-full flex flex-col gap-2"
           >
-            <Download className="w-6 h-6 animate-pulse" />
-            無料ダウンロードを開始
-          </motion.button>
+            {errorMsg && (
+              <div className="w-full p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-xl text-center">
+                {errorMsg}
+              </div>
+            )}
+            
+            {isDummy ? (
+              <div className="w-full bg-white/5 border border-white/10 text-white/50 font-bold py-4 rounded-apple flex items-center justify-center gap-3 shadow-lg cursor-not-allowed">
+                <span className="text-sm">現在準備中 (Demo Asset)</span>
+              </div>
+            ) : isMock ? (
+              <div className="w-full bg-ai-purple/20 border border-ai-purple/30 text-ai-purple font-bold py-4 rounded-apple flex items-center justify-center gap-3 shadow-lg">
+                <span className="text-xs uppercase tracking-widest">Mock Image - Admin Only</span>
+              </div>
+            ) : isPending ? (
+              <button
+                onClick={() => handleDownload()} // Admin can download directly without ads for pending
+                className="w-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-500 font-bold py-4 rounded-apple flex items-center justify-center gap-3 shadow-lg transition-all cursor-pointer"
+              >
+                <Download className="w-5 h-5" />
+                <span className="text-sm">Admin Review Pending (DL Test)</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  const nextAd = getNextAdType();
+                  if (nextAd === 'none') {
+                    setShowModal(true);
+                  } else {
+                    setAdType(nextAd);
+                    setShowAdGate(true);
+                  }
+                }}
+                className="w-full bg-ai-gradient hover:opacity-90 text-white font-bold py-4 rounded-apple flex items-center justify-center gap-3 shadow-lg shadow-ai-purple/20 transition-all cursor-pointer"
+              >
+                <Download className="w-6 h-6 animate-pulse" />
+                無料ダウンロードを開始
+              </button>
+            )}
+          </motion.div>
         )}
 
         {status === "downloading" && (

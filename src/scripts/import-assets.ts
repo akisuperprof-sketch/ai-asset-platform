@@ -164,7 +164,7 @@ async function importAssets() {
         quality.warnings.forEach(w => console.warn(`      ⚠️  ${w}`));
       }
 
-      if (quality.score < 50 && !isDryRun) {
+      if (quality.score < 80 && !isDryRun) {
         console.error(`    ❌ Skipping: Quality too low (${quality.score}/100).`);
         continue;
       }

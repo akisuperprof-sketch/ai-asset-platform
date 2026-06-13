@@ -105,9 +105,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
   // Extract 6 representative Japanese traditional items for "LATEST FROM JAPAN"
   const latestJapanAssets = allAssets.filter(a => a.imageUrl && (a.category === "和風・和柄" || a.category === "桜・祭り" || a.category === "神社・鳥居")).slice(0, 6);
 
-  // Extract 6 trending items for "TRENDING PNG"
-  const trendingAssets = allAssets.filter(a => a.imageUrl && a.category === "日本の食").slice(0, 6);
-
+  // Extract 6 trending items for "TRENDING PNG" (Auto-promoted by DL rate / CTR score)
+  const trendingAssets = allAssets
+    .filter(a => a.imageUrl)
+    .sort((a, b) => (b.seoScore || 80) - (a.seoScore || 80)) // Mocking DL rate sorting via seoScore for now
+    .slice(0, 6);
   return (
     <SplashWrapper>
       <div className="min-h-screen bg-black text-white selection:bg-ai-purple/30 relative">

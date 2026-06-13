@@ -16,6 +16,11 @@ export interface QAResult {
   riskLevel: string;
   qaRecommendedAction: "approve" | "pending" | "reject";
   qaReasons: string[];
+  // Stage 3 specific metrics
+  background_removed?: boolean;
+  has_alpha?: boolean;
+  alpha_ratio?: number;
+  cutout_quality_score?: number;
 }
 
 /**
@@ -27,21 +32,30 @@ async function runBasicQA(imageBuffer: Buffer) {
     const stats = await sharp(imageBuffer).stats();
 
     // Sharp stats provides standard deviation per channel
-    // Low stdDev in RGB channels usually indicates a very "flat" or single-color image
     const stdDevs = stats.channels.map(c => c.stdev);
     const avgStdDev = stdDevs.slice(0, 3).reduce((a, b) => a + b, 0) / 3;
 
     // A typical photo has avgStdDev > 40. Simple shapes often have < 20.
     const isPotentiallyMonochrome = avgStdDev < 25;
 
-    // Check transparency edge cases by resizing and looking at the alpha channel standard deviation
     let hasAlpha = metadata.hasAlpha || false;
     let alphaStdDev = stats.channels.length > 3 ? stats.channels[3].stdev : 0;
-    
-    // Check if alpha channel exists and has transparency (stdev > 0 means it's not all solid)
-    // Actually, check if the mean of alpha is 255 (which means it's entirely opaque)
     let alphaMean = stats.channels.length > 3 ? stats.channels[3].mean : 255;
     const isSolidOpaque = !hasAlpha || alphaMean === 255;
+
+    // Accurately calculate alpha ratio
+    let alpha_ratio = 0;
+    if (hasAlpha) {
+      const { data, info } = await sharp(imageBuffer).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+      let transparentPixelCount = 0;
+      const totalPixels = info.width * info.height;
+      for (let i = 3; i < data.length; i += 4) {
+        if (data[i] < 250) { // consider anything not fully opaque as part of the cutout background/soft edge
+          transparentPixelCount++;
+        }
+      }
+      alpha_ratio = transparentPixelCount / totalPixels;
+    }
 
     return {
       avgStdDev,
@@ -49,6 +63,7 @@ async function runBasicQA(imageBuffer: Buffer) {
       hasAlpha,
       alphaStdDev,
       isSolidOpaque,
+      alpha_ratio,
       width: metadata.width,
       height: metadata.height,
     };
@@ -70,26 +85,27 @@ async function runCommercialQA(imageBuffer: Buffer, mimeType: string): Promise<Q
   const ai = new GoogleGenAI({ apiKey });
   
   const prompt = `
-  You are an expert Chief Quality Auditor serving as an "Adobe Stock Reviewer", "Canva Asset Reviewer", and "Pinterest CTR Auditor".
-  Your job is to rigorously evaluate this AI-generated transparent PNG asset for COMMERCIAL VIABILITY.
-  DO NOT just describe what is in the image. Evaluate its usefulness as a commercial stock asset.
+  You are an expert Chief Quality Auditor for a premium transparent PNG asset platform.
+  Your job is to evaluate this AI-generated transparent PNG asset for COMMERCIAL VIABILITY.
   
-  Please analyze the image and score it strictly out of 100 on the following dimensions:
-  1. commercial_score (0-100): Commercial utility for designers. Deduct heavily if unidentifiable or simple shapes (e.g. basic circle/star score < 20).
-  2. transparency_score (0-100): Edge quality. Is it a clean cutout? Deduct for white fringing or messy edges.
-  3. subject_clarity (0-100): Is the main subject clearly identifiable without context?
-  4. canva_score (0-100): How useful is this as a drag-and-drop element in Canva?
-  5. pinterest_score (0-100): How high is the CTR appeal on Pinterest?
-  6. ai_artifact_score (0-100): How obvious are AI artifacts? (High score = bad artifacts. e.g., melted structures, extra fingers. 0 = perfect).
-  7. composition_score (0-100): Quality of framing and composition.
-  8. adobe_stock_score (0-100): Does this meet the high bar of Adobe Stock premium assets?
-  9. thumbnail_score (0-100): SEO thumbnail strength. Does it pop at small sizes?
+  Please analyze the image and score it out of 100 on the following dimensions:
+  1. commercial_score (0-100): Commercial utility for designers.
+  2. transparency_score (0-100): Edge quality and cutout accuracy.
+  3. subject_clarity (0-100): Is the main subject clearly identifiable?
+  4. canva_score (0-100): Drag-and-drop usefulness in Canva.
+  5. pinterest_score (0-100): Pinterest CTR appeal.
+  6. ai_artifact_score (0-100): Obvious AI artifacts (0 = perfect, 100 = melted/broken).
+  7. composition_score (0-100): Quality of framing.
+  8. thumbnail_score (0-100): SEO thumbnail strength.
+  9. cutout_quality_score (0-100): Focus strictly on edge artifacts, halo effects, and preservation of the subject's edges.
   
   Also provide:
-  - risk_level: "low", "medium", or "high". (High if it violates quality standards).
+  - risk_level: "low", "medium", or "high".
   - recommended_action: "approve", "pending", or "reject". 
-    - Rule: If commercial_score < 60 or ai_artifact_score > 70, you MUST return "pending" or "reject".
-  - reasons: Array of strings in Japanese explaining the evaluation (e.g., ["被写体が明確で商用利用に最適", "Pinterestでのクリック率が期待できる"] or ["単色の丸形であり商用価値がない", "AI特有の崩れがある"]).
+    - Rule A: If vision_score (average of commercial, canva, composition) >= 80, MUST return "approve" (commercial_pass).
+    - Rule B: If vision_score is 50 to 79, MUST return "pending" (manual_review).
+    - Rule C: If vision_score <= 49 or ai_artifact_score > 80, MUST return "reject".
+  - reasons: Array of strings in Japanese explaining the evaluation.
   `;
 
   const response = await ai.models.generateContent({
@@ -111,15 +127,15 @@ async function runCommercialQA(imageBuffer: Buffer, mimeType: string): Promise<Q
           pinterest_score: { type: Type.INTEGER },
           ai_artifact_score: { type: Type.INTEGER },
           composition_score: { type: Type.INTEGER },
-          adobe_stock_score: { type: Type.INTEGER },
           thumbnail_score: { type: Type.INTEGER },
+          cutout_quality_score: { type: Type.INTEGER },
           risk_level: { type: Type.STRING },
           recommended_action: { type: Type.STRING },
           reasons: { type: Type.ARRAY, items: { type: Type.STRING } },
         },
         required: [
           "commercial_score", "transparency_score", "subject_clarity", "canva_score", "pinterest_score",
-          "ai_artifact_score", "composition_score", "adobe_stock_score", "thumbnail_score",
+          "ai_artifact_score", "composition_score", "thumbnail_score", "cutout_quality_score",
           "risk_level", "recommended_action", "reasons"
         ]
       }
@@ -132,9 +148,10 @@ async function runCommercialQA(imageBuffer: Buffer, mimeType: string): Promise<Q
   }
 
   const raw = JSON.parse(text);
+  const visionScore = Math.floor((raw.commercial_score + raw.canva_score + raw.composition_score) / 3);
   
   return {
-    visionScore: Math.floor((raw.commercial_score + raw.adobe_stock_score + raw.composition_score) / 3),
+    visionScore: visionScore,
     commercialScore: raw.commercial_score,
     seoScore: Math.floor((raw.pinterest_score + raw.thumbnail_score) / 2),
     transparencyScore: raw.transparency_score,
@@ -143,8 +160,9 @@ async function runCommercialQA(imageBuffer: Buffer, mimeType: string): Promise<Q
     pinterestScore: raw.pinterest_score,
     aiArtifactScore: raw.ai_artifact_score,
     compositionScore: raw.composition_score,
-    adobeStockScore: raw.adobe_stock_score,
+    adobeStockScore: 0,
     thumbnailScore: raw.thumbnail_score,
+    cutout_quality_score: raw.cutout_quality_score,
     riskLevel: raw.risk_level,
     qaRecommendedAction: raw.recommended_action as any,
     qaReasons: raw.reasons
@@ -154,7 +172,7 @@ async function runCommercialQA(imageBuffer: Buffer, mimeType: string): Promise<Q
 /**
  * Main export: Audits an image URL and returns the QA Result
  */
-export async function runVisionQA(imageUrl: string): Promise<QAResult> {
+export async function runVisionQA(imageUrl: string, allowOpaque: boolean = false): Promise<QAResult> {
   try {
     console.log(`[QA] Fetching image from: ${imageUrl}`);
     const res = await fetch(imageUrl);
@@ -173,21 +191,26 @@ export async function runVisionQA(imageUrl: string): Promise<QAResult> {
     const qaResult = await runCommercialQA(buffer, mimeType);
 
     // Merge heuristics if necessary
-    if (basicInfo && basicInfo.isPotentiallyMonochrome) {
-      qaResult.qaReasons.push("単色・単純図形の疑いが強い（自動解析）");
-      // Severely penalize simple shapes mathematically as a fallback
-      qaResult.visionScore = Math.min(qaResult.visionScore, 40);
-      qaResult.commercialScore = Math.min(qaResult.commercialScore, 30);
-      qaResult.canvaScore = Math.min(qaResult.canvaScore, 20);
-      qaResult.adobeStockScore = Math.min(qaResult.adobeStockScore, 20);
-      qaResult.qaRecommendedAction = "pending";
-    }
+    if (basicInfo) {
+      qaResult.has_alpha = basicInfo.hasAlpha;
+      qaResult.alpha_ratio = basicInfo.alpha_ratio;
+      
+      if (basicInfo.isPotentiallyMonochrome) {
+        qaResult.qaReasons.push("単色・単純図形の疑いが強い（自動解析）");
+        // Severely penalize simple shapes mathematically as a fallback
+        qaResult.visionScore = Math.min(qaResult.visionScore, 40);
+        qaResult.commercialScore = Math.min(qaResult.commercialScore, 30);
+        qaResult.canvaScore = Math.min(qaResult.canvaScore, 20);
+        qaResult.adobeStockScore = Math.min(qaResult.adobeStockScore, 20);
+        qaResult.qaRecommendedAction = "pending";
+      }
 
-    if (basicInfo && basicInfo.isSolidOpaque) {
-      qaResult.qaReasons.push("アルファチャンネルがない、または背景が白・単色で不透過です");
-      qaResult.transparencyScore = 0;
-      qaResult.riskLevel = "high";
-      qaResult.qaRecommendedAction = "reject";
+      if (!allowOpaque && basicInfo.isSolidOpaque) {
+        qaResult.qaReasons.push("アルファチャンネルがない、または背景が白・単色で不透過です");
+        qaResult.transparencyScore = 0;
+        qaResult.riskLevel = "high";
+        qaResult.qaRecommendedAction = "reject";
+      }
     }
 
     return qaResult;

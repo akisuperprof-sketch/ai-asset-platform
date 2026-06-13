@@ -60,6 +60,19 @@ export interface Asset {
   visionLastCheckedAt?: string;
   visionModel?: string;
   qaStatus?: "pending" | "passed" | "failed";
+
+  // Category Domination Metadata
+  categoryDomination?: {
+    baseAssetId?: string;
+    variationType?: string;
+    angle?: string;
+    lighting?: string;
+    composition?: string;
+    style?: string;
+    parentCategory?: string;
+    seoSlug?: string;
+    relatedGroupId?: string;
+  };
 }
 
 export interface Category {
@@ -68,4 +81,20 @@ export interface Category {
   slug: string;
   count: number;
   icon?: string;
+}
+
+export interface DemandEvent {
+  id?: string;
+  event_type: "search" | "zero_result" | "asset_click" | "download" | "detail_view" | "dwell_time";
+  query?: string;
+  normalized_query?: string;
+  asset_id?: string;
+  category?: string;
+  session_hash?: string;
+  source_page?: string;
+  referrer?: string;
+  user_agent_hash?: string;
+  country?: string;
+  metadata?: any;
+  created_at?: string;
 }

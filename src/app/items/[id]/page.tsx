@@ -1,4 +1,5 @@
 import { getAssetById, getAssets } from "@/lib/assets";
+import { dummyAssets } from "@/lib/dummy-data";
 import { Navbar } from "@/components/layout/Navbar";
 import { AssetCard } from "@/components/assets/AssetCard";
 import { 
@@ -222,7 +223,14 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
             {/* Action Buttons */}
             <div className="space-y-4">
-              <DownloadButton assetId={asset.id} title={asset.title} />
+              <DownloadButton 
+                assetId={asset.id} 
+                title={asset.title} 
+                reviewStatus={asset.reviewStatus || 'pending'} 
+                publishedAt={asset.publishedAt || null} 
+                storageKey={asset.storageKey || null}
+                isDummy={dummyAssets.some(a => a.id === asset.id || a.id === id)}
+              />
             </div>
 
             {/* Rights Clearance Box */}
@@ -247,12 +255,32 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             </Link>
           </div>
           <div className="grid grid-cols-12 gap-6">
-            {allAssets
-              .filter(a => a.category === asset.category && a.id !== asset.id)
-              .slice(0, 4)
-              .map((relatedAsset) => (
-                <AssetCard key={relatedAsset.id} asset={relatedAsset} className="col-span-12 sm:col-span-6 md:col-span-3" />
-              ))}
+            {(() => {
+              // Priority 1: Same related group
+              let related = allAssets.filter(
+                (a) =>
+                  a.id !== asset.id &&
+                  asset.categoryDomination?.relatedGroupId &&
+                  a.categoryDomination?.relatedGroupId === asset.categoryDomination.relatedGroupId
+              );
+
+              // Priority 2: Same category fallback
+              if (related.length < 4) {
+                const categoryFallback = allAssets.filter(
+                  (a) =>
+                    a.id !== asset.id &&
+                    a.category === asset.category &&
+                    !related.some((r) => r.id === a.id)
+                );
+                related = [...related, ...categoryFallback];
+              }
+
+              return related
+                .slice(0, 4)
+                .map((relatedAsset) => (
+                  <AssetCard key={relatedAsset.id} asset={relatedAsset} className="col-span-12 sm:col-span-6 md:col-span-3" />
+                ));
+            })()}
           </div>
         </div>
 

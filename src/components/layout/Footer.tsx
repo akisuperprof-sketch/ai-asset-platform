@@ -157,10 +157,8 @@ export function Footer() {
                   </li>
                   <li>
                     <Link 
-                      href="/coming-soon" 
-                      onClick={(e) => handleComingSoon(e, "利用規約")}
-                      className="hover:text-white transition-colors flex items-center gap-1.5 cursor-not-allowed opacity-75"
-                      aria-disabled="true"
+                      href="/terms" 
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
                     >
                       利用規約
                     </Link>
@@ -210,23 +208,19 @@ export function Footer() {
               className="hover:text-white cursor-not-allowed opacity-75"
               aria-disabled="true"
             >
-              Privacy
+              Privacy Policy
             </Link>
             <Link 
-              href="/coming-soon" 
-              onClick={(e) => handleComingSoon(e, "Terms")}
-              className="hover:text-white cursor-not-allowed opacity-75"
-              aria-disabled="true"
+              href="/terms" 
+              className="hover:text-white"
             >
-              Terms
+              Terms of Use
             </Link>
             <Link 
-              href="/coming-soon" 
-              onClick={(e) => handleComingSoon(e, "Cookies")}
-              className="hover:text-white cursor-not-allowed opacity-75"
-              aria-disabled="true"
+              href="/contact" 
+              className="hover:text-white"
             >
-              Cookies
+              Contact
             </Link>
           </div>
         </div>
