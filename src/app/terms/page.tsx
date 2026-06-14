@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { LegalNav } from '@/components/legal/LegalNav';
 
 export const metadata: Metadata = {
   title: 'AssetNinja Terms of Use',
@@ -9,6 +10,8 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen bg-ninja-black pt-32 pb-24 px-6 relative z-10">
       <div className="max-w-[900px] mx-auto bg-zinc-900/40 border border-white/10 rounded-3xl p-8 md:p-12 lg:p-16 backdrop-blur-xl">
+        
+        <LegalNav />
         
         <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter mb-4">
           AssetNinja Terms of Use

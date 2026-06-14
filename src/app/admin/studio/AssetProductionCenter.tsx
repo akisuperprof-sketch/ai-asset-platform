@@ -165,10 +165,48 @@ export default function AssetProductionCenter() {
         });
         
         if (!res.ok) {
-          addLog(`APIエラー: HTTP ${res.status}`);
-          setCurrentAction("APIエラー待機中 (30秒)...");
-          await sleep(30000);
-          continue;
+          const responseText = await res.text();
+          let json = null;
+          try { json = JSON.parse(responseText); } catch(e) {}
+          
+          console.log("API Error details:", {
+            status: res.status,
+            responseText,
+            json
+          });
+
+          // Vercel Serverless Timeout (500/504) Mitigation
+          // The function might have been killed by API Gateway, but continues in the background.
+          // Let's wait a bit and check if the database was actually updated.
+          addLog(`API警告: HTTP ${res.status} (タイムアウト疑い)`);
+          setCurrentAction("バックグラウンド処理確認中...");
+          
+          await sleep(10000); // Wait 10 seconds for lambda to finish
+          
+          const prevApproved = statsRef.current.published;
+          const { count: currentApproved } = await supabase.from('assets').select('*', { count: 'exact', head: true }).like('storage_key', 'real/%').eq('review_status', 'approved');
+          
+          const globalApprovedDelta = (currentApproved || 0) - dbStats.totalApproved;
+          
+          if (globalApprovedDelta > 0) {
+            addLog(`-> バックグラウンドでの生成成功を確認 (+${globalApprovedDelta}件)`);
+            setStats(prev => ({
+              ...prev,
+              processed: prev.processed + globalApprovedDelta,
+              success: prev.success + globalApprovedDelta,
+              published: prev.published + globalApprovedDelta,
+            }));
+            currentProcessed += globalApprovedDelta;
+            await fetchDbStats();
+            setCurrentAction("待機中 (30秒)...");
+            await sleep(30000);
+            continue;
+          } else {
+            addLog(`APIエラー確定: サーバー応答なし`);
+            setCurrentAction("APIエラー待機中 (30秒)...");
+            await sleep(30000);
+            continue;
+          }
         }
         
         const data = await res.json();

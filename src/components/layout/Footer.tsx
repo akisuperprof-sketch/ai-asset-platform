@@ -112,10 +112,8 @@ export function Footer() {
                   </li>
                   <li>
                     <Link 
-                      href="/coming-soon" 
-                      onClick={(e) => handleComingSoon(e, "お問い合わせ")}
-                      className="hover:text-white transition-colors flex items-center gap-1.5 cursor-not-allowed opacity-75"
-                      aria-disabled="true"
+                      href="/contact" 
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
                     >
                       お問い合わせ
                     </Link>
@@ -147,10 +145,8 @@ export function Footer() {
                   </li>
                   <li>
                     <Link 
-                      href="/coming-soon" 
-                      onClick={(e) => handleComingSoon(e, "プライバシーポリシー")}
-                      className="hover:text-white transition-colors flex items-center gap-1.5 cursor-not-allowed opacity-75"
-                      aria-disabled="true"
+                      href="/privacy" 
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
                     >
                       プライバシーポリシー
                     </Link>
@@ -201,27 +197,11 @@ export function Footer() {
           <p className="text-[10px] text-secondary font-black tracking-widest uppercase">
             © 2024 AssetNinja. All rights reserved.
           </p>
-          <div className="flex gap-8 text-[10px] text-secondary font-black uppercase tracking-widest">
-            <Link 
-              href="/coming-soon" 
-              onClick={(e) => handleComingSoon(e, "Privacy")}
-              className="hover:text-white cursor-not-allowed opacity-75"
-              aria-disabled="true"
-            >
-              Privacy Policy
-            </Link>
-            <Link 
-              href="/terms" 
-              className="hover:text-white"
-            >
-              Terms of Use
-            </Link>
-            <Link 
-              href="/contact" 
-              className="hover:text-white"
-            >
-              Contact
-            </Link>
+          <div className="flex gap-8 text-[10px] text-secondary font-black uppercase tracking-widest flex-wrap">
+            <Link href="/terms" className="hover:text-white">Terms of Use</Link>
+            <Link href="/privacy" className="hover:text-white">Privacy Policy</Link>
+            <Link href="/contact" className="hover:text-white">Contact</Link>
+            <Link href="/copyright" className="hover:text-white">Copyright Policy</Link>
           </div>
         </div>
       </div>

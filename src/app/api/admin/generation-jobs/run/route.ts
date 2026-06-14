@@ -271,7 +271,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, results });
   } catch (err: any) {
     console.error("Worker API Error:", err);
-    return NextResponse.json({ success: false, error: 'INTERNAL_ERROR' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'INTERNAL_ERROR', message: err.message, stack: err.stack }, { status: 500 });
   }
 }
 

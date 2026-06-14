@@ -38,6 +38,16 @@ export async function GET() {
       return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
 
+    const { count: totalApprovedCount, error: countError } = await adminClient
+      .from('assets')
+      .select('id', { count: 'exact', head: true })
+      .eq('review_status', 'approved')
+      .eq('source', 'real');
+
+    if (countError) {
+      return NextResponse.json({ success: false, error: countError.message }, { status: 500 });
+    }
+
     let todayGenerated = 0;
     let todayPublished = 0;
     let todayRejected = 0;
@@ -68,7 +78,8 @@ export async function GET() {
         todayPublished,
         todayRejected,
         todayFailed,
-        rejectReasons
+        rejectReasons,
+        totalApproved: totalApprovedCount || 0
       }
     });
   } catch (err: any) {

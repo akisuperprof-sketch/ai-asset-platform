@@ -9,6 +9,7 @@ interface DashboardStats {
   todayRejected: number;
   todayFailed: number;
   rejectReasons: { reason: string; count: number }[];
+  totalApproved: number;
 }
 
 export default function ProductionDashboard() {
@@ -73,6 +74,56 @@ export default function ProductionDashboard() {
             </div>
           </div>
         </div>
+
+        {/* 100 Assets Mission */}
+        {stats && (
+          <div className="bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-6 mb-8 relative overflow-hidden">
+            <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-purple-500/20 to-transparent pointer-events-none" />
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+              <div className="flex-1 w-full">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="bg-purple-500 text-white text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded">KPI MISSION</span>
+                  <h3 className="text-xl font-bold text-white">100素材公開プロジェクト</h3>
+                </div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-zinc-400">現在のApproved Real素材数: <strong className="text-white">{stats.totalApproved}</strong></span>
+                  <span className="text-zinc-400">目標まで残り: <strong className="text-purple-400">{Math.max(0, 100 - stats.totalApproved)}</strong></span>
+                </div>
+                <div className="h-3 w-full bg-zinc-950 rounded-full overflow-hidden border border-white/5 shadow-inner">
+                  <div 
+                    className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 relative" 
+                    style={{ width: `${Math.min(100, Math.round((stats.totalApproved / 100) * 100))}%` }}
+                  >
+                    <div className="absolute inset-0 bg-white/20 w-full h-full animate-[shimmer_2s_infinite]" />
+                  </div>
+                </div>
+                <div className="mt-2 text-right text-xs text-zinc-500 font-bold">
+                  達成率: {Math.min(100, Math.round((stats.totalApproved / 100) * 100))}%
+                </div>
+              </div>
+
+              <div className="shrink-0 w-full md:w-auto bg-black/40 border border-white/5 p-4 rounded-xl">
+                <div className="text-xs text-zinc-400 mb-2 font-bold uppercase">おすすめの次アクション</div>
+                {stats.totalApproved >= 100 ? (
+                  <div className="text-emerald-400 font-bold flex items-center gap-2">
+                    <CheckCircle2 size={16} /> 第1フェーズ目標達成！
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <button onClick={() => window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})} className="text-sm text-left text-white hover:text-purple-300 transition-colors flex items-center gap-2">
+                      <TrendingUp size={14} className="text-purple-500" />
+                      Auto Modeで自動生成を開始する
+                    </button>
+                    <button onClick={() => window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})} className="text-sm text-left text-white hover:text-pink-300 transition-colors flex items-center gap-2">
+                      <BarChart3 size={14} className="text-pink-500" />
+                      手動生成で品質をコントロールする
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Top KPIs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
