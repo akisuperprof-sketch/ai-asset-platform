@@ -1,5 +1,4 @@
 import Replicate from "replicate";
-import { removeBackground } from "@imgly/background-removal-node";
 
 /**
  * Removes the background from an image.
@@ -50,8 +49,14 @@ export async function removeBackgroundBiRefNet(imageBuffer: Buffer, mimeType: st
 
   // Fallback to local @imgly/background-removal-node
   console.log("[BiRefNet] Running local @imgly background removal...");
-  const blob = new Blob([new Uint8Array(imageBuffer)], { type: mimeType });
-  const resultBlob = await removeBackground(blob);
-  const arrayBuffer = await resultBlob.arrayBuffer();
-  return { buffer: Buffer.from(arrayBuffer), provider: 'imgly-local' };
+  try {
+    const { removeBackground } = await import("@imgly/background-removal-node");
+    const blob = new Blob([new Uint8Array(imageBuffer)], { type: mimeType });
+    const resultBlob = await removeBackground(blob);
+    const arrayBuffer = await resultBlob.arrayBuffer();
+    return { buffer: Buffer.from(arrayBuffer), provider: 'imgly-local' };
+  } catch (err: any) {
+    console.error("[BiRefNet] Local @imgly fallback failed (likely Vercel native module issue):", err);
+    throw new Error(`Background removal completely failed: ${err.message}`);
+  }
 }
