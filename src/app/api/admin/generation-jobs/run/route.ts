@@ -42,7 +42,9 @@ export async function POST(request: Request) {
     const { data: jobsRaw, error: fetchError } = await adminClient
       .from('generation_jobs')
       .select('*')
-      .eq('status', 'queued')
+      .in('status', ['queued', 'retry_pending'])
+      .neq('provider', 'DRY_RUN')
+      .neq('provider', 'dry_run')
       .order('created_at', { ascending: true })
       .limit(100); // Fetch up to 100 to sort by priority locally
 

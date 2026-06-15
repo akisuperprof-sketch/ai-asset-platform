@@ -17,9 +17,14 @@ export async function GET() {
 
     const { data: jobs, error } = await adminClient
       .from('generation_jobs')
-      .select('status, created_at, category');
+      .select('status, created_at, category, provider');
 
     if (error) throw error;
+
+    const { count: approvedAssetsCount } = await adminClient
+      .from('assets')
+      .select('*', { count: 'exact', head: true })
+      .eq('review_status', 'approved');
 
     // Calculate today's stats
     const todayStr = new Date().toISOString().split('T')[0];
@@ -48,6 +53,9 @@ export async function GET() {
         return acc;
       }, {}),
       globalQueued: jobs.filter(j => j.status === 'queued').length,
+      realQueued: jobs.filter(j => j.status === 'queued' && j.provider?.toLowerCase() !== 'dry_run').length,
+      dryRunArchived: jobs.filter(j => j.status === 'archived_dry_run').length,
+      totalApproved: approvedAssetsCount || 0,
       globalProcessing: jobs.filter(j => j.status === 'generating' || j.status === 'processing').length,
       globalQaPassed: jobs.filter(j => j.status === 'qa_passed').length,
       globalQaFailed: jobs.filter(j => j.status === 'qa_failed').length,

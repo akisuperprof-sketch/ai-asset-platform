@@ -19,6 +19,9 @@ export default function AssetProductionCenter() {
   const [dbStats, setDbStats] = useState({
     totalAssets: 0,
     totalApproved: 0,
+    realQueued: 0,
+    dryRunArchived: 0,
+    globalQaFailed: 0,
   });
   
   const [logs, setLogs] = useState<string[]>([]);
@@ -58,13 +61,17 @@ export default function AssetProductionCenter() {
 
   const fetchDbStats = async () => {
     try {
-      const { count: totalCount } = await supabase.from('assets').select('*', { count: 'exact', head: true }).like('storage_key', 'real/%');
-      const { count: approvedCount } = await supabase.from('assets').select('*', { count: 'exact', head: true }).like('storage_key', 'real/%').eq('review_status', 'approved');
-      
-      setDbStats({
-        totalAssets: totalCount || 0,
-        totalApproved: approvedCount || 0
-      });
+      const res = await fetch('/api/admin/generation-jobs/stats');
+      if (res.ok) {
+        const data = await res.json();
+        setDbStats({
+          totalAssets: data.actualGenerated || 0, // Using actualGenerated or we can keep querying
+          totalApproved: data.totalApproved || 0,
+          realQueued: data.realQueued || 0,
+          dryRunArchived: data.dryRunArchived || 0,
+          globalQaFailed: data.globalQaFailed || 0,
+        });
+      }
     } catch (e) {
       console.error(e);
     }
@@ -584,14 +591,22 @@ export default function AssetProductionCenter() {
               <Database size={16} /> 全体統計
             </h3>
             <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-5 space-y-4">
-              <div className="flex justify-between items-end">
+              <div className="grid grid-cols-2 gap-4 mb-2">
                 <div>
-                  <div className="text-zinc-500 text-xs">総生成リアル素材</div>
-                  <div className="text-2xl font-bold text-zinc-200">{dbStats.totalAssets}</div>
+                  <div className="text-zinc-500 text-xs">REAL Queued</div>
+                  <div className="text-xl font-bold text-blue-400">{dbStats.realQueued}</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-zinc-500 text-xs">公開済み素材</div>
-                  <div className="text-2xl font-bold text-emerald-400">{dbStats.totalApproved}</div>
+                  <div className="text-zinc-500 text-xs">DRY_RUN Archived</div>
+                  <div className="text-xl font-bold text-zinc-500">{dbStats.dryRunArchived}</div>
+                </div>
+                <div>
+                  <div className="text-zinc-500 text-xs">QA Failed</div>
+                  <div className="text-xl font-bold text-rose-400">{dbStats.globalQaFailed}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-zinc-500 text-xs">Approved (公開済み)</div>
+                  <div className="text-xl font-bold text-emerald-400">{dbStats.totalApproved}</div>
                 </div>
               </div>
               
@@ -603,7 +618,7 @@ export default function AssetProductionCenter() {
                 <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-gradient-to-r from-amber-500 to-orange-400 transition-all duration-1000"
-                    style={{ width: `${globalProgress}%` }}
+                    style={{ width: `${Math.min(100, Math.round((dbStats.totalApproved / 100) * 100))}%` }}
                   />
                 </div>
               </div>
