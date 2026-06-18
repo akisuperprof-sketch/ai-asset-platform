@@ -234,10 +234,18 @@ export async function POST(request: Request) {
         }
 
         // Update Job
+        // metadata列にQA結果やエラーメッセージを保存する
         const { error: finalUpdateError } = await adminClient.from('generation_jobs').update({
           status: finalStatus as any,
           image_url: finalImageUrl,
-          qa_score: qaResult.visionScore
+          qa_score: qaResult.visionScore,
+          commercial_score: qaResult.commercialScore,
+          ai_artifact_score: qaResult.aiArtifactScore,
+          metadata: {
+            ...job.metadata,
+            qa_reasons: errorMsg,
+            qa_result: qaResult
+          }
         }).eq('id', job.id);
 
         results.push({ 
