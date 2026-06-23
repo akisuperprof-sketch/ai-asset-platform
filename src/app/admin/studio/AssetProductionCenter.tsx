@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Play, Square, Loader2, AlertTriangle, CheckCircle, Database, Clock, Zap, Activity } from "lucide-react";
+import { Play, Square, Loader2, AlertTriangle, CheckCircle, Database, Clock, Zap, Activity, Radar } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 export default function AssetProductionCenter() {
@@ -22,6 +22,13 @@ export default function AssetProductionCenter() {
     realQueued: 0,
     dryRunArchived: 0,
     globalQaFailed: 0,
+    // Phase 3 Additions
+    todaySearchCount: 0,
+    needAssetCount: 0,
+    autoGenCandidates: 0,
+    qaPassRate: 0,
+    totalDownloads: 0,
+    estimatedAdRev: 0,
   });
   
   const [logs, setLogs] = useState<string[]>([]);
@@ -64,12 +71,24 @@ export default function AssetProductionCenter() {
       const res = await fetch('/api/admin/generation-jobs/stats');
       if (res.ok) {
         const data = await res.json();
+        
+        // Fetch Demand Radar Stats (Phase 3)
+        const demandRes = await fetch('/api/admin/demand-radar/stats');
+        const demandData = demandRes.ok ? await demandRes.json() : {};
+        
         setDbStats({
-          totalAssets: data.actualGenerated || 0, // Using actualGenerated or we can keep querying
+          totalAssets: data.actualGenerated || 0,
           totalApproved: data.totalApproved || 0,
           realQueued: data.realQueued || 0,
           dryRunArchived: data.dryRunArchived || 0,
           globalQaFailed: data.globalQaFailed || 0,
+          // Phase 3
+          todaySearchCount: demandData.todaySearchCount || 0,
+          needAssetCount: demandData.needAssetCount || 0,
+          autoGenCandidates: demandData.autoGenCandidates || 0,
+          qaPassRate: data.actualGenerated ? Math.round((data.totalApproved / data.actualGenerated) * 100) : 0,
+          totalDownloads: demandData.totalDownloads || 0,
+          estimatedAdRev: demandData.totalDownloads ? demandData.totalDownloads * 0.15 : 0, // Mock calculation
         });
       }
     } catch (e) {
@@ -580,6 +599,39 @@ export default function AssetProductionCenter() {
             <div className="flex flex-col items-center p-3 bg-zinc-800/50 rounded-lg border border-emerald-500/20">
               <span className="text-emerald-300 text-2xl font-bold">{stats.published}</span>
               <span className="text-emerald-500/70 text-xs mt-1">新規公開</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Phase 3: Demand & Auto Planner KPIs */}
+        <div className="bg-gradient-to-r from-indigo-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-xl p-5 mb-6">
+          <div className="flex items-center gap-2 text-cyan-400 font-bold text-sm mb-4">
+            <Radar size={18} /> Phase 3: Demand Radar & Business KPIs
+          </div>
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-4 text-center">
+            <div className="bg-black/40 rounded-lg p-3">
+              <div className="text-[10px] text-zinc-400 mb-1">本日の検索数</div>
+              <div className="text-xl font-bold text-white">{dbStats.todaySearchCount}</div>
+            </div>
+            <div className="bg-black/40 rounded-lg p-3 border border-amber-500/20">
+              <div className="text-[10px] text-amber-400 mb-1">不足素材 (Need)</div>
+              <div className="text-xl font-bold text-amber-500">{dbStats.needAssetCount}</div>
+            </div>
+            <div className="bg-black/40 rounded-lg p-3 border border-cyan-500/20">
+              <div className="text-[10px] text-cyan-400 mb-1">自動生成候補</div>
+              <div className="text-xl font-bold text-cyan-400">{dbStats.autoGenCandidates}</div>
+            </div>
+            <div className="bg-black/40 rounded-lg p-3">
+              <div className="text-[10px] text-zinc-400 mb-1">生成成功率</div>
+              <div className="text-xl font-bold text-white">{dbStats.qaPassRate}%</div>
+            </div>
+            <div className="bg-black/40 rounded-lg p-3">
+              <div className="text-[10px] text-zinc-400 mb-1">DL数</div>
+              <div className="text-xl font-bold text-white">{dbStats.totalDownloads}</div>
+            </div>
+            <div className="bg-black/40 rounded-lg p-3">
+              <div className="text-[10px] text-zinc-400 mb-1">推定広告収益</div>
+              <div className="text-xl font-bold text-emerald-400">¥{dbStats.estimatedAdRev.toFixed(0)}</div>
             </div>
           </div>
         </div>

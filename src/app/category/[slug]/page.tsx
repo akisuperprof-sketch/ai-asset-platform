@@ -5,6 +5,7 @@ import Link from "next/link";
 import { searchAssets } from "@/lib/assets";
 import { LoadMoreGrid } from "@/components/assets/LoadMoreGrid";
 import { Metadata } from "next";
+import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 
 const CATEGORY_MAP = ['ramen', 'sushi', 'tempura', 'gyoza', 'mochi', 'bento', 'torii', 'sakura', 'matcha', 'japanese-pattern'];
 
@@ -24,10 +25,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: "website",
     },
     alternates: {
-      canonical: `https://assetninja.jp/category/${encodeURIComponent(categoryName)}`,
+      canonical: `https://assetninja.jp/${encodeURIComponent(categoryName)}-png`,
       languages: {
-        "ja": `https://assetninja.jp/category/${encodeURIComponent(categoryName)}`,
-        "en": `https://assetninja.jp/category/${encodeURIComponent(categoryName)}`,
+        "ja": `https://assetninja.jp/${encodeURIComponent(categoryName)}-png`,
+        "en": `https://assetninja.jp/${encodeURIComponent(categoryName)}-png`,
       }
     },
     // Pinterest specific meta configurations
@@ -52,7 +53,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     "@type": "CollectionPage",
     "name": `${categoryName}の背景透過PNG画像素材一覧 | AssetNinja`,
     "description": `Download commercial-use ready transparent PNG assets for ${categoryName}.`,
-    "url": `https://assetninja.jp/category/${slug}`,
+    "url": `https://assetninja.jp/${slug}-png`,
     "mainEntity": {
       "@type": "ItemList",
       "numberOfItems": assets.length,
@@ -79,7 +80,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         "@type": "ListItem",
         "position": 2,
         "name": `カテゴリ: ${categoryName}`,
-        "item": `https://assetninja.jp/category/${slug}`
+        "item": `https://assetninja.jp/${slug}-png`
       }
     ]
   };
@@ -109,6 +110,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   return (
     <div className="min-h-screen bg-black">
+      <PageViewTracker />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
@@ -185,39 +187,92 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           <LoadMoreGrid initialOffset={limit} category={categoryName} />
         )}
 
-        {/* SEO Content Section at bottom */}
-        <section className="mt-24 p-8 glass rounded-apple border-white/5">
-          <h2 className="text-2xl font-black mb-8">About {categoryName} Assets</h2>
-          <div className="grid md:grid-cols-2 gap-12 text-sm text-secondary leading-relaxed">
-            <div>
-              <p className="mb-6 font-medium text-base text-white/80">
-                当プラットフォームでは、最新のAI技術を活用して生成された「{categoryName}」の透過PNG画像を豊富に取り揃えています。
-                すべての素材は背景が完全に除去されており、デザインの背景色を問わず即座に合成することが可能です。
+        {/* GEO / AEO Content Section at bottom */}
+        <section className="mt-24 p-8 md:p-12 glass rounded-apple border-white/5 space-y-12">
+          
+          <div>
+            <h2 className="text-3xl font-black mb-6">What is {categoryName} PNG? (定義・概要)</h2>
+            <div className="text-secondary leading-relaxed space-y-4">
+              <p>
+                <strong>{categoryName} PNG</strong> is a highly sought-after digital asset featuring {categoryName} images with completely transparent backgrounds.
+                AssetNinja provides ultra-realistic, AI-generated {categoryName} graphics that are ready to be used in any design project without the hassle of background removal.
               </p>
               <p>
-                商用利用においても権利関係がクリアな素材のみを厳選しているため、広告、Webデザイン、YouTube動画制作などのプロジェクトでも安心してお使いいただけます。
+                当プラットフォームでは、最新のAI技術を活用して生成された「{categoryName}」の透過PNG画像を豊富に取り揃えています。
+                すべての素材は背景が完全に除去されており、WebデザインやSNSの投稿画像、プレゼンテーション資料などに即座に合成することが可能です。
               </p>
             </div>
-            <div className="glass p-6 rounded-2xl border-white/5">
-              <h3 className="font-bold text-white mb-4 flex items-center gap-2"><TrendingUp className="w-4 h-4 text-ai-cyan" /> Popular Uses</h3>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-ai-purple" />
-                  Web & App UI Design
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="glass p-8 rounded-2xl border-white/5">
+              <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-ai-cyan" /> Popular Uses & Applications
+              </h3>
+              <ul className="space-y-4 text-secondary">
+                <li className="flex items-start gap-3">
+                  <div className="w-2 h-2 mt-2 rounded-full bg-ai-purple shrink-0" />
+                  <div>
+                    <strong className="text-white">Web & App UI Design:</strong>
+                    <p className="text-sm mt-1">Enhance user interfaces, landing pages, and hero sections with high-quality {categoryName} visuals.</p>
+                  </div>
                 </li>
-                <li className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-ai-purple" />
-                  Restaurant Menus & Banners
+                <li className="flex items-start gap-3">
+                  <div className="w-2 h-2 mt-2 rounded-full bg-ai-purple shrink-0" />
+                  <div>
+                    <strong className="text-white">Social Media & Marketing:</strong>
+                    <p className="text-sm mt-1">Perfect for Instagram stories, YouTube thumbnails, and promotional banners.</p>
+                  </div>
                 </li>
-                <li className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-ai-purple" />
-                  Social Media Posts & Stories
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-ai-purple" />
-                  Stickers & Cliparts
+                <li className="flex items-start gap-3">
+                  <div className="w-2 h-2 mt-2 rounded-full bg-ai-purple shrink-0" />
+                  <div>
+                    <strong className="text-white">Canva & Presentation:</strong>
+                    <p className="text-sm mt-1">Easily drag and drop into Canva, PowerPoint, or Keynote presentations.</p>
+                  </div>
                 </li>
               </ul>
+            </div>
+
+            <div className="glass p-8 rounded-2xl border-white/5 flex flex-col justify-between">
+              <div>
+                <h3 className="text-xl font-bold text-white mb-4">Commercial Use Advantages</h3>
+                <p className="text-secondary leading-relaxed mb-4">
+                  商用利用においても権利関係がクリアな素材のみを厳選しています。広告制作、クライアントワーク、印刷物など、幅広いビジネス要件に安全に対応できます。
+                </p>
+                <ul className="list-disc list-inside text-secondary space-y-2 mb-6">
+                  <li>No attribution required (クレジット表記不要)</li>
+                  <li>Royalty-free commercial use (ロイヤリティフリー商用利用可)</li>
+                  <li>High-resolution quality (高解像度)</li>
+                </ul>
+              </div>
+              <Link href={`/guide/${slug}-png`} className="inline-flex items-center justify-center gap-2 bg-white text-black px-6 py-3 rounded-full font-bold hover:bg-white/90 transition-colors">
+                Read the {categoryName} Full Guide
+              </Link>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-black mb-6">Frequently Asked Questions</h2>
+            <div className="space-y-4">
+              <details className="group glass p-6 rounded-2xl cursor-pointer">
+                <summary className="font-bold text-lg list-none flex justify-between items-center">
+                  Are these {categoryName} PNG assets truly free for commercial use?
+                  <span className="text-ai-cyan group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-4 text-secondary leading-relaxed">
+                  Yes, absolutely. All {categoryName} images available on AssetNinja are completely free for personal and commercial projects. You do not need to provide attribution or pay royalties.
+                </p>
+              </details>
+              <details className="group glass p-6 rounded-2xl cursor-pointer">
+                <summary className="font-bold text-lg list-none flex justify-between items-center">
+                  How can I use these transparent PNGs in Canva?
+                  <span className="text-ai-cyan group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-4 text-secondary leading-relaxed">
+                  It's very simple! Just download the {categoryName} PNG file to your device, drag and drop it into your Canva uploads folder, and place it onto your canvas. Since the background is transparent, it will blend perfectly with any design.
+                </p>
+              </details>
             </div>
           </div>
         </section>

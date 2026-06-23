@@ -52,6 +52,8 @@ export function DownloadButton({
     setErrorMsg(null);
     
     incrementDownloadCount();
+    trackEvent("download_start", { assetId, assetTitle: title });
+    
     try {
       const response = await fetch(`/api/download/${assetId}`);
       const data = await response.json();

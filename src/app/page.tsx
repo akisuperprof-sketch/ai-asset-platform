@@ -14,6 +14,7 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { SplashWrapper } from "@/components/layout/SplashWrapper";
 import { ComingSoonButton } from "@/components/ui/ComingSoonButton";
+import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 
 const ENABLE_ADMAX_REVIEW_MODE = false;
 
@@ -112,6 +113,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
     .slice(0, 6);
   return (
     <SplashWrapper>
+      <PageViewTracker />
       <div className="min-h-screen bg-black text-white selection:bg-ai-purple/30 relative">
         <Navbar />
         

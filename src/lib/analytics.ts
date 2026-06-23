@@ -12,7 +12,7 @@ export type AnalyticsEvent =
   | "instant_download_unlock"
   | "download_complete";
 
-export function trackEvent(event: AnalyticsEvent, metadata?: Record<string, any>) {
+export async function trackEvent(event: AnalyticsEvent | string, metadata?: Record<string, any>) {
   // 1. Premium Console Logger for visual inspection during development
   console.log(`%c[TELEMETRY OS] Event Tracked: ${event}`, "color: #a855f7; font-weight: bold; background: rgba(168, 85, 247, 0.1); padding: 2px 6px; border-radius: 4px;", {
     timestamp: new Date().toISOString(),
@@ -40,6 +40,26 @@ export function trackEvent(event: AnalyticsEvent, metadata?: Record<string, any>
           ...metadata
         });
       }
+      
+      // 3. Send to our own Database Tracking API (Additive Only)
+      // Only certain events or all events can be tracked. We'll track all, but map them to our DB schema
+      const payload = {
+        event_type: event,
+        asset_id: metadata?.assetId || null,
+        page_path: window.location.pathname,
+        ad_provider: metadata?.adType || null,
+        referrer: document.referrer || null
+      };
+
+      // Don't await to avoid blocking the UI
+      fetch('/api/stats/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      }).catch(e => console.warn('[TELEMETRY OS] fetch error', e));
+
     } catch (e) {
       console.warn("[TELEMETRY OS] Failed to dispatch safe tracking payload:", e);
     }

@@ -6,8 +6,8 @@ import fs from 'fs';
 import path from 'path';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 function hashValue(value: string, ip: string): string {
   return crypto.createHash('sha256').update(`${value}-${ip}-salt`).digest('hex');
@@ -88,11 +88,51 @@ export async function POST(request: Request) {
       }
     }
 
-    // Still call the old upsert_search_query for backward compatibility & priority score for traditional searches
+    // Call the new RPC for Phase 3 Search Demand Radar
     if (supabase && (event_type === 'search' || event_type === 'zero_result') && query) {
-      const { error } = await supabase.rpc('upsert_search_query', {
+      const p_normalized = normalized_query || query.toLowerCase().trim();
+      const p_need_asset = event_type === 'zero_result' || metadata?.userRequested === true;
+      
+      const { error } = await supabase.rpc('upsert_search_demand_log', {
+        p_keyword: query,
+        p_normalized_keyword: p_normalized,
+        p_need_asset: p_need_asset
+      });
+      
+      if (error) {
+        console.warn('Demand Radar RPC failed', error);
+        if (error.code === 'PGRST202' || error.message?.includes('cache')) {
+          // Fallback if RPC schema cache is stale
+          console.log('Using manual fallback for search_demand_logs due to stale RPC cache');
+          const { data: existing } = await supabase.from('search_demand_logs').select('search_count, priority_score').eq('normalized_keyword', p_normalized).single();
+          if (existing) {
+             const newScore = ((existing.search_count + 1) * 2) + 10 + (p_need_asset ? 50 : 0);
+             const { error: upErr } = await supabase.from('search_demand_logs').update({
+                search_count: existing.search_count + 1,
+                last_seen_at: new Date().toISOString(),
+                need_asset: p_need_asset,
+                priority_score: newScore
+             }).eq('normalized_keyword', p_normalized);
+             if (upErr) console.error('Fallback update error:', upErr);
+          } else {
+             const newScore = (1 * 2) + 10 + (p_need_asset ? 50 : 0);
+             const { error: inErr } = await supabase.from('search_demand_logs').insert({
+                keyword: query,
+                normalized_keyword: p_normalized,
+                search_count: 1,
+                last_seen_at: new Date().toISOString(),
+                need_asset: p_need_asset,
+                priority_score: newScore
+             });
+             if (inErr) console.error('Fallback insert error:', inErr);
+          }
+        }
+      }
+      
+      // Keep old RPC for backward compatibility
+      const { error: oldError } = await supabase.rpc('upsert_search_query', {
         p_query: query,
-        p_normalized_query: normalized_query || query.toLowerCase().trim(),
+        p_normalized_query: p_normalized,
         p_language_guess: null,
         p_matched_asset_count: event_type === 'zero_result' ? 0 : 1, // rough estimate
         p_has_results: event_type !== 'zero_result',
@@ -100,7 +140,7 @@ export async function POST(request: Request) {
         p_source_page: source_page || '/',
         p_suggested_category: category || null
       });
-      if (error) console.warn('Old RPC failed', error);
+      if (oldError) console.warn('Old RPC failed', oldError);
     }
 
     return NextResponse.json({ ok: true });

@@ -222,9 +222,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </Link>
 
             <Link
-              href="/admin/keywords-radar"
+              href="/admin/demand-radar"
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black transition-colors ${
-                pathname === "/admin/keywords-radar"
+                pathname === "/admin/demand-radar"
                   ? "bg-purple-500/10 border border-purple-500/20 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.05)]" 
                   : "text-secondary hover:text-white hover:bg-white/5 border border-transparent"
               }`}

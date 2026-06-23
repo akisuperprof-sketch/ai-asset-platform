@@ -48,37 +48,49 @@ export function DownloadAdGate({
   }, [isOpen, countdown]);
 
   useEffect(() => {
-    if (isOpen && adType === 'popads') {
-      const STORAGE_KEY = 'assetninja_popads_last_shown';
-      const lastShown = localStorage.getItem(STORAGE_KEY);
-      const now = Date.now();
-      const isWithin24h = lastShown && (now - parseInt(lastShown, 10)) < 24 * 60 * 60 * 1000;
+    if (isOpen) {
+      import('@/lib/analytics').then(({ trackEvent }) => {
+        trackEvent('ad_impression', { adType });
+      });
 
-      if (isWithin24h) {
-        console.log('PopAds skipped: already shown within 24h');
-        setIsPopAdsSkipped(true);
-        return;
+      if (adType === 'popads') {
+        const STORAGE_KEY = 'assetninja_popads_last_shown';
+        const lastShown = localStorage.getItem(STORAGE_KEY);
+        const now = Date.now();
+        const isWithin24h = lastShown && (now - parseInt(lastShown, 10)) < 24 * 60 * 60 * 1000;
+
+        if (isWithin24h) {
+          console.log('PopAds skipped: already shown within 24h');
+          setIsPopAdsSkipped(true);
+          return;
+        }
+
+        setIsPopAdsSkipped(false);
+
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('[AssetNinja Ads] selected adType: popads');
+          console.log('[AssetNinja Ads] PopAds enabled:', isPopAdsEnabled());
+        }
+
+        const timer = setTimeout(() => {
+          injectPopAds();
+          localStorage.setItem(STORAGE_KEY, now.toString());
+          localStorage.setItem('assetninja_last_ad_type', 'popads');
+          import('@/lib/analytics').then(({ trackEvent }) => {
+            trackEvent('popads_trigger', { adType: 'popads' });
+          });
+        }, 100);
+
+        return () => clearTimeout(timer);
+      } else if (adType === 'admax') {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('[AssetNinja Ads] selected adType: admax');
+        }
+        localStorage.setItem('assetninja_last_ad_type', 'admax');
+        import('@/lib/analytics').then(({ trackEvent }) => {
+          trackEvent('admax_render', { adType: 'admax' });
+        });
       }
-
-      setIsPopAdsSkipped(false);
-
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('[AssetNinja Ads] selected adType: popads');
-        console.log('[AssetNinja Ads] PopAds enabled:', isPopAdsEnabled());
-      }
-
-      const timer = setTimeout(() => {
-        injectPopAds();
-        localStorage.setItem(STORAGE_KEY, now.toString());
-        localStorage.setItem('assetninja_last_ad_type', 'popads');
-      }, 100);
-
-      return () => clearTimeout(timer);
-    } else if (isOpen && adType === 'admax') {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('[AssetNinja Ads] selected adType: admax');
-      }
-      localStorage.setItem('assetninja_last_ad_type', 'admax');
     }
   }, [isOpen, adType]);
 

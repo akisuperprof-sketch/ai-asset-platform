@@ -18,6 +18,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/:slug-png',
+        destination: '/category/:slug',
+      },
+    ];
+  },
   async headers() {
     return [
       {

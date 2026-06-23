@@ -43,6 +43,12 @@ export default function AdHealthClient() {
 
   const [kpiMetrics, setKpiMetrics] = useState({ todayDl: 0, adImpressions: 0, adRate: 0, totalAssets: 0, approvedAssets: 0, goalProgress: 0 });
 
+  const [geminiStatus, setGeminiStatus] = useState<CheckStatus>("IDLE");
+  const [replicateStatus, setReplicateStatus] = useState<CheckStatus>("IDLE");
+  const [genApiStatus, setGenApiStatus] = useState<CheckStatus>("IDLE");
+
+  const [apiConfig, setApiConfig] = useState({ gemini: false, replicate: false, genEnabled: false });
+
   const addLog = useCallback((type: string, result: LogEntry["result"], message: string) => {
     setLogs(prev => [{ id: Math.random().toString(36).substring(7), timestamp: new Date(), type, result, message }, ...prev].slice(0, 50));
   }, []);
@@ -174,6 +180,38 @@ export default function AdHealthClient() {
     }
   };
 
+  const checkExternalApis = async () => {
+    setGeminiStatus("CHECKING");
+    setReplicateStatus("CHECKING");
+    setGenApiStatus("CHECKING");
+    
+    try {
+      const res = await fetch("/api/admin/health");
+      const data = await res.json();
+      
+      setApiConfig({
+        gemini: data.gemini.configured,
+        replicate: data.replicate.configured,
+        genEnabled: data.generationApi.enabled
+      });
+
+      if (data.gemini.configured) setGeminiStatus("OK");
+      else setGeminiStatus("WARNING");
+
+      if (data.replicate.configured) setReplicateStatus("OK");
+      else setReplicateStatus("WARNING");
+
+      if (data.generationApi.enabled) setGenApiStatus("OK");
+      else setGenApiStatus("WARNING");
+
+    } catch (e) {
+      setGeminiStatus("ERROR");
+      setReplicateStatus("ERROR");
+      setGenApiStatus("ERROR");
+      addLog("API", "ERROR", "Admin Health API 取得失敗");
+    }
+  };
+
   const updateKPI = async () => {
     const dlStr = localStorage.getItem("assetninja_download_count") || "0";
     const adStr = localStorage.getItem("assetninja_ad_impression_count") || "0";
@@ -204,7 +242,8 @@ export default function AdHealthClient() {
     await Promise.all([
       checkSupabase().then(() => checkStorage()).then(() => updateKPI()),
       checkDownloadApi(),
-      checkAdMax()
+      checkAdMax(),
+      checkExternalApis()
     ]);
     await checkPopAds(); // Run popads last to avoid popups blocking
     
@@ -226,12 +265,12 @@ export default function AdHealthClient() {
 
   // Derive Overall Status
   useEffect(() => {
-    const statuses = [admaxStatus, popadsStatus, dlStatus, supabaseStatus, storageStatus];
+    const statuses = [admaxStatus, popadsStatus, dlStatus, supabaseStatus, storageStatus, geminiStatus, replicateStatus, genApiStatus];
     if (statuses.includes("CHECKING")) return;
     if (statuses.includes("ERROR")) setOverallStatus("ERROR");
     else if (statuses.includes("WARNING")) setOverallStatus("WARNING");
     else if (statuses.every(s => s === "OK" || s === "IDLE")) setOverallStatus("OK");
-  }, [admaxStatus, popadsStatus, dlStatus, supabaseStatus, storageStatus]);
+  }, [admaxStatus, popadsStatus, dlStatus, supabaseStatus, storageStatus, geminiStatus, replicateStatus, genApiStatus]);
 
   const getStatusColor = (s: CheckStatus) => {
     if (s === "OK") return "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
@@ -248,6 +287,9 @@ export default function AdHealthClient() {
     if (dlStatus === "ERROR") errs.push(`Download API (${dlStatus})`);
     if (supabaseStatus === "ERROR") errs.push(`Supabase (${supabaseStatus})`);
     if (storageStatus === "ERROR") errs.push(`Storage (${storageStatus})`);
+    if (geminiStatus === "ERROR" || geminiStatus === "WARNING") errs.push(`Gemini (${geminiStatus})`);
+    if (replicateStatus === "ERROR" || replicateStatus === "WARNING") errs.push(`Replicate (${replicateStatus})`);
+    if (genApiStatus === "ERROR" || genApiStatus === "WARNING") errs.push(`Gen API (${genApiStatus})`);
     return errs;
   };
 
@@ -361,6 +403,39 @@ export default function AdHealthClient() {
               <span className="text-zinc-400">最新素材URL</span>
               <a href={storageMetrics.latestUrl} target="_blank" className="text-xs text-indigo-400 truncate hover:underline">{storageMetrics.latestUrl || "None"}</a>
             </div>
+          </div>
+        </div>
+
+        {/* Gemini Card */}
+        <div className={`bg-zinc-900 border rounded-xl p-5 ${geminiStatus === 'ERROR' ? 'border-red-500/50' : 'border-zinc-800'}`}>
+          <div className="flex justify-between items-start mb-4">
+            <h3 className="font-bold flex items-center gap-2 text-white"><Activity className="w-4 h-4 text-blue-400" /> Gemini API</h3>
+            <span className={`text-xs px-2 py-1 rounded font-bold ${getStatusColor(geminiStatus)}`}>{geminiStatus}</span>
+          </div>
+          <div className="space-y-2 text-sm mb-4">
+            <div className="flex justify-between"><span className="text-zinc-400">Token設定</span><span className={apiConfig.gemini ? "text-emerald-400" : "text-amber-500"}>{apiConfig.gemini ? "OK" : "MISSING"}</span></div>
+          </div>
+        </div>
+
+        {/* Replicate Card */}
+        <div className={`bg-zinc-900 border rounded-xl p-5 ${replicateStatus === 'ERROR' ? 'border-red-500/50' : 'border-zinc-800'}`}>
+          <div className="flex justify-between items-start mb-4">
+            <h3 className="font-bold flex items-center gap-2 text-white"><Activity className="w-4 h-4 text-pink-400" /> Replicate API</h3>
+            <span className={`text-xs px-2 py-1 rounded font-bold ${getStatusColor(replicateStatus)}`}>{replicateStatus}</span>
+          </div>
+          <div className="space-y-2 text-sm mb-4">
+            <div className="flex justify-between"><span className="text-zinc-400">Token設定</span><span className={apiConfig.replicate ? "text-emerald-400" : "text-amber-500"}>{apiConfig.replicate ? "OK" : "MISSING"}</span></div>
+          </div>
+        </div>
+
+        {/* Gen API Card */}
+        <div className={`bg-zinc-900 border rounded-xl p-5 ${genApiStatus === 'ERROR' ? 'border-red-500/50' : 'border-zinc-800'}`}>
+          <div className="flex justify-between items-start mb-4">
+            <h3 className="font-bold flex items-center gap-2 text-white"><Activity className="w-4 h-4 text-emerald-400" /> Generation API</h3>
+            <span className={`text-xs px-2 py-1 rounded font-bold ${getStatusColor(genApiStatus)}`}>{genApiStatus}</span>
+          </div>
+          <div className="space-y-2 text-sm mb-4">
+            <div className="flex justify-between"><span className="text-zinc-400">GENERATION_ENABLED</span><span className={apiConfig.genEnabled ? "text-emerald-400" : "text-amber-500"}>{apiConfig.genEnabled ? "TRUE" : "FALSE"}</span></div>
           </div>
         </div>
 

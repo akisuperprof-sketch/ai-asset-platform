@@ -18,6 +18,7 @@ import { AssetPreviewContainer } from "@/components/assets/AssetPreviewContainer
 
 import { Metadata } from "next";
 import Link from "next/link";
+import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const asset = await getAssetById(id);
@@ -148,6 +149,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-ai-purple/30">
+      <PageViewTracker assetId={asset.id} />
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-6 pt-32 pb-32">
