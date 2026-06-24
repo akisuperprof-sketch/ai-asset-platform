@@ -15,7 +15,11 @@ function hashString(input: string): string {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { event_type, asset_id, page_path, ad_provider, referrer } = body;
+    const event_type = body.event_type ?? body.eventType;
+    const page_path = body.page_path ?? body.pagePath;
+    const ad_provider = body.ad_provider ?? body.adProvider;
+    const asset_id = body.asset_id ?? body.assetId;
+    const referrer = body.referrer;
 
     if (!event_type || !page_path) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });

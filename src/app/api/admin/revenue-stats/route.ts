@@ -33,26 +33,70 @@ export async function GET() {
 
     const dlRate = pv > 0 ? (dl / pv) * 100 : 0;
     
-    // Fetch Top Candidates (dummy logic for now, until we aggregate dynamically)
-    // We can just query the assets table joined with counts or use a simpler approach
-    // We will do a simple fetch from assets and order by view_count if it existed,
-    // but since we don't have it on assets, we'll return an empty list or top by download
-    const { data: topAssets } = await supabase
+    const { data: funnelData } = await supabase
+      .from('revenue_events')
+      .select('event_type, asset_id');
+      
+    // Ad Funnel Aggregation
+    let pvTotal = 0;
+    let assetViewTotal = 0;
+    let dlStartTotal = 0;
+    let adImpressionTotal = 0;
+    let dlCompleteTotal = 0;
+    
+    // Asset Value Score Map
+    const assetScores: Record<string, { view: number, dl: number, ad: number }> = {};
+
+    if (funnelData) {
+      funnelData.forEach(row => {
+        if (row.event_type === 'page_view') pvTotal++;
+        if (row.event_type === 'page_view' && row.asset_id) assetViewTotal++;
+        if (row.event_type === 'download_start') dlStartTotal++;
+        if (row.event_type === 'ad_impression') adImpressionTotal++;
+        if (row.event_type === 'download_complete') dlCompleteTotal++;
+
+        if (row.asset_id) {
+          if (!assetScores[row.asset_id]) assetScores[row.asset_id] = { view: 0, dl: 0, ad: 0 };
+          if (row.event_type === 'page_view') assetScores[row.asset_id].view++;
+          if (row.event_type === 'download_complete') assetScores[row.asset_id].dl++;
+          if (row.event_type === 'ad_impression') assetScores[row.asset_id].ad++;
+        }
+      });
+    }
+
+    // Top Assets Logic
+    // We fetch assets and calculate score
+    const { data: assetsData } = await supabase
       .from('assets')
       .select('id, title, category, status, published_at')
-      .eq('review_status', 'approved')
-      .order('published_at', { ascending: false })
-      .limit(5);
+      .eq('review_status', 'approved');
+
+    let topAssets: any[] = [];
+    if (assetsData) {
+      topAssets = assetsData.map(a => {
+        const scoreData = assetScores[a.id] || { view: 0, dl: 0, ad: 0 };
+        const valueScore = (scoreData.view * 1) + (scoreData.dl * 10) + (scoreData.ad * 0.5);
+        return { ...a, valueScore, ...scoreData };
+      }).sort((a, b) => b.valueScore - a.valueScore).slice(0, 10);
+    }
 
     return NextResponse.json({
       today_pv: pv,
       today_dl: dl,
+      today_ad_impression: summary?.today_ad_impression || 0,
       today_admax_render: admaxRender,
       today_popads_trigger: popadsTrigger,
       estimated_daily_revenue: dailyRevenue,
       estimated_monthly_revenue: monthlyRevenue,
       dl_rate: dlRate,
-      top_revenue_candidates: topAssets || []
+      funnel: {
+        pv: pvTotal,
+        asset_view: assetViewTotal,
+        download_start: dlStartTotal,
+        ad_impression: adImpressionTotal,
+        download_complete: dlCompleteTotal
+      },
+      top_revenue_candidates: topAssets
     });
 
   } catch (error: any) {

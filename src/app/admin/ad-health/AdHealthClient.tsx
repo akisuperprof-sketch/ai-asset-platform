@@ -16,6 +16,8 @@ interface LogEntry {
   message: string;
 }
 
+import Link from "next/link";
+
 export default function AdHealthClient() {
   const [overallStatus, setOverallStatus] = useState<CheckStatus>("IDLE");
   const [lastCheck, setLastCheck] = useState<Date | null>(null);
@@ -297,12 +299,16 @@ export default function AdHealthClient() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-20">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
         <h1 className="text-2xl font-bold flex items-center gap-2 text-white">
           <Activity className="text-indigo-400" />
           Ad Health Center
         </h1>
         <div className="flex items-center gap-4">
+          <Link href="/admin/revenue-analytics" className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition border border-white/10">
+            <BarChart3 className="w-4 h-4 text-green-400" />
+            Revenue Dashboard
+          </Link>
           <label className="flex items-center gap-2 text-sm text-zinc-400 font-medium">
             <input type="checkbox" checked={autoRefresh} onChange={e => setAutoRefresh(e.target.checked)} className="rounded bg-zinc-800 border-zinc-700 text-indigo-500 focus:ring-indigo-500" />
             30秒自動更新
