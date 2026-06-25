@@ -111,7 +111,7 @@ export default async function sitemap(props: { id?: number | string | Promise<nu
 
   // Base pages (Only return for the first sitemap or when id is not supplied to prevent duplication)
   if (currentId === 0) {
-    const categories = ['日本の食', '和の伝統素材', '年中行事・祭り', 'ビジネス', '医療・ヘルスケア', '事務用品・文具'];
+    const categories = ['日本の食', '和の伝統素材', '年中行事・祭り', 'ビジネス', '医療・ヘルスケア', '事務用品・文具', 'ramen', 'sushi', 'tempura', 'gyoza', 'mochi', 'bento', 'torii', 'sakura', 'matcha', 'japanese-pattern', 'onigiri', 'yakitori', 'takoyaki', 'dango'];
     const categoryUrls = categories.map((cat) => ({
       url: `${baseUrl}/category/${encodeURIComponent(cat)}`,
       lastModified: new Date(),
@@ -126,6 +126,22 @@ export default async function sitemap(props: { id?: number | string | Promise<nu
       priority: 0.85,
     }));
 
+    const guideSlugs = ['ramen-png', 'sushi-png', 'tempura-png', 'gyoza-png', 'mochi-png', 'bento-png', 'torii-png', 'sakura-png', 'matcha-png', 'japanese-pattern-png', 'onigiri-png', 'yakitori-png', 'takoyaki-png', 'dango-png'];
+    const guideUrls = guideSlugs.map(slug => ({
+      url: `${baseUrl}/guide/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
+
+    const eventSlugs = ['spring', 'summer', 'autumn', 'halloween', 'christmas', 'new-year', 'valentine'];
+    const eventUrls = eventSlugs.map(slug => ({
+      url: `${baseUrl}/events/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
+
     const finalSitemap: MetadataRoute.Sitemap = [
       {
         url: baseUrl,
@@ -133,8 +149,22 @@ export default async function sitemap(props: { id?: number | string | Promise<nu
         changeFrequency: 'daily',
         priority: 1.0,
       },
+      {
+        url: `${baseUrl}/events`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.9,
+      },
+      {
+        url: `${baseUrl}/searches`,
+        lastModified: new Date(),
+        changeFrequency: 'daily',
+        priority: 0.9,
+      },
       ...categoryUrls,
       ...tagUrls,
+      ...guideUrls,
+      ...eventUrls,
       {
         url: `${baseUrl}/coming-soon`,
         lastModified: new Date(),

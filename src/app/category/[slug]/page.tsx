@@ -7,7 +7,7 @@ import { LoadMoreGrid } from "@/components/assets/LoadMoreGrid";
 import { Metadata } from "next";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 
-const CATEGORY_MAP = ['ramen', 'sushi', 'tempura', 'gyoza', 'mochi', 'bento', 'torii', 'sakura', 'matcha', 'japanese-pattern'];
+const CATEGORY_MAP = ['ramen', 'sushi', 'tempura', 'gyoza', 'mochi', 'bento', 'torii', 'sakura', 'matcha', 'japanese-pattern', 'onigiri', 'yakitori', 'takoyaki', 'dango'];
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -108,6 +108,20 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     ]
   };
 
+  const imagesJsonLd = assets.map(asset => ({
+    "@context": "https://schema.org",
+    "@type": "ImageObject",
+    "contentUrl": asset.imageUrl,
+    "license": "https://assetninja.jp/copyright",
+    "acquireLicensePage": `https://assetninja.jp/items/${asset.id}`,
+    "creditText": "AssetNinja",
+    "creator": {
+      "@type": "Organization",
+      "name": "AssetNinja"
+    },
+    "copyrightNotice": "Free for commercial use, no attribution required."
+  }));
+
   return (
     <div className="min-h-screen bg-black">
       <PageViewTracker />
@@ -122,6 +136,10 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(imagesJsonLd) }}
       />
 
       <Navbar />

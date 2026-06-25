@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { DownloadButton } from "@/components/download/DownloadButton";
 import { AssetPreviewContainer } from "@/components/assets/AssetPreviewContainer";
+import { AICitationBlock } from "@/components/assets/AICitationBlock";
 
 import { Metadata } from "next";
 import Link from "next/link";
@@ -169,6 +170,8 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           <div className="w-full lg:w-2/3 space-y-8">
             <AssetPreviewContainer imageUrl={asset.imageUrl} title={asset.title} />
 
+            <AICitationBlock assetId={asset.id} assetTitle={asset.title} category={asset.category} />
+
             {/* Related Tags */}
             <div className="pt-4">
               <div className="flex items-center gap-3 mb-6">
@@ -244,6 +247,33 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               <p className="text-[11px] text-secondary leading-relaxed font-medium">
                 このアセットはAssetNinjaによって精密に透過処理されており、商用プロジェクトでの自由な利用が完全に保証されています。
               </p>
+            </div>
+
+            {/* AEO / GEO Context Links */}
+            <div className="flex flex-col gap-3 mt-8">
+              <Link href={`/guide/${asset.category}-png`} className="glass px-6 py-4 rounded-2xl flex items-center justify-between group hover:bg-white/5 transition-colors">
+                <div>
+                  <h4 className="text-sm font-bold text-white mb-1">How to use {asset.category} PNGs</h4>
+                  <p className="text-[10px] text-secondary">Canva, PowerPoint, Commercial Use Guide</p>
+                </div>
+                <span className="text-ai-cyan group-hover:translate-x-1 transition-transform">→</span>
+              </Link>
+
+              <Link href="/events" className="glass px-6 py-4 rounded-2xl flex items-center justify-between group hover:bg-white/5 transition-colors">
+                <div>
+                  <h4 className="text-sm font-bold text-white mb-1">Explore Seasonal Events</h4>
+                  <p className="text-[10px] text-secondary">Find assets for upcoming holidays & seasons</p>
+                </div>
+                <span className="text-ai-cyan group-hover:translate-x-1 transition-transform">→</span>
+              </Link>
+
+              <Link href="/demand-radar" className="glass px-6 py-4 rounded-2xl flex items-center justify-between group hover:bg-white/5 transition-colors">
+                <div>
+                  <h4 className="text-sm font-bold text-white mb-1">Can't find what you need?</h4>
+                  <p className="text-[10px] text-secondary">Request a new asset on Demand Radar</p>
+                </div>
+                <span className="text-ai-purple group-hover:translate-x-1 transition-transform">→</span>
+              </Link>
             </div>
           </div>
         </div>
