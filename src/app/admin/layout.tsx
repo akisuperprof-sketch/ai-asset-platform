@@ -181,6 +181,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               AI稼働監視
             </Link>
 
+            <Link
+              href="/admin/auto-factory"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-colors ${
+                pathname === "/admin/auto-factory" 
+                  ? "bg-purple-500/10 border border-purple-500/20 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.05)]" 
+                  : "text-secondary hover:text-white hover:bg-white/5 border border-transparent"
+              }`}
+            >
+              <Sparkles className="w-4 h-4" />
+              Auto Factory (1000)
+            </Link>
+
             <div className="text-[9px] font-black text-white/30 uppercase tracking-[0.25em] pl-3 pt-6 mb-2">
               SYSTEM ENGINE
             </div>
@@ -207,6 +219,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             >
               <TrendingUp className="w-4 h-4" />
               D作戦OS
+            </Link>
+
+            <Link
+              href="/admin/pinterest"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-colors ${
+                pathname === "/admin/pinterest" 
+                  ? "bg-purple-500/10 border border-purple-500/20 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.05)]" 
+                  : "text-secondary hover:text-white hover:bg-white/5 border border-transparent"
+              }`}
+            >
+              <Layers className="w-4 h-4" />
+              Pinterest Distribution
             </Link>
 
             <Link

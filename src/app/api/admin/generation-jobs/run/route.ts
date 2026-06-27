@@ -230,6 +230,61 @@ export async function POST(request: Request) {
             insertErrorMsg = insertError.message;
           } else if (insertedAsset) {
             newAssetId = insertedAsset.id;
+            
+            // Auto SEO Writer Phase 9
+            try {
+              const seoPrompt = `You are an expert SEO and content writer. 
+Generate metadata for a free transparent PNG asset titled "${title}".
+Return ONLY a JSON object with the following keys:
+- seo_title: (max 60 chars)
+- seo_description: (max 160 chars)
+- alt_text: (brief description for visually impaired)
+- usage: (array of 3-5 strings, examples of how to use it e.g. Canva, PowerPoint, Web Design)
+- faq: (array of objects with "question" and "answer" about commercial use, transparency, format)
+- pinterest_description: (SEO optimized description for Pinterest with hashtags)
+
+No markdown formatting, just raw JSON.`;
+
+              const seoRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  contents: [{ parts: [{ text: seoPrompt }] }],
+                  generationConfig: { temperature: 0.7 }
+                })
+              });
+
+              if (seoRes.ok) {
+                const seoData = await seoRes.json();
+                const seoText = seoData.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+                const cleanSeoText = seoText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                const seoMetadata = JSON.parse(cleanSeoText);
+
+                // Update asset metadata
+                await adminClient.from('assets').update({ metadata: seoMetadata }).eq('id', newAssetId);
+
+                // Auto Pinterest & Social Posts
+                await adminClient.from('pinterest_posts').insert({
+                  asset_id: newAssetId,
+                  title: seoMetadata.seo_title || title,
+                  description: seoMetadata.pinterest_description || seoMetadata.seo_description,
+                  board_name: job.category || 'General',
+                  pin_url: finalImageUrl,
+                  status: 'draft'
+                });
+
+                await adminClient.from('social_posts').insert({
+                  asset_id: newAssetId,
+                  platform: 'x',
+                  title: seoMetadata.seo_title || title,
+                  body: seoMetadata.seo_description || '',
+                  image_url: finalImageUrl,
+                  status: 'draft'
+                });
+              }
+            } catch (seoErr: any) {
+              console.warn('Auto SEO Writer failed:', seoErr.message);
+            }
           }
         }
 
