@@ -1,0 +1,25 @@
+
+> app-init@0.1.0 dev
+> next dev -p 3004
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3004
+- Network:       http://172.20.10.2:3004
+- Environments: .env.local
+✓ Ready in 421ms
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/akihironishi/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/akihironishi/AI Asset Platform/package-lock.json
+
+⨯ Another next dev server is already running.
+
+- Local:        http://localhost:3003
+- PID:          47839
+- Dir:          /Users/akihironishi/AI Asset Platform
+- Log:          .next/dev/logs/next-development.log
+
+Run kill 47839 to stop it.
+[?25h

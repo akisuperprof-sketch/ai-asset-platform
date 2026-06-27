@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import AdHealthClient from "./AdHealthClient";
+import { MonetizationLinks } from "@/components/admin/MonetizationLinks";
 
 export const metadata: Metadata = {
   title: "広告ヘルスチェック | AssetNinja Admin",
@@ -21,6 +22,7 @@ export default function AdHealthPage() {
           </p>
         </header>
 
+        <MonetizationLinks />
         <AdHealthClient />
       </div>
     </div>

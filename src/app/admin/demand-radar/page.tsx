@@ -9,6 +9,8 @@ type DemandLog = {
   keyword: string;
   normalized_keyword: string;
   search_count: number;
+  clicks: number;
+  category: string;
   first_seen_at: string;
   last_seen_at: string;
   need_asset: boolean;
@@ -104,7 +106,9 @@ export default function DemandRadarPage() {
             <thead className="text-xs uppercase bg-black/40 text-secondary">
               <tr>
                 <th className="px-6 py-4 font-black tracking-widest">Keyword</th>
+                <th className="px-6 py-4 font-black tracking-widest text-center">Category</th>
                 <th className="px-6 py-4 font-black tracking-widest text-center">Search Count</th>
+                <th className="px-6 py-4 font-black tracking-widest text-center">CTR</th>
                 <th className="px-6 py-4 font-black tracking-widest text-center">Need Asset</th>
                 <th className="px-6 py-4 font-black tracking-widest text-right">Priority Score</th>
                 <th className="px-6 py-4 font-black tracking-widest text-right">Last Seen</th>
@@ -131,8 +135,22 @@ export default function DemandRadarPage() {
                       {log.keyword}
                     </td>
                     <td className="px-6 py-4 text-center">
+                      {log.category ? (
+                        <span className="bg-white/10 px-3 py-1 rounded-full text-xs">
+                          {log.category}
+                        </span>
+                      ) : (
+                        <span className="text-secondary text-xs">-</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-center">
                       <span className="bg-white/10 px-3 py-1 rounded-full font-mono text-xs">
                         {log.search_count}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="font-mono text-xs text-ai-cyan">
+                        {log.search_count > 0 ? ((log.clicks || 0) / log.search_count * 100).toFixed(1) : 0}%
                       </span>
                     </td>
                     <td className="px-6 py-4 text-center">

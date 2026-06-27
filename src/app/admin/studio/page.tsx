@@ -2,29 +2,12 @@
 import { Zap, Flame } from "lucide-react";
 
 import React, { useState, useEffect } from "react";
-import { 
-  Sparkles, 
-  Layers, 
-  Image as ImageIcon, 
-  Search, 
-  ShieldCheck, 
-  CheckCircle, 
-  XCircle, 
-  HelpCircle, 
-  TrendingUp, 
-  Gauge, 
-  AlertTriangle,
-  RefreshCw,
-  Plus,
-  Eye,
-  Sliders,
-  Copy,
-  Check
-} from "lucide-react";
+import { Sparkles, Layers, Image as ImageIcon, Search, ShieldCheck, CheckCircle, XCircle, HelpCircle, TrendingUp, Gauge, AlertTriangle, RefreshCw, Plus, Eye, Sliders, Copy, Check } from "lucide-react";
 import { adminClient } from '@/lib/supabase';
 import AssetProductionCenter from "./AssetProductionCenter";
 import ProductionDashboard from "./ProductionDashboard";
 import AutoProductionSettings from "./AutoProductionSettings";
+import { MonetizationLinks } from "@/components/admin/MonetizationLinks";
 import { supabase } from "@/lib/supabase";
 import { Asset } from "@/types";
 
@@ -424,7 +407,7 @@ export default function StudioPage() {
 
   return (
     <div className="p-8 space-y-8 font-sans bg-zinc-950 text-white min-h-screen">
-      
+      <MonetizationLinks />
       <AssetProductionCenter />
       <ProductionDashboard />
       <AutoProductionSettings />

@@ -67,22 +67,42 @@ export function Footer() {
                   <li><Link href="/?cat=すべて" className="hover:text-white transition-colors">カテゴリ一覧</Link></li>
                   <li>
                     <Link 
-                      href="/coming-soon" 
-                      onClick={(e) => handleComingSoon(e, "新着素材")}
-                      className="hover:text-white transition-colors flex items-center gap-1.5 cursor-not-allowed opacity-75"
-                      aria-disabled="true"
+                      href="/trending" 
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      トレンド素材
+                    </Link>
+                  </li>
+                  <li>
+                    <Link 
+                      href="/popular" 
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      人気素材
+                    </Link>
+                  </li>
+                  <li>
+                    <Link 
+                      href="/new" 
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
                     >
                       新着素材
                     </Link>
                   </li>
                   <li>
                     <Link 
-                      href="/coming-soon" 
-                      onClick={(e) => handleComingSoon(e, "人気素材")}
-                      className="hover:text-white transition-colors flex items-center gap-1.5 cursor-not-allowed opacity-75"
-                      aria-disabled="true"
+                      href="/events" 
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
                     >
-                      人気素材
+                      イベント・季節
+                    </Link>
+                  </li>
+                  <li>
+                    <Link 
+                      href="/searches" 
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      人気の検索
                     </Link>
                   </li>
                 </ul>

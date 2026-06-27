@@ -270,3 +270,45 @@ export async function searchAssets(query: string, category: string, limit: numbe
     return [];
   }
 }
+
+export async function getPopularAssets(limit: number = 100, offset: number = 0): Promise<Asset[]> {
+  if (!supabase) return getAssets(limit, offset);
+  try {
+    const { data, error } = await applyPublicFilters(
+      supabase
+        .from('assets')
+        .select('*')
+        // Use quality_rank as fallback proxy for popularity
+        .order('quality_rank', { ascending: false, nullsFirst: false })
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1)
+    );
+    if (error) throw error;
+    if (!data) return [];
+    return data.filter((d: any) => !!d.image_url || !!d.storage_key).map(mapAsset);
+  } catch (error: any) {
+    console.error("❌ Supabase error (getPopularAssets):", error.message || error);
+    return [];
+  }
+}
+
+export async function getTrendingAssets(limit: number = 100, offset: number = 0): Promise<Asset[]> {
+  if (!supabase) return getAssets(limit, offset);
+  try {
+    const { data, error } = await applyPublicFilters(
+      supabase
+        .from('assets')
+        .select('*')
+        // Use seo_score or pinterest_score as fallback proxy for trending
+        .order('seo_score', { ascending: false, nullsFirst: false })
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1)
+    );
+    if (error) throw error;
+    if (!data) return [];
+    return data.filter((d: any) => !!d.image_url || !!d.storage_key).map(mapAsset);
+  } catch (error: any) {
+    console.error("❌ Supabase error (getTrendingAssets):", error.message || error);
+    return [];
+  }
+}

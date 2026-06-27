@@ -1,0 +1,10 @@
+{
+  "autoProductionEnabled": false,
+  "batchSize": 10,
+  "dailyLimit": 30,
+  "idleMinutes": 5,
+  "maxNetworkKBps": 200,
+  "cooldownMinutes": 180,
+  "todayGenerated": 0,
+  "lastRunDate": "2026-06-12"
+}

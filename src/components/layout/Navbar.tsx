@@ -9,8 +9,9 @@ const FEATURES_ENABLED = {
   login: false,
   aiGeneration: false,
   // New feature flags to minimize nav
-  ENABLE_NEW_NAV: false,
-  ENABLE_POPULAR_NAV: false,
+  ENABLE_NEW_NAV: true,
+  ENABLE_POPULAR_NAV: true,
+  ENABLE_TRENDING_NAV: true,
   ENABLE_DOWNLOAD_CTA: false,
   ENABLE_EXPLORE_NAV: false, // "素材を探す"
   ENABLE_CATEGORY_NAV: false, // "カテゴリ"
@@ -43,11 +44,14 @@ export function Navbar() {
             {FEATURES_ENABLED.ENABLE_CATEGORY_NAV && (
               <Link href="/#categories" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">カテゴリ</Link>
             )}
-            {FEATURES_ENABLED.ENABLE_NEW_NAV && (
-              <Link href="/coming-soon" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">新着素材</Link>
+            {FEATURES_ENABLED.ENABLE_TRENDING_NAV && (
+              <Link href="/trending" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">Trending</Link>
             )}
             {FEATURES_ENABLED.ENABLE_POPULAR_NAV && (
-              <Link href="/coming-soon" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">人気素材</Link>
+              <Link href="/popular" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">Popular</Link>
+            )}
+            {FEATURES_ENABLED.ENABLE_NEW_NAV && (
+              <Link href="/new" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">New</Link>
             )}
             {FEATURES_ENABLED.aiGeneration && (
               <Link href="/coming-soon" className="text-[11px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">AI生成について</Link>

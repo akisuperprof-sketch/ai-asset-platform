@@ -89,14 +89,17 @@ export async function POST(request: Request) {
     }
 
     // Call the new RPC for Phase 3 Search Demand Radar
-    if (supabase && (event_type === 'search' || event_type === 'zero_result') && query) {
+    if (supabase && (event_type === 'search' || event_type === 'zero_result' || event_type === 'asset_click') && query) {
       const p_normalized = normalized_query || query.toLowerCase().trim();
       const p_need_asset = event_type === 'zero_result' || metadata?.userRequested === true;
+      const p_is_click = event_type === 'asset_click';
       
       const { error } = await supabase.rpc('upsert_search_demand_log', {
         p_keyword: query,
         p_normalized_keyword: p_normalized,
-        p_need_asset: p_need_asset
+        p_need_asset: p_need_asset,
+        p_category: category || null,
+        p_is_click: p_is_click
       });
       
       if (error) {
@@ -104,43 +107,58 @@ export async function POST(request: Request) {
         if (error.code === 'PGRST202' || error.message?.includes('cache')) {
           // Fallback if RPC schema cache is stale
           console.log('Using manual fallback for search_demand_logs due to stale RPC cache');
-          const { data: existing } = await supabase.from('search_demand_logs').select('search_count, priority_score').eq('normalized_keyword', p_normalized).single();
+          const { data: existing } = await supabase.from('search_demand_logs').select('search_count, priority_score, clicks').eq('normalized_keyword', p_normalized).single();
           if (existing) {
-             const newScore = ((existing.search_count + 1) * 2) + 10 + (p_need_asset ? 50 : 0);
-             const { error: upErr } = await supabase.from('search_demand_logs').update({
-                search_count: existing.search_count + 1,
-                last_seen_at: new Date().toISOString(),
-                need_asset: p_need_asset,
-                priority_score: newScore
-             }).eq('normalized_keyword', p_normalized);
-             if (upErr) console.error('Fallback update error:', upErr);
+             if (p_is_click) {
+               const { error: upErr } = await supabase.from('search_demand_logs').update({
+                  clicks: (existing.clicks || 0) + 1,
+                  last_seen_at: new Date().toISOString()
+               }).eq('normalized_keyword', p_normalized);
+               if (upErr) console.error('Fallback click update error:', upErr);
+             } else {
+               const newScore = ((existing.search_count + 1) * 2) + 10 + (p_need_asset ? 50 : 0);
+               const { error: upErr } = await supabase.from('search_demand_logs').update({
+                  search_count: existing.search_count + 1,
+                  last_seen_at: new Date().toISOString(),
+                  need_asset: p_need_asset,
+                  category: category || null,
+                  priority_score: newScore
+               }).eq('normalized_keyword', p_normalized);
+               if (upErr) console.error('Fallback update error:', upErr);
+             }
           } else {
-             const newScore = (1 * 2) + 10 + (p_need_asset ? 50 : 0);
-             const { error: inErr } = await supabase.from('search_demand_logs').insert({
-                keyword: query,
-                normalized_keyword: p_normalized,
-                search_count: 1,
-                last_seen_at: new Date().toISOString(),
-                need_asset: p_need_asset,
-                priority_score: newScore
-             });
-             if (inErr) console.error('Fallback insert error:', inErr);
+             if (!p_is_click) {
+               const newScore = (1 * 2) + 10 + (p_need_asset ? 50 : 0);
+               const { error: inErr } = await supabase.from('search_demand_logs').insert({
+                  keyword: query,
+                  normalized_keyword: p_normalized,
+                  search_count: 1,
+                  clicks: 0,
+                  category: category || null,
+                  last_seen_at: new Date().toISOString(),
+                  need_asset: p_need_asset,
+                  priority_score: newScore
+               });
+               if (inErr) console.error('Fallback insert error:', inErr);
+             }
           }
         }
       }
       
       // Keep old RPC for backward compatibility
-      const { error: oldError } = await supabase.rpc('upsert_search_query', {
-        p_query: query,
-        p_normalized_query: p_normalized,
-        p_language_guess: null,
-        p_matched_asset_count: event_type === 'zero_result' ? 0 : 1, // rough estimate
-        p_has_results: event_type !== 'zero_result',
-        p_user_agent_hash: userAgentHash,
-        p_source_page: source_page || '/',
-        p_suggested_category: category || null
-      });
-      if (oldError) console.warn('Old RPC failed', oldError);
+      if (event_type !== 'asset_click') {
+        const { error: oldError } = await supabase.rpc('upsert_search_query', {
+          p_query: query,
+          p_normalized_query: p_normalized,
+          p_language_guess: null,
+          p_matched_asset_count: event_type === 'zero_result' ? 0 : 1, // rough estimate
+          p_has_results: event_type !== 'zero_result',
+          p_user_agent_hash: userAgentHash,
+          p_source_page: source_page || '/',
+          p_suggested_category: category || null
+        });
+        if (oldError) console.warn('Old RPC failed', oldError);
+      }
     }
 
     return NextResponse.json({ ok: true });
