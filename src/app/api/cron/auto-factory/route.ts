@@ -74,7 +74,7 @@ export async function GET(request: Request) {
     const workerData = await workerRes.json();
 
     // 5. Log Result
-    await adminClient.from('worker_logs').insert({
+    await adminClient.from('factory_logs').insert({
       task: 'auto_factory_loop',
       status: workerRes.ok ? 'success' : 'failed',
       details: {
@@ -93,7 +93,7 @@ export async function GET(request: Request) {
 
   } catch (error: any) {
     console.error('Auto Factory Cron Error:', error);
-    await adminClient.from('worker_logs').insert({
+    await adminClient.from('factory_logs').insert({
       task: 'auto_factory_loop',
       status: 'failed',
       details: { error: error.message }

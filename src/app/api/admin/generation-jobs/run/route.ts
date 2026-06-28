@@ -260,8 +260,17 @@ No markdown formatting, just raw JSON.`;
                 const cleanSeoText = seoText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
                 const seoMetadata = JSON.parse(cleanSeoText);
 
-                // Update asset metadata
-                await adminClient.from('assets').update({ metadata: seoMetadata }).eq('id', newAssetId);
+                // Update asset metadata into explicit columns + metadata JSON
+                await adminClient.from('assets').update({ 
+                  metadata: seoMetadata,
+                  seo_title: seoMetadata.seo_title,
+                  seo_description: seoMetadata.seo_description,
+                  alt_text: seoMetadata.alt_text,
+                  usage_examples: seoMetadata.usage || seoMetadata.usage_examples || [],
+                  faq: seoMetadata.faq || [],
+                  pinterest_description: seoMetadata.pinterest_description,
+                  asset_value_score: 100 // default or compute
+                }).eq('id', newAssetId);
 
                 // Auto Pinterest & Social Posts
                 await adminClient.from('pinterest_posts').insert({
