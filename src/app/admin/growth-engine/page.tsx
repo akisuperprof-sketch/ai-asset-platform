@@ -15,7 +15,8 @@ import {
   Target,
   Zap,
   Globe,
-  Share2
+  Share2,
+  Search
 } from "lucide-react";
 
 export default function GrowthEnginePage() {
