@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     // Fetch up to 100 assets that haven't been scored recently or scored at all
     const { data: assets, error: fetchErr } = await adminClient
       .from('assets')
-      .select('id, views, downloads')
+      .select('id, download_count')
       .order('created_at', { ascending: false })
       .limit(100);
 
@@ -29,15 +29,13 @@ export async function POST(request: Request) {
     let scoredCount = 0;
 
     for (const asset of assets || []) {
-      // Calculate a deterministic score based on views and downloads
-      // In a real scenario, this would query Search Console ranking, revenue events, etc.
+      // Calculate a deterministic score based on download_count
       let baseScore = 50;
       
-      // Bonus for views
-      const viewScore = Math.min(20, (asset.views || 0) / 10);
+      const viewScore = 0; // Mocked as we don't track views directly in this table yet
       
       // Bonus for downloads (higher weight)
-      const dlScore = Math.min(30, (asset.downloads || 0) / 2);
+      const dlScore = Math.min(30, (asset.download_count || 0) / 2);
       
       let finalScore = Math.round(baseScore + viewScore + dlScore);
       finalScore = Math.max(1, Math.min(100, finalScore)); // clamp 1-100
