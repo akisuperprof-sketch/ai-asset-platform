@@ -16,7 +16,9 @@ import {
   Zap,
   Globe,
   Share2,
-  Search
+  Search,
+  Power,
+  PowerOff
 } from "lucide-react";
 
 export default function GrowthEnginePage() {
@@ -41,6 +43,8 @@ export default function GrowthEnginePage() {
   });
   const [aiPlan, setAiPlan] = useState<any>(null);
   const [trends, setTrends] = useState<any[]>([]);
+  const [settings, setSettings] = useState<any>({ is_enabled: true, daily_target: 10 });
+  const [lastRun, setLastRun] = useState<any>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -113,6 +117,14 @@ export default function GrowthEnginePage() {
         
         if (topTrends) setTrends(topTrends);
 
+        // Fetch settings
+        const { data: setts } = await supabase.from('auto_factory_settings').select('*').eq('id', 'default').single();
+        if (setts) setSettings(setts);
+
+        // Fetch last run
+        const { data: run } = await supabase.from('growth_engine_runs').select('*').order('started_at', { ascending: false }).limit(1).single();
+        if (run) setLastRun(run);
+
       } catch (err) {
         console.error('Failed to fetch growth stats', err);
       } finally {
@@ -131,8 +143,16 @@ export default function GrowthEnginePage() {
     alert("V2 Cycle initiated in background.");
   };
 
+  const toggleEmergencyStop = async () => {
+    const newState = !settings.is_enabled;
+    const { error } = await supabase.from('auto_factory_settings').update({ is_enabled: newState }).eq('id', 'default');
+    if (!error) {
+      setSettings({ ...settings, is_enabled: newState });
+    }
+  };
+
   const currentTotal = stats.approvedTotal;
-  const dailyTarget = 30;
+  const dailyTarget = settings.daily_target || 10;
   
   const getProgress = (target: number) => {
     const rem = Math.max(0, target - currentTotal);
@@ -171,12 +191,25 @@ export default function GrowthEnginePage() {
             Self Growing AI Company OS. Autonomous analysis, execution, and strategy.
           </p>
         </div>
-        <button 
-          onClick={triggerEngine}
-          className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 px-6 py-2 rounded-xl text-sm font-bold uppercase hover:bg-emerald-500/30 transition-colors"
-        >
-          Force Manual Cycle
-        </button>
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={toggleEmergencyStop}
+            className={`flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold uppercase transition-colors ${
+              settings.is_enabled 
+                ? 'bg-red-500/20 text-red-400 border border-red-500/50 hover:bg-red-500/30' 
+                : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 hover:bg-emerald-500/30'
+            }`}
+          >
+            {settings.is_enabled ? <PowerOff className="w-4 h-4" /> : <Power className="w-4 h-4" />}
+            {settings.is_enabled ? 'Emergency Stop' : 'Resume Engine'}
+          </button>
+          <button 
+            onClick={triggerEngine}
+            className="bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 px-6 py-2 rounded-xl text-sm font-bold uppercase hover:bg-cyan-500/30 transition-colors"
+          >
+            Force Manual Cycle
+          </button>
+        </div>
       </div>
 
       {/* AI Company Scores */}
@@ -189,6 +222,34 @@ export default function GrowthEnginePage() {
         <ScoreCard title="Pinterest" score={scores.pinterest} icon={Share2} color="bg-pink-500" />
         <ScoreCard title="Trend" score={scores.trend} icon={Activity} color="bg-orange-500" />
         <ScoreCard title="Automation" score={scores.automation} icon={Zap} color="bg-indigo-500" />
+      </div>
+
+      {/* Run Status & Target */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="glass-card border border-white/5 p-4 rounded-xl">
+          <div className="text-[10px] uppercase text-secondary font-bold mb-1">Engine Status</div>
+          <div className={`text-lg font-black flex items-center gap-2 ${settings.is_enabled ? 'text-emerald-400' : 'text-red-400'}`}>
+            {settings.is_enabled ? <CheckCircle2 className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
+            {settings.is_enabled ? 'ACTIVE & AUTONOMOUS' : 'STOPPED (EMERGENCY)'}
+          </div>
+        </div>
+        <div className="glass-card border border-white/5 p-4 rounded-xl">
+          <div className="text-[10px] uppercase text-secondary font-bold mb-1">Daily Target (Assets)</div>
+          <div className="text-lg font-black text-cyan-400">{dailyTarget} / Day</div>
+        </div>
+        <div className="glass-card border border-white/5 p-4 rounded-xl">
+          <div className="text-[10px] uppercase text-secondary font-bold mb-1">Last Run Status</div>
+          <div className="text-lg font-black text-white">
+            {lastRun ? (
+              <span className={lastRun.status === 'success' ? 'text-emerald-400' : lastRun.status === 'running' ? 'text-blue-400' : 'text-red-400'}>
+                {lastRun.status.toUpperCase()} ({lastRun.duration_seconds || 0}s)
+              </span>
+            ) : 'NO RUNS YET'}
+          </div>
+          <div className="text-[10px] text-secondary mt-1">
+            {lastRun ? new Date(lastRun.started_at).toLocaleString() : '-'}
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -206,12 +267,12 @@ export default function GrowthEnginePage() {
               <div className="text-2xl font-black">{currentTotal}</div>
             </div>
             <div>
-              <div className="text-[10px] text-secondary uppercase mb-1">Generated Today</div>
-              <div className="text-2xl font-black text-emerald-400">{stats.generatedToday}</div>
+              <div className="text-[10px] text-secondary uppercase mb-1">Approved Today</div>
+              <div className="text-2xl font-black text-emerald-400">{lastRun?.approved_count || 0}</div>
             </div>
             <div>
-              <div className="text-[10px] text-secondary uppercase mb-1">Generated This Month</div>
-              <div className="text-2xl font-black text-cyan-400">{stats.generatedMonth}</div>
+              <div className="text-[10px] text-secondary uppercase mb-1">QA Failed Today</div>
+              <div className="text-2xl font-black text-red-400">{lastRun?.qa_failed_count || 0}</div>
             </div>
           </div>
 

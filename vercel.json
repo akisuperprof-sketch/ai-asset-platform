@@ -25,6 +25,10 @@
     {
       "path": "/api/cron/auto-demand-generation",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/growth-engine-v2",
+      "schedule": "0 18 * * *"
     }
   ]
 }
