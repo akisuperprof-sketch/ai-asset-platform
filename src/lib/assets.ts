@@ -109,6 +109,12 @@ function mapAsset(dbAsset: any): Asset {
       seoSlug: dbAsset.qa_result.category_domination.seo_slug,
       relatedGroupId: dbAsset.qa_result.category_domination.related_group_id,
     } : undefined,
+    seoTitle: dbAsset.seo_title || quality.pinterestTitle, // fallback
+    seoDescription: dbAsset.seo_description || quality.pinterestDescription, // fallback
+    altText: dbAsset.alt_text,
+    usageExamples: dbAsset.usage_examples,
+    faq: dbAsset.faq,
+    internalLinks: dbAsset.internal_links,
   };
 }
 

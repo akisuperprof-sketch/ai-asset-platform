@@ -7,6 +7,8 @@ import { LoadMoreGrid } from "@/components/assets/LoadMoreGrid";
 import { Metadata } from "next";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 
+import { notFound } from 'next/navigation';
+
 const CATEGORY_MAP = ['ramen', 'sushi', 'tempura', 'gyoza', 'mochi', 'bento', 'torii', 'sakura', 'matcha', 'japanese-pattern', 'onigiri', 'yakitori', 'takoyaki', 'dango'];
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -25,10 +27,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: "website",
     },
     alternates: {
-      canonical: `https://assetninja.jp/${encodeURIComponent(categoryName)}-png`,
+      canonical: `https://assetninja.jp/category/${encodeURIComponent(categoryName)}`,
       languages: {
-        "ja": `https://assetninja.jp/${encodeURIComponent(categoryName)}-png`,
-        "en": `https://assetninja.jp/${encodeURIComponent(categoryName)}-png`,
+        "ja": `https://assetninja.jp/category/${encodeURIComponent(categoryName)}`,
+        "en": `https://assetninja.jp/category/${encodeURIComponent(categoryName)}`,
       }
     },
     // Pinterest specific meta configurations
@@ -46,6 +48,11 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   
   const limit = 24;
   const assets = await searchAssets("", categoryName, limit, 0);
+  
+  if (!assets || assets.length === 0) {
+    notFound();
+  }
+  
   const relatedCategories = CATEGORY_MAP.filter(c => c !== categoryName.toLowerCase()).slice(0, 5);
 
   const collectionJsonLd = {

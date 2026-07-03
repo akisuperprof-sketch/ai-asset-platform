@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     // AI Growth Engine: Identify Trends using Gemini
     // We simulate fetching from Google Trends, X, Reddit by asking Gemini about current/upcoming events and seasonal trends
     const monthName = new Date().toLocaleString('default', { month: 'long' });
-    const prompt = `You are a Trend Hunter AI. 
+    const prompt = `You are a Trend Analysis AI for a free stock asset platform. 
 Current month is ${monthName}. 
 Generate a list of 10 trending search terms or topics for free PNG assets (e.g. seasonal events, upcoming holidays, trending internet culture, popular concepts).
 Output strictly in JSON array format:
@@ -29,7 +29,8 @@ Output strictly in JSON array format:
 ]
 No markdown, just raw JSON array.`;
 
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+    // Using gemini-2.5-flash as the fallback 2.0 version is offline
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

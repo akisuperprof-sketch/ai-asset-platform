@@ -114,6 +114,22 @@ export default function StudioPage() {
   const [stats, setStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [queueJobs, setQueueJobs] = useState<any[]>([]);
+
+  const fetchQueueJobs = async () => {
+    const { data } = await supabase
+      .from('generation_jobs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (data) setQueueJobs(data);
+  };
+
+  useEffect(() => {
+    if (activeTab === 'queue') {
+      fetchQueueJobs();
+    }
+  }, [activeTab]);
 
   // Fetch real assets and stats from API securely
   const fetchRealData = async () => {
@@ -1256,6 +1272,77 @@ export default function StudioPage() {
               </div>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {activeTab === "queue" && (
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4">
+            <h2 className="text-md font-black uppercase tracking-wider flex items-center gap-2">
+              <RefreshCw className="w-4 h-4 text-cyan-400" />
+              Generation Queue & QA Fails
+            </h2>
+            <button onClick={fetchQueueJobs} className="text-xs font-bold text-cyan-400 border border-cyan-500/50 bg-cyan-500/10 px-4 py-2 rounded-xl hover:bg-cyan-500/20">
+              Refresh Queue
+            </button>
+          </div>
+
+          <div className="overflow-x-auto bg-zinc-900/30 border border-white/5 rounded-2xl">
+            <table className="w-full text-left text-sm">
+              <thead className="text-[10px] uppercase tracking-wider text-secondary border-b border-white/5">
+                <tr>
+                  <th className="p-4 font-bold">Theme / Prompt</th>
+                  <th className="p-4 font-bold text-center">Status</th>
+                  <th className="p-4 font-bold text-right">Details</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5 text-white/80">
+                {queueJobs.map(job => (
+                  <tr key={job.id} className="hover:bg-white/[0.02]">
+                    <td className="p-4">
+                      <div className="font-bold text-white text-xs">{job.theme}</div>
+                      <div className="text-[10px] text-secondary truncate max-w-md">{job.prompt_text}</div>
+                      <div className="text-[10px] text-secondary mt-1">{new Date(job.created_at).toLocaleString()}</div>
+                    </td>
+                    <td className="p-4 text-center">
+                      <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${
+                        job.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400' :
+                        job.status === 'qa_failed' ? 'bg-red-500/20 text-red-400' :
+                        job.status === 'processing' ? 'bg-blue-500/20 text-blue-400' :
+                        'bg-zinc-500/20 text-zinc-400'
+                      }`}>
+                        {job.status}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      {job.status === 'qa_failed' && job.metadata?.qa_reasons && (
+                        <div className="text-[10px] text-red-300 bg-red-500/10 p-2 rounded border border-red-500/20">
+                          <strong className="block mb-1 text-red-400">QA Rejection Reasons:</strong>
+                          <ul className="list-disc list-inside space-y-0.5">
+                            {job.metadata.qa_reasons.map((r: string, i: number) => (
+                              <li key={i}>{r}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {job.status === 'failed' && job.error_message && (
+                        <div className="text-[10px] text-red-300 bg-red-500/10 p-2 rounded border border-red-500/20 break-all">
+                          {job.error_message}
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+                {queueJobs.length === 0 && (
+                  <tr>
+                    <td colSpan={3} className="p-8 text-center text-secondary text-xs font-bold">
+                      Queue is currently empty.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       )}

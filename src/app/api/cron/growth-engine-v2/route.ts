@@ -70,22 +70,26 @@ export async function GET(request: Request) {
     await trigger('/api/admin/growth/index-manager/run');
     await trigger('/api/admin/growth/pinterest-engine/run');
 
-    // 5. Revenue & Analytics & Planning
+    // 5. System Analytics (Phase 13 additions)
+    await trigger('/api/admin/growth/search-console/run');
+    await trigger('/api/admin/growth/self-repair/run');
+
+    // 6. Revenue & Analytics & Planning
     await trigger('/api/admin/growth/revenue-ai/run');
     await trigger('/api/admin/growth/planner/run');
 
-    // 6. Final CEO Report
+    // 7. Final CEO Report
     await trigger('/api/admin/growth/ceo-report/run');
 
     const durationSeconds = Math.floor((Date.now() - startTime) / 1000);
 
-    // 3. Finalize Run Log
+    // 8. Finalize Run Log
     if (runId) {
       // Gather quick stats for today
       const today = new Date();
       today.setHours(0,0,0,0);
       const { count: approvedCount } = await adminClient.from('assets').select('*', { count: 'exact', head: true }).gte('published_at', today.toISOString()).eq('is_ai_generated', true);
-      const { count: qaFailedCount } = await adminClient.from('assets').select('*', { count: 'exact', head: true }).gte('created_at', today.toISOString()).eq('status', 'rejected').eq('is_ai_generated', true);
+      const { count: qaFailedCount } = await adminClient.from('assets').select('*', { count: 'exact', head: true }).gte('created_at', today.toISOString()).eq('qa_status', 'rejected').eq('is_ai_generated', true);
       
       await adminClient.from('growth_engine_runs').update({
         status: 'success',

@@ -282,6 +282,12 @@ No markdown formatting, just raw JSON.`;
                   status: 'draft'
                 });
 
+                await adminClient.from('index_queue').insert({
+                  url: `https://assetninja.jp/items/${newAssetId}`,
+                  status: 'pending',
+                  type: 'URL_UPDATED'
+                });
+
                 await adminClient.from('social_posts').insert({
                   asset_id: newAssetId,
                   platform: 'x',

@@ -45,6 +45,7 @@ export default function GrowthEnginePage() {
   const [trends, setTrends] = useState<any[]>([]);
   const [settings, setSettings] = useState<any>({ is_enabled: true, daily_target: 10 });
   const [lastRun, setLastRun] = useState<any>(null);
+  const [recentRuns, setRecentRuns] = useState<any[]>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -122,8 +123,11 @@ export default function GrowthEnginePage() {
         if (setts) setSettings(setts);
 
         // Fetch last run
-        const { data: run } = await supabase.from('growth_engine_runs').select('*').order('started_at', { ascending: false }).limit(1).single();
-        if (run) setLastRun(run);
+        const { data: runs } = await supabase.from('growth_engine_runs').select('*').order('started_at', { ascending: false }).limit(5);
+        if (runs && runs.length > 0) {
+          setLastRun(runs[0]);
+          setRecentRuns(runs);
+        }
 
       } catch (err) {
         console.error('Failed to fetch growth stats', err);
@@ -237,18 +241,75 @@ export default function GrowthEnginePage() {
           <div className="text-[10px] uppercase text-secondary font-bold mb-1">Daily Target (Assets)</div>
           <div className="text-lg font-black text-cyan-400">{dailyTarget} / Day</div>
         </div>
-        <div className="glass-card border border-white/5 p-4 rounded-xl">
-          <div className="text-[10px] uppercase text-secondary font-bold mb-1">Last Run Status</div>
-          <div className="text-lg font-black text-white">
-            {lastRun ? (
-              <span className={lastRun.status === 'success' ? 'text-emerald-400' : lastRun.status === 'running' ? 'text-blue-400' : 'text-red-400'}>
-                {lastRun.status.toUpperCase()} ({lastRun.duration_seconds || 0}s)
-              </span>
-            ) : 'NO RUNS YET'}
+        <div className="glass-card border border-white/5 p-4 rounded-xl flex flex-col justify-between">
+          <div>
+            <div className="text-[10px] uppercase text-secondary font-bold mb-1">Last Run Status</div>
+            <div className="text-lg font-black text-white">
+              {lastRun ? (
+                <span className={lastRun.status === 'success' ? 'text-emerald-400' : lastRun.status === 'running' ? 'text-blue-400' : 'text-red-400'}>
+                  {lastRun.status.toUpperCase()} ({lastRun.duration_seconds || 0}s)
+                </span>
+              ) : 'NO RUNS YET'}
+            </div>
+            <div className="text-[10px] text-secondary mt-1">
+              {lastRun ? new Date(lastRun.started_at).toLocaleString() : '-'}
+            </div>
           </div>
-          <div className="text-[10px] text-secondary mt-1">
-            {lastRun ? new Date(lastRun.started_at).toLocaleString() : '-'}
-          </div>
+          {lastRun?.status === 'failed' && lastRun.errors && (
+            <div className="mt-2 text-xs text-red-400 bg-red-500/10 p-2 rounded border border-red-500/20 break-all">
+              {lastRun.errors.message || JSON.stringify(lastRun.errors)}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Recent Engine Runs Timeline */}
+      <div className="glass-card border border-white/5 p-6 rounded-2xl">
+        <div className="flex items-center gap-3 text-secondary mb-6">
+          <Bot className="w-5 h-5 text-cyan-400" />
+          <span className="text-xs font-bold uppercase tracking-wider">Recent Runs History</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead className="text-[10px] uppercase tracking-wider text-secondary border-b border-white/5">
+              <tr>
+                <th className="pb-3 font-bold">Time</th>
+                <th className="pb-3 font-bold">Status</th>
+                <th className="pb-3 font-bold">Duration</th>
+                <th className="pb-3 font-bold">Approved</th>
+                <th className="pb-3 font-bold text-red-400">QA Failed</th>
+                <th className="pb-3 font-bold">Revenue/CEO</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5 text-white/80">
+              {recentRuns.length > 0 ? recentRuns.map((r) => (
+                <tr key={r.id} className="hover:bg-white/[0.02]">
+                  <td className="py-3 text-xs">{new Date(r.started_at).toLocaleString()}</td>
+                  <td className="py-3">
+                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${
+                      r.status === 'success' ? 'bg-emerald-500/20 text-emerald-400' : 
+                      r.status === 'running' ? 'bg-blue-500/20 text-blue-400' : 'bg-red-500/20 text-red-400'
+                    }`}>
+                      {r.status}
+                    </span>
+                  </td>
+                  <td className="py-3 font-mono text-xs">{r.duration_seconds ? `${r.duration_seconds}s` : '-'}</td>
+                  <td className="py-3 font-bold text-emerald-400">+{r.approved_count || 0}</td>
+                  <td className="py-3 font-bold text-red-400">{r.qa_failed_count || 0}</td>
+                  <td className="py-3">
+                    <div className="flex gap-2">
+                      <span className={`w-2 h-2 rounded-full ${r.revenue_analysis_created ? 'bg-yellow-400' : 'bg-white/20'}`} title="Revenue Analysis"></span>
+                      <span className={`w-2 h-2 rounded-full ${r.ceo_report_created ? 'bg-indigo-400' : 'bg-white/20'}`} title="CEO Report"></span>
+                    </div>
+                  </td>
+                </tr>
+              )) : (
+                <tr>
+                  <td colSpan={6} className="py-4 text-center text-secondary text-xs">No runs recorded</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 

@@ -24,22 +24,31 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: true, message: 'Auto Factory is disabled.' });
     }
 
-    const dailyTarget = settings.daily_target || 30;
-
-    // 2. Fetch today's approved assets to calculate remaining target
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const todayISO = today.toISOString();
+    const todayDateStr = todayISO.split('T')[0];
+
+    // 2. Auto Scaling (Phase 13-C) - Fetch Target from AI Plan
+    let dailyTarget = settings.daily_target || 30;
+    const { data: aiPlan } = await adminClient.from('daily_ai_plans').select('target_generation_count').eq('date', todayDateStr).single();
+    if (aiPlan && aiPlan.target_generation_count) {
+       dailyTarget = aiPlan.target_generation_count;
+       console.log(`Auto Scaling Active: Target overridden by AI Plan to ${dailyTarget}`);
+    }
+
+    // 3. Fetch today's approved assets to calculate remaining target
     const { count: approvedCount } = await adminClient
       .from('assets')
       .select('*', { count: 'exact', head: true })
-      .gte('published_at', today.toISOString())
+      .gte('published_at', todayISO)
       .eq('is_ai_generated', true);
 
     const currentApproved = approvedCount || 0;
     const remainingToTarget = Math.max(0, dailyTarget - currentApproved);
 
     if (remainingToTarget === 0) {
-      return NextResponse.json({ success: true, message: 'Daily target reached.', approvedCount: currentApproved });
+      return NextResponse.json({ success: true, message: 'Daily target reached.', approvedCount: currentApproved, dailyTarget });
     }
 
     // 3. Ensure we have enough generation_jobs queued
@@ -100,4 +109,9 @@ export async function GET(request: Request) {
     });
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
+}
+
+// Allow POST for orchestrator compatibility
+export async function POST(request: Request) {
+  return GET(request);
 }

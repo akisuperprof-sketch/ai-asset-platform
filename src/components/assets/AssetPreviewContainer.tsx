@@ -88,6 +88,7 @@ export function AssetPreviewContainer({ imageUrl, title }: AssetPreviewContainer
           src={imageUrl} 
           alt={`${title}の透過PNG画像素材 (背景透過クリッピング済み) - Free Transparent PNG ${title} Illustration for Commercial Use`} 
           className="relative z-20 max-w-[85%] max-h-[85%] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.65)]"
+          fetchPriority="high"
         />
 
         {/* Integrated Control Panel (Bottom Center) - Full Responsive and Dynamic Contrast Panel */}

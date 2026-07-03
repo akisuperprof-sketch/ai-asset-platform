@@ -73,10 +73,10 @@ function getJapaneseTag(slug: string): string {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const jpTag = getJapaneseTag(slug);
+  const decodedTag = getJapaneseTag(slug);
 
-  const title = `Free Japanese ${jpTag} PNG Assets (Transparent) | ${jpTag}の透過PNG素材 | Commercial Use | AssetNinja`;
-  const description = `Download high-quality transparent Japanese ${jpTag} PNG assets. 商用利用可能な${jpTag}の透過PNG素材。Commercial-use ready AI-generated illustrations for web design, video creation, and marketing.`;
+  const title = `${decodedTag}に関連する背景透過PNG素材一覧｜商用利用OK | AssetNinja`;
+  const description = `${decodedTag}の商用利用可能な高品質・背景透過PNG画像素材です。ダウンロードしてすぐに利用可能。クレジット表記不要。`;
 
   return {
     title,
@@ -91,7 +91,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
           url: "https://assetninja.jp/brand/ninja-concept.png",
           width: 800,
           height: 1200, // Vertical OGP for Pinterest SEO optimization
-          alt: `Free Japanese ${jpTag} PNG Assets | ${jpTag}の透過PNG素材`,
+          alt: `Free Japanese ${decodedTag} PNG Assets | ${decodedTag}の透過PNG素材`,
         }
       ]
     },
@@ -111,6 +111,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
+import { notFound } from 'next/navigation';
+
 export default async function TagPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const jpTag = getJapaneseTag(slug);
@@ -118,6 +120,10 @@ export default async function TagPage({ params }: { params: Promise<{ slug: stri
   // Filter assets dynamically by tag
   const limit = 24;
   const assets = await searchAssets(jpTag, "すべて", limit, 0);
+
+  if (!assets || assets.length === 0) {
+    notFound();
+  }
 
   // JSON-LD Structured data for advanced Google search inclusion (SYS-005, CollectionPage schema)
   const collectionJsonLd = {
@@ -258,25 +264,13 @@ export default async function TagPage({ params }: { params: Promise<{ slug: stri
         </div>
 
         {/* Assets Grid */}
-        {assets.length > 0 ? (
-          <>
-            <div className="grid grid-cols-12 gap-6">
-              {assets.map((asset) => (
-                <AssetCard key={asset.id} asset={asset} />
-              ))}
-            </div>
-            {assets.length === limit && (
-              <LoadMoreGrid initialOffset={limit} tag={jpTag} />
-            )}
-          </>
-        ) : (
-          <div className="w-full py-24 flex flex-col items-center justify-center gap-4 glass-card border-white/5 rounded-3xl">
-            <img src="/brand/icon-shuriken.svg" alt="Loading" className="w-12 h-12 opacity-20 animate-spin" style={{ animationDuration: '4s' }} />
-            <div className="text-center">
-              <h3 className="text-md font-black">素材探索中...</h3>
-              <p className="text-[11px] text-secondary mt-1">「{jpTag}」に関連する新着アセットをシステムがインデックスしています。</p>
-            </div>
-          </div>
+        <div className="grid grid-cols-12 gap-6">
+          {assets.map((asset) => (
+            <AssetCard key={asset.id} asset={asset} />
+          ))}
+        </div>
+        {assets.length === limit && (
+          <LoadMoreGrid initialOffset={limit} tag={jpTag} />
         )}
 
         {/* Detailed SEO Information Block at Bottom */}

@@ -73,6 +73,14 @@ export interface Asset {
     seoSlug?: string;
     relatedGroupId?: string;
   };
+
+  // SEO & Extended Metadata
+  seoTitle?: string;
+  seoDescription?: string;
+  altText?: string;
+  usageExamples?: any;
+  faq?: any;
+  internalLinks?: any;
 }
 
 export interface Category {

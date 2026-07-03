@@ -136,8 +136,9 @@ export function HeroSection({
         >
           <Image
             src="/brand/ninja-char-1.png"
-            alt="Stealth Ninja Background"
+            alt="Stealth Ninja Background Effect - Transparent AI Asset"
             fill
+            loading="lazy"
             className="object-contain"
             style={{
               filter: "brightness(0.7) drop-shadow(0 0 15px rgba(0,200,255,0.1))",
@@ -193,7 +194,7 @@ export function HeroSection({
                   <div className="absolute inset-0 gold-shimmer pointer-events-none" />
                   <div className="text-[9px] font-black text-amber-500/80 uppercase tracking-widest flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 fill-amber-500/10 text-amber-400" />
-                    +{realtimeTodayAdded} ADDED TODAY • QUALITY VERIFIED
+                    {formatCountBadge(realtimeCount)} ASSETS • +{realtimeTodayAdded} ADDED TODAY
                   </div>
                 </div>
               </div>
@@ -212,8 +213,9 @@ export function HeroSection({
               <div className="absolute w-[280px] h-[280px] lg:w-[350px] lg:h-[350px] opacity-[0.035] blur-[1px] pointer-events-none z-0 transform translate-x-[-12%] translate-y-[-6%] select-none">
                 <Image 
                   src="/brand/ninja-char-1.png"
-                  alt="Ninja Ghost Silhouette"
+                  alt="Ninja Ghost Silhouette Effect"
                   fill
+                  loading="lazy"
                   className="object-contain filter grayscale scale-125 animate-pulse"
                 />
               </div>

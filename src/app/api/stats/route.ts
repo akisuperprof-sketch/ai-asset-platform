@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { adminClient as supabase } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +10,8 @@ export async function GET() {
       { status: 500 }
     );
   }
+
+  const client = supabase; // Capture non-null reference for closures
 
   try {
     const now = new Date();
@@ -27,23 +29,23 @@ export async function GET() {
       { count: weeklyAdded },
       { count: downloadCount }
     ] = await Promise.all([
-      supabase.from("assets").select("id", { count: "exact", head: true }),
-      supabase.from("assets").select("id", { count: "exact", head: true })
+      client.from("assets").select("id", { count: "exact", head: true }),
+      client.from("assets").select("id", { count: "exact", head: true })
         .eq("review_status", "approved")
         .eq("legal_status", "clean")
         .not("published_at", "is", null)
         .not("image_url", "is", null),
-      supabase.from("assets").select("id", { count: "exact", head: true })
+      client.from("assets").select("id", { count: "exact", head: true })
         .eq("review_status", "pending"),
-      supabase.from("assets").select("id", { count: "exact", head: true })
+      client.from("assets").select("id", { count: "exact", head: true })
         .eq("review_status", "rejected"),
-      supabase.from("assets").select("id", { count: "exact", head: true })
+      client.from("assets").select("id", { count: "exact", head: true })
         .in("review_status", ["draft", null]),
-      supabase.from("assets").select("id", { count: "exact", head: true })
+      client.from("assets").select("id", { count: "exact", head: true })
         .gte("created_at", startOfToday),
-      supabase.from("assets").select("id", { count: "exact", head: true })
+      client.from("assets").select("id", { count: "exact", head: true })
         .gte("created_at", startOfWeek),
-      supabase.from("download_logs").select("id", { count: "exact", head: true })
+      client.from("download_logs").select("id", { count: "exact", head: true })
     ]);
 
     // 2. Category specific exact counts (using DB keys)
@@ -61,7 +63,7 @@ export async function GET() {
     };
 
     const categoryPromises = categoryKeys.map(key => 
-      supabase.from("assets").select("id", { count: "exact", head: true }).eq("category", key)
+      client.from("assets").select("id", { count: "exact", head: true }).eq("category", key)
     );
     const categoryResults = await Promise.all(categoryPromises);
     
@@ -81,7 +83,7 @@ export async function GET() {
     // For storage, we can only list per folder up to limits, so we'll do a simple check
     try {
       const storagePromises = categoryKeys.map(folder => 
-        supabase.storage.from(bucketName).list(folder, { limit: 100 })
+        client.storage.from(bucketName).list(folder, { limit: 100 })
       );
       const storageResults = await Promise.all(storagePromises);
       storageResults.forEach(res => {

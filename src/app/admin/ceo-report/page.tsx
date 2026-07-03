@@ -16,6 +16,8 @@ import {
 export default function CeoReportPage() {
   const [loading, setLoading] = useState(true);
   const [report, setReport] = useState<any>(null);
+  const [todayAssets, setTodayAssets] = useState<any[]>([]);
+  const [todayTrends, setTodayTrends] = useState<any[]>([]);
 
   useEffect(() => {
     async function fetchReport() {
@@ -31,6 +33,20 @@ export default function CeoReportPage() {
         if (data) {
           setReport(data);
         }
+
+        const { data: assets } = await supabase
+          .from('assets')
+          .select('slug, title')
+          .gte('published_at', `${todayStr}T00:00:00Z`)
+          .limit(10);
+        if (assets) setTodayAssets(assets);
+
+        const { data: trends } = await supabase
+          .from('trend_hunts')
+          .select('keyword, demand_score')
+          .order('demand_score', { ascending: false })
+          .limit(10);
+        if (trends) setTodayTrends(trends);
       } catch (err) {
         console.error('Failed to fetch CEO report', err);
       } finally {
@@ -88,14 +104,60 @@ export default function CeoReportPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
         {/* Proposals */}
-        <div className="glass-card border border-blue-500/20 p-6 rounded-2xl bg-blue-500/5">
+        <div className="glass-card border border-blue-500/20 p-6 rounded-2xl bg-blue-500/5 lg:col-span-2">
           <div className="flex items-center gap-3 text-blue-300 mb-6">
             <Lightbulb className="w-5 h-5" />
             <span className="text-xs font-bold uppercase tracking-wider">AI Proposals</span>
           </div>
-          <p className="text-sm leading-relaxed text-blue-50 whitespace-pre-wrap">
-            {report.proposals}
-          </p>
+          <div className="text-sm leading-relaxed text-blue-50/90 whitespace-pre-wrap font-sans space-y-4 prose prose-invert max-w-none">
+            {report.proposals?.split('\n\n').map((paragraph: string, idx: number) => {
+              if (paragraph.startsWith('##')) {
+                return <h3 key={idx} className="text-lg font-bold text-white mt-6 mb-2">{paragraph.replace('##', '').trim()}</h3>;
+              } else if (paragraph.startsWith('#')) {
+                return <h2 key={idx} className="text-xl font-black text-blue-300 mt-8 mb-4">{paragraph.replace('#', '').trim()}</h2>;
+              } else if (paragraph.startsWith('- ')) {
+                return (
+                  <ul key={idx} className="list-disc list-inside space-y-1 ml-2">
+                    {paragraph.split('\n').map((item, i) => <li key={i}>{item.replace('- ', '')}</li>)}
+                  </ul>
+                );
+              }
+              return <p key={idx}>{paragraph}</p>;
+            })}
+          </div>
+        </div>
+
+        {/* Quick Links */}
+        <div className="glass-card border border-white/5 p-6 rounded-2xl lg:col-span-2">
+          <div className="flex items-center gap-3 text-secondary mb-6">
+            <Search className="w-5 h-5 text-indigo-400" />
+            <span className="text-xs font-bold uppercase tracking-wider">Today's Highlights</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-xs font-bold text-white mb-3">Generated Assets ({todayAssets.length})</h3>
+              <ul className="space-y-2">
+                {todayAssets.map(a => (
+                  <li key={a.slug}>
+                    <a href={`/items/${a.slug}`} target="_blank" rel="noreferrer" className="text-sm text-indigo-400 hover:text-indigo-300 hover:underline">
+                      {a.title}
+                    </a>
+                  </li>
+                ))}
+                {todayAssets.length === 0 && <li className="text-sm text-secondary">No assets generated today.</li>}
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-white mb-3">Top Demand Trends ({todayTrends.length})</h3>
+              <div className="flex flex-wrap gap-2">
+                {todayTrends.map(t => (
+                  <span key={t.keyword} className="px-2 py-1 bg-white/5 border border-white/10 rounded-md text-xs text-white/80">
+                    {t.keyword} <span className="text-orange-400 font-bold ml-1">{t.demand_score}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* TODOs */}

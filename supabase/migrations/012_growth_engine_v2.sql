@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS ceo_reports (
 
 -- 2. Create index_queue table
 CREATE TABLE IF NOT EXISTS index_queue (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   url text not null,
   type text not null default 'URL_UPDATED',
   status text not null default 'pending', -- pending, success, failed
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS index_queue (
 
 -- 3. Create revenue_analysis table
 CREATE TABLE IF NOT EXISTS revenue_analysis (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   date date not null,
   ad_metrics jsonb default '{}'::jsonb,
   ai_proposals jsonb default '[]'::jsonb,

@@ -55,6 +55,43 @@ export default function RootLayout({
   return (
     <html lang="ja" className={`${notoEmoji.variable}`}>
       <body className={`${DESIGN_TOKENS.colors.background} ${DESIGN_TOKENS.colors.textPrimary} ${DESIGN_TOKENS.typography.body} antialiased selection:bg-white/10`}>
+        {/* Global JSON-LD Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  "@id": "https://assetninja.jp/#organization",
+                  "name": "AssetNinja",
+                  "url": "https://assetninja.jp",
+                  "logo": "https://assetninja.jp/brand/ninja-char-7.png",
+                  "sameAs": [
+                    "https://twitter.com/assetninja",
+                    "https://www.pinterest.jp/assetninja/"
+                  ]
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": "https://assetninja.jp/#website",
+                  "url": "https://assetninja.jp",
+                  "name": "AssetNinja",
+                  "description": "商用利用可能な日本発のプレミアム背景透過PNG素材サイト",
+                  "publisher": {
+                    "@id": "https://assetninja.jp/#organization"
+                  },
+                  "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": "https://assetninja.jp/searches?q={search_term_string}",
+                    "query-input": "required name=search_term_string"
+                  }
+                }
+              ]
+            })
+          }}
+        />
         <LivingBackground />
         <main className="relative min-height-screen">
           {children}

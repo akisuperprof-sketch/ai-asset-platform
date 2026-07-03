@@ -26,8 +26,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   
   if (!asset) return { title: "Asset Not Found" };
 
-  const title = `${asset.title} | Transparent PNG Asset | 背景透過PNG素材｜商用利用OK (Commercial Use) | AssetNinja`;
-  const description = asset.description || `Download ${asset.title} high-quality transparent PNG asset. 商用利用可能な日本発のプレミアム素材。背景切り抜き済みでWebデザインや資料作成にすぐ使えます。Commercial use ready, AI-generated illustration.`;
+  const title = asset.seoTitle || `${asset.title} | Transparent PNG Asset | 背景透過PNG素材｜商用利用OK (Commercial Use) | AssetNinja`;
+  const description = asset.seoDescription || asset.description || `Download ${asset.title} high-quality transparent PNG asset. 商用利用可能な日本発のプレミアム素材。背景切り抜き済みでWebデザインや資料作成にすぐ使えます。Commercial use ready, AI-generated illustration.`;
 
   return {
     title,
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
           url: asset.imageUrl,
           width: 1000,
           height: 1500, // Pinterest 2:3 aspect ratio recommendation
-          alt: title,
+          alt: asset.altText || title,
         }
       ],
       type: "article", // Pinterest Rich Pin requires article/product
@@ -130,22 +130,15 @@ function slugifyTag(tag: string): string {
   return encodeURIComponent(tag);
 }
 
+import { notFound } from 'next/navigation';
+
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const asset = await getAssetById(id);
   const allAssets = await getAssets();
 
   if (!asset) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-4xl font-black mb-4">Asset Not Found</h1>
-          <Link href="/" className="text-ai-cyan hover:underline font-bold uppercase tracking-widest text-xs">
-            ホームへ戻る
-          </Link>
-        </div>
-      </div>
-    );
+    notFound();
   }
 
   return (
@@ -168,7 +161,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           
           {/* Left Side: Previews (Main content) */}
           <div className="w-full lg:w-2/3 space-y-8">
-            <AssetPreviewContainer imageUrl={asset.imageUrl} title={asset.title} />
+            <AssetPreviewContainer imageUrl={asset.imageUrl} title={asset.altText || asset.title} />
 
             <AICitationBlock assetId={asset.id} assetTitle={asset.title} category={asset.category} />
 
@@ -347,8 +340,10 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               "@type": "Organization",
               "name": "AssetNinja"
             },
-            "description": asset.description || `${asset.title}の高品質な背景透過PNG素材です。商用利用可能な日本発のプレミアム素材。 (High-quality transparent PNG of ${asset.title}. Commercial-use ready premium asset from Japan.)`,
-            "name": `${asset.title}の透過PNG素材 | Transparent PNG Asset`,
+            "description": asset.seoDescription || asset.description || `${asset.title}の高品質な背景透過PNG素材です。商用利用可能な日本発のプレミアム素材。 (High-quality transparent PNG of ${asset.title}. Commercial-use ready premium asset from Japan.)`,
+            "name": asset.seoTitle || `${asset.title}の透過PNG素材 | Transparent PNG Asset`,
+            "caption": asset.altText || asset.title,
+            "thumbnailUrl": asset.imageUrl,
             "width": asset.width || 1024,
             "height": asset.height || 1024,
             "encodingFormat": "image/png"
@@ -415,7 +410,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: JSON.stringify(asset.faq || {
             "@context": "https://schema.org",
             "@type": "FAQPage",
             "mainEntity": [
@@ -444,6 +439,32 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 }
               }
             ]
+          })
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": asset.seoTitle || `${asset.title}の透過PNG素材 | AssetNinja`,
+            "description": asset.seoDescription || asset.description || `${asset.title}の高品質な背景透過PNG素材です。`,
+            "image": asset.imageUrl,
+            "author": {
+              "@type": "Organization",
+              "name": "AssetNinja"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "AssetNinja",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://assetninja.jp/brand/ninja-char-7.png"
+              }
+            },
+            "datePublished": asset.publishedAt || new Date().toISOString(),
+            "dateModified": asset.publishedAt || new Date().toISOString()
           })
         }}
       />

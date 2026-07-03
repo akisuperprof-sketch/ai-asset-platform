@@ -39,20 +39,34 @@ export async function POST(request: Request) {
       .eq('is_processed', false)
       .limit(5);
 
-    // 3. Tomorrow's Plan (AI)
-    const prompt = `You are the Factory AI Planner.
+    // 3. System Context for Auto Scaling (Phase 13-C)
+    const { count: qaFailCount } = await adminClient.from('generation_jobs').select('*', { count: 'exact', head: true }).eq('status', 'qa_failed');
+    const { count: queueCount } = await adminClient.from('generation_jobs').select('*', { count: 'exact', head: true }).eq('status', 'queued');
+    
+    // 4. Tomorrow's Plan (AI)
+    const prompt = `You are the Factory AI Planner / CEO Execution Engine (Phase 13-C).
 Today's Date: ${todayDateStr}.
-Based on recent trends: ${JSON.stringify(trends)}
-Plan the categories and generation strategy for tomorrow.
+System Context:
+- Current Queue: ${queueCount || 0} jobs pending
+- QA Failures: ${qaFailCount || 0} recent failures
+- Recent Trends: ${JSON.stringify(trends)}
+
+TASK: Plan categories and generation strategy for tomorrow.
+Determine Auto Scaling \`target_generation_count\`.
+Scaling rules: Select from [3, 5, 10, 20, 30, 50, 100, 300, 1000].
+If QA failures are high (>20) or Queue is high (>100), scale down to 5 or 10.
+If system is healthy, scale up cautiously.
+
 Output strictly in JSON format:
 {
   "planned_categories": ["seasonal", "business", "food"],
-  "target_generation_count": 50,
-  "ai_reasoning": "We observed a spike in seasonal trends..."
+  "target_generation_count": 30,
+  "ai_reasoning": "System is healthy. Scaling up to 30 based on..."
 }
 No markdown, just raw JSON object.`;
 
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+    // Using gemini-2.5-flash as the fallback 2.0 version is offline
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

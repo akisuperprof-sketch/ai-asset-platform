@@ -11,7 +11,9 @@ const supabase = supabaseUrl && supabaseAnonKey
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
-// Fallback tag slugs in case DB query fails or has no tags yet
+const ITEMS_PER_SITEMAP = 5000;
+
+// Fallback tag slugs
 const FALLBACK_TAG_SLUGS = [
   "sushi", "ramen", "takoyaki", "tempura", "wagashi", "matcha", "bento", "gyoza", "misoshiru", "yakitori",
   "udon", "soba", "karaage", "curry", "sashimi", "taiyaki", "dango", "yakiniku", "sake", "fujisan",
@@ -21,138 +23,118 @@ const FALLBACK_TAG_SLUGS = [
   "karte", "medicine", "dentist", "mri", "ecg", "ambulance", "medical-icon", "japanese-pattern"
 ];
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://assetninja.jp';
+export async function generateSitemaps() {
+  if (!supabase) return [{ id: 0 }];
   
-  console.log("🗺️ [sitemap.ts] Generating single sitemap.xml");
+  const { count } = await supabase
+    .from('assets')
+    .select('*', { count: 'exact', head: true })
+    .eq('review_status', 'approved')
+    .eq('legal_status', 'clean')
+    .not('published_at', 'is', null);
 
-  let assets: any[] = [];
-  let dynamicTags: string[] = [];
+  const totalAssets = count || 0;
+  const numPages = Math.ceil(totalAssets / ITEMS_PER_SITEMAP);
+  
+  // id: 0 is for static routes, id: 1, 2, ... for assets
+  const sitemaps = [{ id: 0 }];
+  for (let i = 0; i < numPages; i++) {
+    sitemaps.push({ id: i + 1 });
+  }
+  return sitemaps;
+}
 
+export default async function sitemap({ id }: { id: number }): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = 'https://assetninja.jp';
+  const bucketName = process.env.SUPABASE_STORAGE_BUCKET || 'sukashi-assets';
+  
+  console.log(`🗺️ [sitemap.ts] Generating sitemap chunk: ${id}`);
+
+  // Static routes chunk
+  if (id === 0) {
+    const categories = ['日本の食', '和の伝統素材', '年中行事・祭り', 'ビジネス', '医療・ヘルスケア', '事務用品・文具', 'ramen', 'sushi', 'tempura', 'gyoza', 'mochi', 'bento', 'torii', 'sakura', 'matcha', 'japanese-pattern', 'onigiri', 'yakitori', 'takoyaki', 'dango'];
+    const categoryUrls = categories.map((cat) => ({
+      url: `${baseUrl}/category/${encodeURIComponent(cat)}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    }));
+
+    const tagUrls = FALLBACK_TAG_SLUGS.map((tag) => ({
+      url: `${baseUrl}/tag/${encodeURIComponent(tag)}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.85,
+    }));
+
+    const guideSlugs = ['ramen-png', 'sushi-png', 'tempura-png', 'gyoza-png', 'mochi-png', 'bento-png', 'torii-png', 'sakura-png', 'matcha-png', 'japanese-pattern-png', 'onigiri-png', 'yakitori-png', 'takoyaki-png', 'dango-png'];
+    const guideUrls = guideSlugs.map(slug => ({
+      url: `${baseUrl}/guide/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
+
+    const eventSlugs = ['spring', 'summer', 'autumn', 'halloween', 'christmas', 'new-year', 'valentine'];
+    const eventUrls = eventSlugs.map(slug => ({
+      url: `${baseUrl}/events/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
+
+    return [
+      { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1.0 },
+      { url: `${baseUrl}/trending`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
+      { url: `${baseUrl}/new`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
+      { url: `${baseUrl}/popular`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
+      { url: `${baseUrl}/events`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+      { url: `${baseUrl}/searches`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
+      { url: `${baseUrl}/coming-soon`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
+      ...categoryUrls,
+      ...tagUrls,
+      ...guideUrls,
+      ...eventUrls,
+    ];
+  }
+
+  // Assets chunks
   if (supabase) {
-    console.log("🗺️ [sitemap.ts] Supabase client is initialized. Fetching data...");
+    const pageIndex = id - 1;
+    const from = pageIndex * ITEMS_PER_SITEMAP;
+    const to = from + ITEMS_PER_SITEMAP - 1;
+    
     try {
-      const { data, error } = await supabase
+      const { data: assets, error } = await supabase
         .from('assets')
         .select('id, image_url, storage_key, published_at')
         .eq('review_status', 'approved')
         .eq('legal_status', 'clean')
         .not('published_at', 'is', null)
         .order('created_at', { ascending: false })
-        .limit(50000);
+        .range(from, to);
 
       if (error) throw error;
-      assets = data || [];
-      console.log(`🗺️ [sitemap.ts] Successfully fetched ${assets.length} assets.`);
 
-      dynamicTags = FALLBACK_TAG_SLUGS;
-
+      return (assets || []).map((asset) => {
+        let imageUrl = asset.image_url;
+        if (!imageUrl && asset.storage_key && supabaseUrl) {
+          imageUrl = `${supabaseUrl}/storage/v1/object/public/${bucketName}/${asset.storage_key}`;
+        }
+        return {
+          url: `${baseUrl}/items/${asset.id}`,
+          lastModified: new Date(asset.published_at || new Date()),
+          changeFrequency: 'weekly' as const,
+          priority: 0.8,
+          images: imageUrl ? [imageUrl] : undefined,
+        };
+      });
     } catch (err) {
-      console.error("🗺️ [sitemap.ts] Error fetching sitemap data from Supabase:", err);
+      console.error("🗺️ [sitemap.ts] Error fetching paginated assets:", err);
+      return [];
     }
-  } else {
-    console.log("🗺️ [sitemap.ts] Supabase client is NOT initialized!");
   }
 
-  const tagsToUse = dynamicTags.length > 0 ? dynamicTags : FALLBACK_TAG_SLUGS;
-  const bucketName = process.env.SUPABASE_STORAGE_BUCKET || 'sukashi-assets';
-  
-  const assetUrls = assets.map((asset) => {
-    let imageUrl = asset.image_url;
-    if (!imageUrl && asset.storage_key && supabaseUrl) {
-      imageUrl = `${supabaseUrl}/storage/v1/object/public/${bucketName}/${asset.storage_key}`;
-    }
-    return {
-      url: `${baseUrl}/items/${asset.id}`,
-      lastModified: new Date(asset.published_at || new Date()),
-      changeFrequency: 'weekly' as const,
-      priority: 0.8,
-      images: imageUrl ? [imageUrl] : undefined,
-    };
-  });
-
-  const categories = ['日本の食', '和の伝統素材', '年中行事・祭り', 'ビジネス', '医療・ヘルスケア', '事務用品・文具', 'ramen', 'sushi', 'tempura', 'gyoza', 'mochi', 'bento', 'torii', 'sakura', 'matcha', 'japanese-pattern', 'onigiri', 'yakitori', 'takoyaki', 'dango'];
-  const categoryUrls = categories.map((cat) => ({
-    url: `${baseUrl}/category/${encodeURIComponent(cat)}`,
-    lastModified: new Date(),
-    changeFrequency: 'daily' as const,
-    priority: 0.9,
-  }));
-
-  const tagUrls = tagsToUse.map((tag) => ({
-    url: `${baseUrl}/tag/${encodeURIComponent(tag)}`,
-    lastModified: new Date(),
-    changeFrequency: 'daily' as const,
-    priority: 0.85,
-  }));
-
-  const guideSlugs = ['ramen-png', 'sushi-png', 'tempura-png', 'gyoza-png', 'mochi-png', 'bento-png', 'torii-png', 'sakura-png', 'matcha-png', 'japanese-pattern-png', 'onigiri-png', 'yakitori-png', 'takoyaki-png', 'dango-png'];
-  const guideUrls = guideSlugs.map(slug => ({
-    url: `${baseUrl}/guide/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }));
-
-  const eventSlugs = ['spring', 'summer', 'autumn', 'halloween', 'christmas', 'new-year', 'valentine'];
-  const eventUrls = eventSlugs.map(slug => ({
-    url: `${baseUrl}/events/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }));
-
-  const finalSitemap: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/trending`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/new`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/popular`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/events`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/searches`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    ...categoryUrls,
-    ...tagUrls,
-    ...guideUrls,
-    ...eventUrls,
-    {
-      url: `${baseUrl}/coming-soon`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.3,
-    },
-    ...assetUrls,
-  ];
-  
-  console.log(`🗺️ [sitemap.ts] Returning ${finalSitemap.length} sitemap entries`);
-  return finalSitemap;
+  return [];
 }
 
