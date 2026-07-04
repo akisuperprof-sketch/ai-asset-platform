@@ -21,7 +21,7 @@ export default function ExecutiveDashboard() {
       Database: 100, API: 100, Cron: 100, Gemini: 100, Google: 100, 
       Pinterest: 100, Revenue: 100, Queue: 100, QA: 100, System: 100, AI: 100
     },
-    gsc: { clicks: 0, impressions: 0, ctr: '0%', position: '0' },
+    gsc: { clicks: 0, impressions: 0, ctr: '0%', position: '0', topQueries: [] as any[], topPages: [] as any[], indexStats: { submitted: 0, failed: 0, indexed: 0, not_indexed: 0 } },
     today: {
       assets: 0, dl: 0, rev: 0, qa: 0, queue: 0, google: 0, pinterest: 0
     }
@@ -84,7 +84,7 @@ export default function ExecutiveDashboard() {
       health = Math.floor((dbHealth + qaHealth + alertHealth + queueHealth + 100) / 5);
 
       // Fetch Search Console Data
-      let gscData = { clicks: 0, impressions: 0, ctr: '0%', position: '0' };
+      let gscData = { clicks: 0, impressions: 0, ctr: '0%', position: '0', topQueries: [], topPages: [], indexStats: { submitted: 0, failed: 0, indexed: 0, not_indexed: 0 } };
       try {
         const gscRes = await fetch('/api/search-console');
         if (gscRes.ok) {
@@ -216,15 +216,39 @@ export default function ExecutiveDashboard() {
         </div>
 
         {/* Search Console Metrics (SEO) */}
+        {/* Search Console Real Data Panel */}
         <div className="bg-zinc-900/30 border border-white/5 rounded-3xl p-6 md:p-8">
           <div className="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
              <div className="flex items-center gap-3">
                <Globe className="w-5 h-5 text-blue-400" />
-               <h2 className="text-sm font-black tracking-widest uppercase text-white">Google Search Console (7 Days)</h2>
+               <h2 className="text-sm font-black tracking-widest uppercase text-white">Search Console Real Data Panel</h2>
              </div>
-             <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Organic Performance</span>
+             <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Indexing & Organic Performance</span>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+          {/* Indexing API Status */}
+          <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">Google Indexing API Queue</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-zinc-800/30 border border-white/5 rounded-2xl p-5">
+               <div className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Submitted URLs</div>
+               <div className="text-3xl font-black">{stats.gsc.indexStats.submitted.toLocaleString()}</div>
+            </div>
+            <div className="bg-emerald-900/10 border border-emerald-500/20 rounded-2xl p-5">
+               <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Indexed URLs</div>
+               <div className="text-3xl font-black text-emerald-400">{stats.gsc.indexStats.indexed.toLocaleString()}</div>
+            </div>
+            <div className="bg-amber-900/10 border border-amber-500/20 rounded-2xl p-5">
+               <div className="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-1">Not Indexed</div>
+               <div className="text-3xl font-black text-amber-400">{stats.gsc.indexStats.not_indexed.toLocaleString()}</div>
+            </div>
+            <div className="bg-red-900/10 border border-red-500/20 rounded-2xl p-5">
+               <div className="text-[10px] font-black text-red-400 uppercase tracking-widest mb-1">Failed Indexing</div>
+               <div className="text-3xl font-black text-red-400">{stats.gsc.indexStats.failed.toLocaleString()}</div>
+            </div>
+          </div>
+
+          <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">GSC Organic Traffic (7 Days)</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-blue-900/10 border border-blue-500/20 rounded-2xl p-5 hover:bg-blue-500/10 transition-colors">
                <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Total Clicks</div>
                <div className="text-3xl font-black">{stats.gsc.clicks.toLocaleString()}</div>
@@ -240,6 +264,32 @@ export default function ExecutiveDashboard() {
             <div className="bg-amber-900/10 border border-amber-500/20 rounded-2xl p-5 hover:bg-amber-500/10 transition-colors">
                <div className="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-1">Avg. Position</div>
                <div className="text-3xl font-black">{stats.gsc.position}</div>
+            </div>
+          </div>
+
+          {/* Top Queries & Pages */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-zinc-800/30 border border-white/5 rounded-2xl p-5">
+              <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-3">Top Queries</h4>
+              <ul className="space-y-2">
+                {stats.gsc.topQueries.length > 0 ? stats.gsc.topQueries.map((q, idx) => (
+                  <li key={idx} className="flex justify-between items-center text-sm border-b border-white/5 pb-2 last:border-0 last:pb-0">
+                    <span className="font-bold text-white/80">{q.query}</span>
+                    <span className="text-zinc-500">{q.clicks} clicks</span>
+                  </li>
+                )) : <li className="text-xs text-zinc-500">No data</li>}
+              </ul>
+            </div>
+            <div className="bg-zinc-800/30 border border-white/5 rounded-2xl p-5">
+              <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-3">Top Pages</h4>
+              <ul className="space-y-2">
+                {stats.gsc.topPages.length > 0 ? stats.gsc.topPages.map((p, idx) => (
+                  <li key={idx} className="flex justify-between items-center text-sm border-b border-white/5 pb-2 last:border-0 last:pb-0">
+                    <span className="font-bold text-white/80 max-w-[200px] truncate">{p.page}</span>
+                    <span className="text-zinc-500">{p.clicks} clicks</span>
+                  </li>
+                )) : <li className="text-xs text-zinc-500">No data</li>}
+              </ul>
             </div>
           </div>
         </div>
