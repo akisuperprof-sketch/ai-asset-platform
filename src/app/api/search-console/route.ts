@@ -4,9 +4,17 @@ import { adminClient } from '@/lib/supabase';
 
 export async function GET() {
   try {
+    const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+    const privateKey = (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
+    const siteUrl = process.env.GOOGLE_SITE_URL;
+
+    if (!clientEmail || !privateKey || !siteUrl) {
+      throw new Error('Missing Google Credentials. Formal connection required (Mocks prohibited).');
+    }
+
     const auth = new google.auth.JWT({
-      email: process.env.GOOGLE_CLIENT_EMAIL,
-      key: (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+      email: clientEmail,
+      key: privateKey,
       scopes: ['https://www.googleapis.com/auth/webmasters.readonly']
     });
 
@@ -16,13 +24,38 @@ export async function GET() {
     const endDate = new Date().toISOString().split('T')[0];
     const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
+    // Fetch general stats (date)
     const response = await searchconsole.searchanalytics.query({
       auth,
-      siteUrl: process.env.GOOGLE_SITE_URL || 'https://assetninja.jp',
+      siteUrl,
       requestBody: {
         startDate,
         endDate,
         dimensions: ['date'],
+      },
+    });
+
+    // Fetch top queries
+    const queryResponse = await searchconsole.searchanalytics.query({
+      auth,
+      siteUrl,
+      requestBody: {
+        startDate,
+        endDate,
+        dimensions: ['query'],
+        rowLimit: 10,
+      },
+    });
+
+    // Fetch top pages
+    const pageResponse = await searchconsole.searchanalytics.query({
+      auth,
+      siteUrl,
+      requestBody: {
+        startDate,
+        endDate,
+        dimensions: ['page'],
+        rowLimit: 10,
       },
     });
 
@@ -44,9 +77,15 @@ export async function GET() {
       position = position / rows.length;
     }
 
-    // Top queries (mocked if not fetching properly)
-    const topQueries = [{ query: 'AI画像', clicks: 120 }, { query: '透過PNG', clicks: 80 }];
-    const topPages = [{ page: '/', clicks: 300 }, { page: '/category/nature', clicks: 50 }];
+    const topQueries = (queryResponse.data.rows || []).map(r => ({
+      query: r.keys?.[0] || 'Unknown',
+      clicks: r.clicks || 0
+    }));
+
+    const topPages = (pageResponse.data.rows || []).map(r => ({
+      page: r.keys?.[0] || 'Unknown',
+      clicks: r.clicks || 0
+    }));
 
     // Fetch index queue stats
     const { data: queueData, error: queueErr } = await adminClient!.from('index_queue').select('status');
@@ -100,18 +139,16 @@ export async function GET() {
       indexStats.not_indexed = indexStats.submitted - indexStats.indexed;
     }
 
-    // Mock GSC data for fallback
     return NextResponse.json({
-      success: true,
+      success: false,
       data: {
-        clicks: 1245,
-        impressions: 45200,
-        ctr: '2.75%',
-        position: '12.4',
-        topQueries: [{ query: 'AI画像', clicks: 120 }, { query: '透過PNG', clicks: 80 }],
-        topPages: [{ page: 'https://assetninja.jp/', clicks: 300 }, { page: 'https://assetninja.jp/category/nature', clicks: 50 }],
+        clicks: 0,
+        impressions: 0,
+        ctr: '0%',
+        position: '0',
+        topQueries: [],
+        topPages: [],
         indexStats,
-        isMockedFallback: true,
         error: error.message
       }
     });

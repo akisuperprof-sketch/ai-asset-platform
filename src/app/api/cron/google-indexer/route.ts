@@ -30,19 +30,20 @@ export async function GET(request: Request) {
     }
 
     // Google API Auth
-    let authClient: any;
-    if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
-      const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
-      const jwtClient = new google.auth.JWT({
-        email: credentials.client_email,
-        key: credentials.private_key,
-        scopes: SCOPES
-      });
-      await jwtClient.authorize();
-      authClient = jwtClient;
-    } else {
-      console.warn('GOOGLE_APPLICATION_CREDENTIALS_JSON missing. Simulating Indexing API call.');
+    const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+    const privateKey = (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
+
+    if (!clientEmail || !privateKey) {
+      throw new Error('GOOGLE_CLIENT_EMAIL or GOOGLE_PRIVATE_KEY missing. Formal connection required (Mocks prohibited).');
     }
+
+    const authClient = new google.auth.JWT({
+      email: clientEmail,
+      key: privateKey,
+      scopes: SCOPES
+    });
+
+    await authClient.authorize();
 
     const indexing = google.indexing('v3');
     let processed = 0;
@@ -50,15 +51,13 @@ export async function GET(request: Request) {
 
     for (const item of queue) {
       try {
-        if (authClient) {
-          await indexing.urlNotifications.publish({
-            auth: authClient,
-            requestBody: {
-              url: item.url,
-              type: 'URL_UPDATED',
-            },
-          });
-        }
+        await indexing.urlNotifications.publish({
+          auth: authClient,
+          requestBody: {
+            url: item.url,
+            type: 'URL_UPDATED',
+          },
+        });
 
         const { error: updErr } = await supabase
           .from('index_queue')
