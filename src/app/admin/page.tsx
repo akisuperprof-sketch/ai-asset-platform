@@ -21,7 +21,7 @@ export default function ExecutiveDashboard() {
       Database: 100, API: 100, Cron: 100, Gemini: 100, Google: 100, 
       Pinterest: 100, Revenue: 100, Queue: 100, QA: 100, System: 100, AI: 100
     },
-    gsc: { clicks: 0, impressions: 0, ctr: '0%', position: '0', topQueries: [] as any[], topPages: [] as any[], indexStats: { submitted: 0, failed: 0, indexed: 0, not_indexed: 0 } },
+    gsc: { resolvedSiteUrl: null as string | null, error: null as string | null, clicks: 0, impressions: 0, ctr: '0%', position: '0', topQueries: [] as any[], topPages: [] as any[], indexStats: { sitemap_pending: 0, sitemap_published: 0, inspection_pending: 0, inspection_checked: 0, indexed: 0, not_indexed: 0, error: 0 } },
     today: {
       assets: 0, dl: 0, rev: 0, qa: 0, queue: 0, google: 0, pinterest: 0
     }
@@ -84,12 +84,19 @@ export default function ExecutiveDashboard() {
       health = Math.floor((dbHealth + qaHealth + alertHealth + queueHealth + 100) / 5);
 
       // Fetch Search Console Data
-      let gscData = { clicks: 0, impressions: 0, ctr: '0%', position: '0', topQueries: [], topPages: [], indexStats: { submitted: 0, failed: 0, indexed: 0, not_indexed: 0 } };
+      let gscData = { resolvedSiteUrl: null, error: null, clicks: 0, impressions: 0, ctr: '0%', position: '0', topQueries: [], topPages: [], indexStats: { sitemap_pending: 0, sitemap_published: 0, inspection_pending: 0, inspection_checked: 0, indexed: 0, not_indexed: 0, error: 0 } };
       try {
         const gscRes = await fetch('/api/search-console');
         if (gscRes.ok) {
           const gscJson = await gscRes.json();
-          if (gscJson.success) gscData = gscJson.data;
+          if (gscJson.success) {
+            gscData = gscJson.data;
+          } else {
+            gscData.error = gscJson.data?.error || 'Failed to connect';
+            if (gscJson.data?.indexStats) {
+              gscData.indexStats = gscJson.data.indexStats;
+            }
+          }
         }
       } catch (e) {
         console.warn('GSC fetch error', e);
@@ -226,12 +233,32 @@ export default function ExecutiveDashboard() {
              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Indexing & Organic Performance</span>
           </div>
 
-          {/* Indexing API Status */}
-          <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">Google Indexing API Queue</h3>
+          {stats.gsc.error ? (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl mb-6 flex items-center justify-between">
+              <div className="flex flex-col">
+                <span className="font-bold text-sm">Connection Status: Disconnected</span>
+                <span className="text-xs opacity-80">{stats.gsc.error}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-xl mb-6 flex items-center justify-between">
+              <div className="flex flex-col">
+                <span className="font-bold text-sm">Connection Status: Connected</span>
+                <span className="text-xs opacity-80">Property: {stats.gsc.resolvedSiteUrl}</span>
+              </div>
+            </div>
+          )}
+
+          {/* URL Inspection & Sitemap Status */}
+          <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">Sitemap & Inspection Status</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-zinc-800/30 border border-white/5 rounded-2xl p-5">
-               <div className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Submitted URLs</div>
-               <div className="text-3xl font-black">{stats.gsc.indexStats.submitted.toLocaleString()}</div>
+               <div className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Sitemap Pending</div>
+               <div className="text-3xl font-black">{stats.gsc.indexStats.sitemap_pending.toLocaleString()}</div>
+            </div>
+            <div className="bg-blue-900/10 border border-blue-500/20 rounded-2xl p-5">
+               <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Inspected URLs</div>
+               <div className="text-3xl font-black text-blue-400">{(stats.gsc.indexStats.inspection_checked + stats.gsc.indexStats.indexed + stats.gsc.indexStats.not_indexed).toLocaleString()}</div>
             </div>
             <div className="bg-emerald-900/10 border border-emerald-500/20 rounded-2xl p-5">
                <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Indexed URLs</div>
@@ -242,8 +269,8 @@ export default function ExecutiveDashboard() {
                <div className="text-3xl font-black text-amber-400">{stats.gsc.indexStats.not_indexed.toLocaleString()}</div>
             </div>
             <div className="bg-red-900/10 border border-red-500/20 rounded-2xl p-5">
-               <div className="text-[10px] font-black text-red-400 uppercase tracking-widest mb-1">Failed Indexing</div>
-               <div className="text-3xl font-black text-red-400">{stats.gsc.indexStats.failed.toLocaleString()}</div>
+               <div className="text-[10px] font-black text-red-400 uppercase tracking-widest mb-1">Inspection Errors</div>
+               <div className="text-3xl font-black text-red-400">{stats.gsc.indexStats.error.toLocaleString()}</div>
             </div>
           </div>
 
