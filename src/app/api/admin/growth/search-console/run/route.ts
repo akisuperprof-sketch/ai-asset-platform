@@ -19,19 +19,74 @@ export async function POST(request: Request) {
 
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // Mock Search Console Data (Fallback if no API credentials)
-    // In production, integrate googleapis for actual Search Console data
-    const mockData = {
+    const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+    const privateKey = (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
+    const siteUrl = process.env.GOOGLE_SITE_URL || 'sc-domain:assetninja.jp';
+
+    let mockData = {
       date: todayStr,
-      indexed_count: 8540,
-      not_indexed_count: 120,
-      crawled_count: 8660,
-      discovered_count: 8700,
-      avg_ctr: 3.4,
-      impressions: 45000,
-      clicks: 1530,
-      avg_position: 12.5
+      indexed_count: 0,
+      not_indexed_count: 0,
+      crawled_count: 0,
+      discovered_count: 0,
+      avg_ctr: 0,
+      impressions: 0,
+      clicks: 0,
+      avg_position: 0
     };
+
+    if (clientEmail && privateKey) {
+      const { google } = require('googleapis');
+      const auth = new google.auth.JWT({
+        email: clientEmail,
+        key: privateKey,
+        scopes: ['https://www.googleapis.com/auth/webmasters.readonly']
+      });
+
+      const webmasters = google.webmasters('v3');
+      
+      const sitesRes = await webmasters.sites.list({ auth });
+      const siteEntries = sitesRes.data.siteEntry || [];
+      let actualPropertyUrl = siteEntries.length > 0 ? siteEntries[0].siteUrl : siteUrl;
+      for (const site of siteEntries) {
+        if (site.siteUrl === siteUrl || site.siteUrl === `sc-domain:${siteUrl.replace('sc-domain:', '')}`) {
+          actualPropertyUrl = site.siteUrl;
+        }
+      }
+
+      const today = new Date();
+      const threeDaysAgo = new Date();
+      threeDaysAgo.setDate(today.getDate() - 3); // GSC data usually has a lag of ~2 days
+      const startDate = threeDaysAgo.toISOString().split('T')[0];
+      const endDate = threeDaysAgo.toISOString().split('T')[0];
+
+      try {
+        const analyticsRes = await webmasters.searchanalytics.query({
+          siteUrl: actualPropertyUrl,
+          auth,
+          requestBody: {
+            startDate,
+            endDate,
+            dimensions: ['date']
+          }
+        });
+
+        const rows = analyticsRes.data.rows || [];
+        if (rows.length > 0) {
+          const row = rows[0];
+          mockData.clicks = row.clicks || 0;
+          mockData.impressions = row.impressions || 0;
+          mockData.avg_ctr = (row.ctr || 0) * 100;
+          mockData.avg_position = row.position || 0;
+        }
+      } catch (e: any) {
+        await adminClient.from('system_alerts').insert({
+          title: 'Search Console Cron Error',
+          message: e.message,
+          severity: 'warning'
+        });
+      }
+    }
 
     const { error: dbError } = await adminClient
       .from('search_console_metrics')
