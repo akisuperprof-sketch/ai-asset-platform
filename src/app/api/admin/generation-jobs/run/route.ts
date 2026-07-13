@@ -38,6 +38,38 @@ export async function POST(request: Request) {
     const body = await request.json();
     const limit = Math.min(parseInt(body.limit || "1", 10), 10);
 
+    // 0. Acquire Generation Lock (RPC from Migration 019)
+    const { data: lockAcquired, error: lockError } = await adminClient.rpc('acquire_generation_lock');
+    if (lockError) {
+      console.error("Lock error:", lockError);
+      // Fallback if migration not run yet, assume locked
+      return NextResponse.json({ success: false, error: 'DB_MIGRATION_REQUIRED', message: 'Please run Migration 019 to create the lock RPC.' }, { status: 409 });
+    }
+    
+    if (!lockAcquired) {
+      return NextResponse.json({ success: false, error: 'RATE_LIMIT_WAIT', message: 'Another generation run is in progress. Please wait.' }, { status: 429 });
+    }
+
+    let releaseLockDone = false;
+    const releaseLock = async () => {
+      if (!releaseLockDone) {
+        await adminClient?.rpc('release_generation_lock');
+        releaseLockDone = true;
+      }
+    };
+
+    try {
+      // 0.5. Check Gate 1 Global Limit (200) to prevent parallel overflow
+      const { count: totalApproved } = await adminClient
+        .from('assets')
+        .select('*', { count: 'exact', head: true })
+        .eq('review_status', 'approved');
+        
+      if ((totalApproved || 0) >= 200) {
+        await releaseLock();
+        return NextResponse.json({ success: true, results: [], message: 'Gate 1 target of 200 reached. Run halted.' });
+      }
+
     // 1. Fetch queued jobs
     const { data: jobsRaw, error: fetchError } = await adminClient
       .from('generation_jobs')
@@ -349,6 +381,9 @@ No markdown formatting, just raw JSON.`;
     }
 
     return NextResponse.json({ success: true, results });
+    } finally {
+      await releaseLock();
+    }
   } catch (err: any) {
     console.error("Worker API Error:", err);
     return NextResponse.json({ success: false, error: 'INTERNAL_ERROR', message: err.message, stack: err.stack }, { status: 500 });

@@ -24,13 +24,25 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: true, message: 'Auto Factory is disabled.' });
     }
 
+    // 1.5 Check overall 200 limit for Gate 1
+    const { count: totalApproved } = await adminClient
+      .from('assets')
+      .select('*', { count: 'exact', head: true })
+      .eq('review_status', 'approved');
+      
+    if ((totalApproved || 0) >= 200) {
+      // Auto-disable factory
+      await adminClient.from('auto_factory_settings').update({ is_enabled: false }).eq('id', 'default');
+      return NextResponse.json({ success: true, message: 'Gate 1 target of 200 reached. Auto Factory disabled.' });
+    }
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayISO = today.toISOString();
     const todayDateStr = todayISO.split('T')[0];
 
     // 2. Auto Scaling (Phase 13-C) - Fetch Target from AI Plan
-    let dailyTarget = settings.daily_target || 30;
+    let dailyTarget = settings.daily_target || 20;
     const { data: aiPlan } = await adminClient.from('daily_ai_plans').select('target_generation_count').eq('date', todayDateStr).single();
     if (aiPlan && aiPlan.target_generation_count) {
        dailyTarget = aiPlan.target_generation_count;
@@ -62,7 +74,10 @@ export async function GET(request: Request) {
     // If queued count is low, trigger demand extraction
     if (currentQueued < remainingToTarget * 2) {
       // Trigger demand to queue
-      await fetch(`${process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : 'http://localhost:3000'}/api/cron/auto-demand-generation`, {
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+      const demandUrl = process.env.NODE_ENV === 'production' ? 'https://assetninja.jp/api/cron/auto-demand-generation' : `${baseUrl}/api/cron/auto-demand-generation`;
+
+      await fetch(demandUrl, {
         headers: { 'Authorization': `Bearer ${localCronSecret}` }
       }).catch(e => console.error('Failed to trigger auto-demand-generation:', e));
     }
@@ -71,7 +86,11 @@ export async function GET(request: Request) {
     // Limit batch size to 5 to avoid timeouts in Vercel Hobby/Pro.
     const batchSize = Math.min(5, remainingToTarget);
     
-    const workerRes = await fetch(`${process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : 'http://localhost:3000'}/api/admin/generation-jobs/run`, {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+    // Force production URL to bypass Vercel Auth on deployment URLs
+    const workerUrl = process.env.NODE_ENV === 'production' ? 'https://assetninja.jp/api/admin/generation-jobs/run' : `${baseUrl}/api/admin/generation-jobs/run`;
+
+    const workerRes = await fetch(workerUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
