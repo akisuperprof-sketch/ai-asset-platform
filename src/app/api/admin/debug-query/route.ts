@@ -10,9 +10,11 @@ export async function GET(req: Request) {
   }
 
   const { data, count, error } = await adminClient!
-      .from('generation_jobs')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'queued');
+      .from('assets')
+      .select('id', { count: 'exact' })
+      .eq('review_status', 'approved')
+      .eq('source', 'real')
+      .limit(0);
 
   return NextResponse.json({
     errorObj: error,
