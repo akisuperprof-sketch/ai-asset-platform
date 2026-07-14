@@ -7,12 +7,7 @@ export async function GET(request: Request) {
   const authResult = verifyAdminRequest(request);
   if (!authResult.ok) return authResult.response;
 
-  const cookieStore = await cookies();
-  const authKey = cookieStore.get('D_STRATEGY_KEY')?.value;
   
-  if (authKey !== process.env.D_STRATEGY_KEY) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
 
   try {
     if (!adminClient) {

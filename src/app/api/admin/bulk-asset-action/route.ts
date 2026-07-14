@@ -5,6 +5,9 @@ import { adminClient } from "@/lib/supabase";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  const authResult = verifyAdminRequest(req);
+  if (!authResult.ok) return authResult.response;
+
   try {
     const cookieStore = await cookies();
     const strategyKey = cookieStore.get("D_STRATEGY_KEY")?.value;

@@ -5,13 +5,11 @@ import { adminClient } from "@/lib/supabase";
 import { checkRateLimit, getIp } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
-  try {
-    const cookieStore = await cookies();
-    const strategyKey = cookieStore.get("D_STRATEGY_KEY")?.value;
+  const authResult = verifyAdminRequest(req);
+  if (!authResult.ok) return authResult.response;
 
-    if (!strategyKey || strategyKey !== process.env.D_STRATEGY_KEY) {
-      return NextResponse.json({ success: false, error: "Unauthorized QA Access" }, { status: 401 });
-    }
+  try {
+    
 
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || '127.0.0.1';
     if (!checkRateLimit(`admin:${ip}`, 30, 60 * 1000)) {

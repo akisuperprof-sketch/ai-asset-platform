@@ -3,7 +3,6 @@ const token = process.env.ADMIN_API_SECRET;
 
 const endpoints = [
   'https://assetninja.jp/api/admin/dashboard',
-  'https://assetninja.jp/api/admin/seed-phase1',
   'https://assetninja.jp/api/admin/demand-stats',
   'https://assetninja.jp/api/admin/generation-jobs/stats'
 ];
