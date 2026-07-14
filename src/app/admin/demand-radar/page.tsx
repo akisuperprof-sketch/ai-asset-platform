@@ -50,7 +50,7 @@ export default function DemandRadarPage() {
     try {
       const res = await fetch('/api/admin/planner/run', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-agent-token': 'temp-agent-token-123' }
+        headers: { 'Content-Type': 'application/json', 'x-agent-token': '' }
       });
       const data = await res.json();
       if (data.success) {

@@ -1,3 +1,4 @@
+import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 

@@ -1,3 +1,4 @@
+import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 import { adminClient } from '@/lib/supabase';
 import { cookies } from 'next/headers';
@@ -21,6 +22,9 @@ function generatePrompt(query: string): string {
 }
 
 export async function POST(request: Request) {
+  const authResult = verifyAdminRequest(request);
+  if (!authResult.ok) return authResult.response;
+
   try {
     const cookieStore = await cookies();
     const adminSession = cookieStore.get('d_strategy_session');

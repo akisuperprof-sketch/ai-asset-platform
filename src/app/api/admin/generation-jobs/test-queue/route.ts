@@ -1,9 +1,13 @@
+import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createClient } from '@supabase/supabase-js';
 import { PromptEngine } from '@/lib/prompt-engine';
 
 export async function POST(request: Request) {
+  const authResult = verifyAdminRequest(request);
+  if (!authResult.ok) return authResult.response;
+
   try {
     // 1. Auth check (D_STRATEGY_KEY cookie authentication)
     const cookieStore = await cookies();

@@ -1,3 +1,4 @@
+import { verifyCronRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 // import fetch from 'node-fetch'; // assuming fetch is globally available in next/server

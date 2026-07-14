@@ -1,7 +1,11 @@
+import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
+  const authResult = verifyAdminRequest(request);
+  if (!authResult.ok) return authResult.response;
+
   try {
     const body = await request.json();
     const inputKey = body?.key;

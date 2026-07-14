@@ -1,3 +1,4 @@
+import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 import { adminClient } from '@/lib/supabase';
 import { cookies } from 'next/headers';
@@ -9,14 +10,16 @@ const CATEGORIES = [
 ];
 
 export async function POST(request: Request) {
+  const authResult = verifyAdminRequest(request);
+  if (!authResult.ok) return authResult.response;
+
   try {
     const cookieStore = await cookies();
     const adminSession = cookieStore.get('d_strategy_session');
     
     // Auth check: either standard admin session OR secure agent token
     const envKey = process.env.D_STRATEGY_KEY;
-    const agentToken = request.headers.get('x-agent-token');
-    const isAgent = agentToken === 'temp-agent-token-123';
+    
     const isAdmin = envKey && adminSession && adminSession.value === envKey.trim();
 
     if (!isAgent && !isAdmin) {

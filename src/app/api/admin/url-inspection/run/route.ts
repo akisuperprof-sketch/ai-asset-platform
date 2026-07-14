@@ -1,3 +1,4 @@
+import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 import { adminClient } from '@/lib/supabase';

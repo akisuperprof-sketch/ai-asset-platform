@@ -1,3 +1,4 @@
+import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { adminClient } from "@/lib/supabase";
@@ -88,6 +89,9 @@ async function auditAssetBeforeApproval(asset: any): Promise<{ safe: boolean; re
 }
 
 export async function POST(request: Request) {
+  const authResult = verifyAdminRequest(request);
+  if (!authResult.ok) return authResult.response;
+
   try {
     const cookieStore = await cookies();
     const strategyKey = cookieStore.get("D_STRATEGY_KEY")?.value;

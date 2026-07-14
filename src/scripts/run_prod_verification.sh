@@ -1,6 +1,6 @@
 #!/bin/bash
 HOST="https://assetninja.jp"
-TOKEN="temp-agent-token-123"
+TOKEN=""
 
 echo "=== 1. Seeding Phase 1 Jobs ==="
 curl -s -X POST "$HOST/api/admin/seed-phase1" \

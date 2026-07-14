@@ -1,3 +1,4 @@
+import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 import { adminClient } from '@/lib/supabase';
 import { getGenerationProvider } from '@/lib/generation/provider';
@@ -7,9 +8,11 @@ import { removeBackgroundBiRefNet } from '@/lib/generation/birefnet';
 export const maxDuration = 60;
 
 export async function POST(request: Request) {
+  const authResult = verifyAdminRequest(request);
+  if (!authResult.ok) return authResult.response;
+
   try {
-    const agentToken = request.headers.get('x-agent-token');
-    const isAgent = agentToken === 'temp-agent-token-123';
+    
 
     // We do not require D_STRATEGY_KEY if an agent token is provided.
     // If no agent token, we require D_STRATEGY_KEY cookie.

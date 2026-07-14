@@ -1,3 +1,4 @@
+import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
@@ -5,9 +6,12 @@ export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
+  const authResult = verifyAdminRequest(request);
+  if (!authResult.ok) return authResult.response;
+
   try {
     const adminToken = request.headers.get('x-agent-token');
-    const isValidToken = adminToken === process.env.AGENT_SECRET_TOKEN || adminToken === 'temp-agent-token-123';
+    const isValidToken = adminToken === process.env.AGENT_SECRET_TOKEN || adminToken === process.env.ADMIN_API_SECRET;
     if (!isValidToken && process.env.NODE_ENV === 'production') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -107,7 +111,7 @@ No markdown, just raw JSON object.`;
             method: 'POST',
             headers: { 
               'Content-Type': 'application/json',
-              'x-agent-token': process.env.AGENT_SECRET_TOKEN || 'temp-agent-token-123'
+              'x-agent-token': process.env.ADMIN_API_SECRET
             },
             body: JSON.stringify({ theme: t.keyword, limit: 10 })
           }).catch(console.error);
