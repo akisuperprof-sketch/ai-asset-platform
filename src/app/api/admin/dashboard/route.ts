@@ -34,8 +34,7 @@ export async function GET(request: Request) {
     const { count: totalApprovedCount, error: countError } = await adminClient
       .from('assets')
       .select('*', { count: 'exact', head: true })
-      .eq('review_status', 'approved')
-      .eq('source', 'real');
+      .eq('review_status', 'approved');
 
     if (countError) {
       console.error('[Dashboard Error] countError fetch error:', countError);
