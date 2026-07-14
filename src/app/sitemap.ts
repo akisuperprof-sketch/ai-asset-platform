@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseAnonKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 const supabase = supabaseUrl && supabaseAnonKey
   ? createClient(supabaseUrl, supabaseAnonKey)
@@ -44,14 +44,17 @@ export async function generateSitemaps() {
   return sitemaps;
 }
 
-export default async function sitemap({ id }: { id: number }): Promise<MetadataRoute.Sitemap> {
+export default async function sitemap(props: any): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://assetninja.jp';
   const bucketName = process.env.SUPABASE_STORAGE_BUCKET || 'sukashi-assets';
   
-  console.log(`🗺️ [sitemap.ts] Generating sitemap chunk: ${id}`);
+  // In Next.js 15+, route parameters (including `id` for sitemaps) are promises.
+  const resolvedId = props.id instanceof Promise ? await props.id : props.id;
+  const numericId = Number(resolvedId);
+  console.log(`🗺️ [sitemap.ts] Generating sitemap chunk: ${numericId}`);
 
   // Static routes chunk
-  if (id === 0) {
+  if (numericId === 0) {
     const categories = ['日本の食', '和の伝統素材', '年中行事・祭り', 'ビジネス', '医療・ヘルスケア', '事務用品・文具', 'ramen', 'sushi', 'tempura', 'gyoza', 'mochi', 'bento', 'torii', 'sakura', 'matcha', 'japanese-pattern', 'onigiri', 'yakitori', 'takoyaki', 'dango'];
     const categoryUrls = categories.map((cat) => ({
       url: `${baseUrl}/category/${encodeURIComponent(cat)}`,
@@ -100,14 +103,14 @@ export default async function sitemap({ id }: { id: number }): Promise<MetadataR
 
   // Assets chunks
   if (supabase) {
-    const pageIndex = id - 1;
+    const pageIndex = numericId - 1;
     const from = pageIndex * ITEMS_PER_SITEMAP;
     const to = from + ITEMS_PER_SITEMAP - 1;
     
     try {
       const { data: assets, error } = await supabase
         .from('assets')
-        .select('id, image_url, storage_key, published_at')
+        .select('id, slug, image_url, storage_key, published_at')
         .eq('review_status', 'approved')
         .eq('legal_status', 'clean')
         .not('published_at', 'is', null)
@@ -116,13 +119,15 @@ export default async function sitemap({ id }: { id: number }): Promise<MetadataR
 
       if (error) throw error;
 
-      return (assets || []).map((asset) => {
+      return (assets || [])
+        .filter(asset => asset.slug) // safe check for null slug
+        .map((asset) => {
         let imageUrl = asset.image_url;
         if (!imageUrl && asset.storage_key && supabaseUrl) {
           imageUrl = `${supabaseUrl}/storage/v1/object/public/${bucketName}/${asset.storage_key}`;
         }
         return {
-          url: `${baseUrl}/items/${asset.id}`,
+          url: `${baseUrl}/items/${asset.slug}`,
           lastModified: new Date(asset.published_at || new Date()),
           changeFrequency: 'weekly' as const,
           priority: 0.8,

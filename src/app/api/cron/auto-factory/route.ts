@@ -42,12 +42,12 @@ export async function GET(request: Request) {
     const todayDateStr = todayISO.split('T')[0];
 
     // 2. Auto Scaling (Phase 13-C) - Fetch Target from AI Plan
-    let dailyTarget = settings.daily_target || 20;
     const { data: aiPlan } = await adminClient.from('daily_ai_plans').select('target_generation_count').eq('date', todayDateStr).single();
-    if (aiPlan && aiPlan.target_generation_count) {
-       dailyTarget = aiPlan.target_generation_count;
-       console.log(`Auto Scaling Active: Target overridden by AI Plan to ${dailyTarget}`);
-    }
+    
+    const requestedTarget = aiPlan?.target_generation_count ?? settings?.daily_target ?? 20;
+    const dailyTarget = Math.min(20, Math.max(0, requestedTarget));
+    
+    console.log(`Auto Factory Target Calculation: requested=${requestedTarget}, applied=${dailyTarget}`);
 
     // 3. Fetch today's approved assets to calculate remaining target
     const { count: approvedCount } = await adminClient

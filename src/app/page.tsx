@@ -179,13 +179,13 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
                       </p>
                     </div>
 
-                    <ComingSoonButton 
-                      feature="Studio Set セット"
+                    <Link 
+                      href="/new"
                       className="glass group px-8 py-3.5 rounded-full flex items-center gap-2.5 text-xs font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all border-white/10 shrink-0 opacity-80"
                     >
                       View Complete Studio Set
                       <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </ComingSoonButton>
+                    </Link>
                   </div>
 
                   <div className="grid grid-cols-12 gap-8">
@@ -217,13 +217,13 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
                       </p>
                     </div>
 
-                    <ComingSoonButton 
-                      feature="日本伝統素材の探索"
+                    <Link 
+                      href="/?cat=和風・和柄"
                       className="glass group px-8 py-3.5 rounded-full flex items-center gap-2.5 text-xs font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all border-white/10 shrink-0 opacity-80"
                     >
                       Discover Japan
                       <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </ComingSoonButton>
+                    </Link>
                   </div>
 
                   <div className="grid grid-cols-12 gap-8">
@@ -255,13 +255,13 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
                       </p>
                     </div>
 
-                    <ComingSoonButton 
-                      feature="トレンド素材一覧"
+                    <Link 
+                      href="/popular"
                       className="glass group px-8 py-3.5 rounded-full flex items-center gap-2.5 text-xs font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all border-white/10 shrink-0 opacity-80"
                     >
                       See All Trends
                       <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </ComingSoonButton>
+                    </Link>
                   </div>
 
                   <div className="grid grid-cols-12 gap-8">

@@ -89,7 +89,7 @@ export async function POST(request: Request) {
           category: cat,
           prompt: prompt,
           negative_prompt: "background, noisy, blurry, low quality, artifacts",
-          provider: 'DRY_RUN', // Keep as DRY_RUN initially or change to midjourney/dalle based on real system
+          provider: 'imagen3',
           status: 'queued',
           qa_result: {
             demand_loop: {
