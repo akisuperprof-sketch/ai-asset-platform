@@ -38,27 +38,27 @@ export async function POST(request: Request) {
     const body = await request.json();
     const limit = Math.min(parseInt(body.limit || "1", 10), 10);
 
-    // 0. Acquire Generation Lock (RPC from Migration 019)
-    const { data: lockAcquired, error: lockError } = await adminClient.rpc('acquire_generation_lock');
-    if (lockError) {
-      console.error("Lock error:", lockError);
-      // Fallback if migration not run yet, assume locked
-      return NextResponse.json({ success: false, error: 'DB_MIGRATION_REQUIRED', message: 'Please run Migration 019 to create the lock RPC.' }, { status: 409 });
-    }
-    
-    if (!lockAcquired) {
-      return NextResponse.json({ success: false, error: 'RATE_LIMIT_WAIT', message: 'Another generation run is in progress. Please wait.' }, { status: 429 });
-    }
-
-    let releaseLockDone = false;
-    const releaseLock = async () => {
-      if (!releaseLockDone) {
-        await adminClient?.rpc('release_generation_lock');
-        releaseLockDone = true;
-      }
-    };
+    // Generate unique worker ID
+    const workerId = `admin-generation-run-${crypto.randomUUID()}`;
+    let lockAcquired = false;
 
     try {
+      // 0. Acquire Generation Lock (RPC from Migration 019)
+      const { data: acquired, error: lockError } = await adminClient.rpc('acquire_generation_lock', {
+        p_locked_by: workerId
+      });
+      
+      if (lockError) {
+        console.error("Lock error:", lockError);
+        // Fallback if migration not run yet, assume locked
+        return NextResponse.json({ success: false, error: 'DB_MIGRATION_REQUIRED', message: 'Please run Migration 019 to create the lock RPC.' }, { status: 409 });
+      }
+      
+      lockAcquired = acquired === true;
+      if (!lockAcquired) {
+        return NextResponse.json({ success: false, error: 'RATE_LIMIT_WAIT', message: 'Another generation run is in progress. Please wait.' }, { status: 429 });
+      }
+
       // 0.5. Check Gate 1 Global Limit (200) to prevent parallel overflow
       const { count: totalApproved } = await adminClient
         .from('assets')
@@ -66,7 +66,6 @@ export async function POST(request: Request) {
         .eq('review_status', 'approved');
         
       if ((totalApproved || 0) >= 200) {
-        await releaseLock();
         return NextResponse.json({ success: true, results: [], message: 'Gate 1 target of 200 reached. Run halted.' });
       }
 
@@ -382,7 +381,14 @@ No markdown formatting, just raw JSON.`;
 
     return NextResponse.json({ success: true, results });
     } finally {
-      await releaseLock();
+      if (lockAcquired) {
+        const { error: releaseError } = await adminClient.rpc('release_generation_lock', {
+          p_locked_by: workerId
+        });
+        if (releaseError) {
+          console.error(`[Worker ${workerId}] Failed to release lock:`, releaseError.message);
+        }
+      }
     }
   } catch (err: any) {
     console.error("Worker API Error:", err);
