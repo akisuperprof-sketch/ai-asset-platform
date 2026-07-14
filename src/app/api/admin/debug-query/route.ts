@@ -9,7 +9,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { data, count, error } = await adminClient
+  const { data, count, error } = await adminClient!
       .from('assets')
       .select('*', { count: 'exact', head: true })
       .eq('review_status', 'approved')
