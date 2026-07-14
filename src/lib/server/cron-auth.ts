@@ -64,10 +64,9 @@ export function verifyCronRequest(request: Request) {
 
 export function verifyAdminRequest(request: Request) {
   const adminSecret = process.env.ADMIN_API_SECRET;
-  const dStrategyKey = process.env.D_STRATEGY_KEY;
 
-  if (!adminSecret && !dStrategyKey) {
-    console.error('[AUTH ERROR] ADMIN_API_SECRET and D_STRATEGY_KEY are not configured.');
+  if (!adminSecret) {
+    console.error('[AUTH ERROR] ADMIN_API_SECRET is not configured.');
     return {
       ok: false,
       response: NextResponse.json(
@@ -77,24 +76,11 @@ export function verifyAdminRequest(request: Request) {
     };
   }
 
-  // 1. Check Cookies
-  const cookieHeader = request.headers.get('cookie') || '';
-  const cookiesArr = cookieHeader.split(';').map(c => c.trim());
-  const dStrategyCookie = cookiesArr.find(c => c.startsWith('D_STRATEGY_KEY='));
-  if (dStrategyCookie && dStrategyKey) {
-    const cookieVal = dStrategyCookie.split('=')[1];
-    if (cookieVal === dStrategyKey) {
-      return { ok: true };
-    }
-  }
-
-  // 2. Check Headers
-  const authorization = request.headers.get("authorization") || request.headers.get("x-admin-token") || request.headers.get("x-agent-token");
+  const authorization = request.headers.get("authorization");
   const prefix = "Bearer ";
-  const supplied = authorization?.startsWith(prefix) ? authorization.slice(prefix.length) : authorization;
 
-  if (!supplied) {
-    console.warn('[AUTH ERROR] Missing authorization token for Admin API.');
+  if (!authorization || !authorization.startsWith(prefix)) {
+    console.warn('[AUTH ERROR] Missing or invalid Authorization header format for Admin API.');
     return {
       ok: false,
       response: NextResponse.json(
@@ -104,15 +90,16 @@ export function verifyAdminRequest(request: Request) {
     };
   }
 
+  const supplied = authorization.slice(prefix.length);
+
   try {
     const suppliedBuffer = Buffer.from(supplied);
-    const secretBuffer = adminSecret ? Buffer.from(adminSecret) : Buffer.from('');
-    const strategyBuffer = dStrategyKey ? Buffer.from(dStrategyKey) : Buffer.from('');
+    const secretBuffer = Buffer.from(adminSecret);
 
-    const matchAdmin = adminSecret && suppliedBuffer.length === secretBuffer.length && crypto.timingSafeEqual(suppliedBuffer, secretBuffer);
-    const matchStrategy = dStrategyKey && suppliedBuffer.length === strategyBuffer.length && crypto.timingSafeEqual(suppliedBuffer, strategyBuffer);
-
-    if (!matchAdmin && !matchStrategy) {
+    if (
+      suppliedBuffer.length !== secretBuffer.length ||
+      !crypto.timingSafeEqual(suppliedBuffer, secretBuffer)
+    ) {
       console.warn('[AUTH ERROR] Admin Token mismatch.');
       return {
         ok: false,
