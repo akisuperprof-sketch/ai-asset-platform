@@ -14,17 +14,6 @@ export async function POST(request: Request) {
   if (!authResult.ok) return authResult.response;
 
   try {
-    const cookieStore = await cookies();
-    const adminSession = cookieStore.get('d_strategy_session');
-    
-    // Auth check: either standard admin session OR secure agent token
-    const envKey = process.env.D_STRATEGY_KEY;
-    
-    const isAdmin = envKey && adminSession && adminSession.value === envKey.trim();
-
-    if (!isAdmin) {
-      return NextResponse.json({ success: false, error: 'UNAUTHORIZED' }, { status: 401 });
-    }
 
     if (!adminClient) {
       return NextResponse.json({ success: false, error: 'NO_DB' }, { status: 500 });

@@ -6,11 +6,6 @@ export async function GET(request: Request) {
   const authResult = verifyAdminRequest(request);
   if (!authResult.ok) return authResult.response;
 
-  const agentToken = request.headers.get('x-agent-token');
-  if (agentToken !== process.env.ADMIN_API_SECRET || '') {
-    return NextResponse.json({ success: false, error: 'UNAUTHORIZED' }, { status: 401 });
-  }
-
   if (!adminClient) {
     return NextResponse.json({ success: false, error: 'NO_DB' }, { status: 500 });
   }
