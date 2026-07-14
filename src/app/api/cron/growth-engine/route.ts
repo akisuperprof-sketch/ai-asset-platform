@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     const trigger = (path: string) => {
       fetch(`${baseUrl}${path}`, {
         method: 'POST',
-        headers: { 'x-agent-token': process.env.ADMIN_API_SECRET }
+        headers: { 'x-agent-token': process.env.ADMIN_API_SECRET || '' }
       }).catch(err => console.error(`Failed to trigger ${path}:`, err));
     };
 

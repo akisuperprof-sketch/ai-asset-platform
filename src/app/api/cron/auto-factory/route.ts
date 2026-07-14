@@ -71,7 +71,7 @@ export async function GET(request: Request) {
       const demandUrl = process.env.NODE_ENV === 'production' ? 'https://assetninja.jp/api/cron/auto-demand-generation' : `${baseUrl}/api/cron/auto-demand-generation`;
 
       await fetch(demandUrl, {
-        headers: { 'Authorization': `Bearer ${localCronSecret}` }
+        headers: { 'Authorization': `Bearer ${process.env.CRON_SECRET || ""}` }
       }).catch(e => console.error('Failed to trigger auto-demand-generation:', e));
     }
 
@@ -87,7 +87,7 @@ export async function GET(request: Request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-agent-token': localCronSecret
+        'x-agent-token': process.env.CRON_SECRET || ""
       },
       body: JSON.stringify({ limit: batchSize })
     });

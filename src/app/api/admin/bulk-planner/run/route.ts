@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
   try {
     const authHeader = request.headers.get('x-agent-token');
-    const localToken = process.env.ADMIN_API_SECRET;
+    const localToken = process.env.ADMIN_API_SECRET || '';
     
     // In admin routes, either valid admin session or valid service token is required
     // For simplicity of auto-factory, we accept the token

@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     
     const isAdmin = envKey && adminSession && adminSession.value === envKey.trim();
 
-    if (!isAgent && !isAdmin) {
+    if (!isAdmin) {
       return NextResponse.json({ success: false, error: 'UNAUTHORIZED' }, { status: 401 });
     }
 

@@ -67,7 +67,7 @@ export async function GET(request: Request) {
          method: 'POST',
          headers: {
            'Content-Type': 'application/json',
-           'x-agent-token': process.env.ADMIN_API_SECRET
+           'x-agent-token': process.env.ADMIN_API_SECRET || ''
          },
          body: JSON.stringify({ limit: 5 })
        });

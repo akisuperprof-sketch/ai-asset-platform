@@ -24,7 +24,7 @@ export async function POST(request: Request) {
 
   // Basic Auth
   const authHeader = request.headers.get('authorization') || request.headers.get('x-agent-token');
-  if (authHeader !== process.env.ADMIN_API_SECRET && authHeader !== `Bearer ${process.env.D_STRATEGY_KEY}`) {
+  if (authHeader !== (process.env.ADMIN_API_SECRET || '') && authHeader !== `Bearer ${process.env.D_STRATEGY_KEY}`) {
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
   }
 

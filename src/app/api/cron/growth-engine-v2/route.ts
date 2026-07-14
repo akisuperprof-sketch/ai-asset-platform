@@ -44,7 +44,7 @@ export async function GET(request: Request) {
       try {
         const res = await fetch(`${baseUrl}${path}`, {
           method: 'POST',
-          headers: { 'x-agent-token': process.env.ADMIN_API_SECRET }
+          headers: { 'x-agent-token': process.env.ADMIN_API_SECRET || '' }
         });
         if (!res.ok) {
            console.error(`Error triggering ${path}:`, await res.text());

@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   if (!authResult.ok) return authResult.response;
 
   const agentToken = request.headers.get('x-agent-token');
-  if (agentToken !== process.env.ADMIN_API_SECRET) {
+  if (agentToken !== process.env.ADMIN_API_SECRET || '') {
     return NextResponse.json({ success: false, error: 'UNAUTHORIZED' }, { status: 401 });
   }
 

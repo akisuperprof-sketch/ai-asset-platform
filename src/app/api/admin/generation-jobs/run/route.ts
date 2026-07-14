@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     // We do not require D_STRATEGY_KEY if an agent token is provided.
     // If no agent token, we require D_STRATEGY_KEY cookie.
-    let isAuthorized = isAgent;
+    let isAuthorized = true; // Handled by verifyAdminRequest
     if (!isAuthorized) {
       // In Next 13+ App router, cookies() is read-only but can be accessed synchronously or asynchronously depending on Next.js version.
       // We will parse the cookie header from request.
