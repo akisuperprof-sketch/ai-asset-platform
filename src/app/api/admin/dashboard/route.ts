@@ -27,7 +27,8 @@ export async function GET(request: Request) {
       .gte('created_at', startOfTodayJstUTC.toISOString());
 
     if (error) {
-      return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+      console.error('[Dashboard Error] dbAssets fetch error:', error);
+      return NextResponse.json({ success: false, error: error?.message || JSON.stringify(error) || 'UNKNOWN_ERROR' }, { status: 500 });
     }
 
     const { count: totalApprovedCount, error: countError } = await adminClient
@@ -37,7 +38,8 @@ export async function GET(request: Request) {
       .eq('source', 'real');
 
     if (countError) {
-      return NextResponse.json({ success: false, error: countError.message }, { status: 500 });
+      console.error('[Dashboard Error] countError fetch error:', countError);
+      return NextResponse.json({ success: false, error: countError?.message || JSON.stringify(countError) || 'UNKNOWN_ERROR' }, { status: 500 });
     }
 
     let todayGenerated = 0;
