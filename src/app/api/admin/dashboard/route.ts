@@ -33,7 +33,7 @@ export async function GET(request: Request) {
 
     const { count: totalApprovedCount, error: countError } = await adminClient
       .from('assets')
-      .select('id', { count: 'exact', head: true })
+      .select('*', { count: 'exact', head: true })
       .eq('review_status', 'approved')
       .eq('source', 'real');
 
