@@ -8,7 +8,10 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'dummy_key';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-export async function GET() {
+export async function GET(request: Request) {
+  const authResult = verifyAdminRequest(request);
+  if (!authResult.ok) return authResult.response;
+
   try {
     const { data: summary, error: rpcError } = await supabase.rpc('get_revenue_stats_summary');
 

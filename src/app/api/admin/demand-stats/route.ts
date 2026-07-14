@@ -4,7 +4,10 @@ import { adminClient } from '@/lib/supabase';
 import fs from 'fs';
 import path from 'path';
 
-export async function GET() {
+export async function GET(request: Request) {
+  const authResult = verifyAdminRequest(request);
+  if (!authResult.ok) return authResult.response;
+
   try {
 
     let rawEvents: any[] = [];

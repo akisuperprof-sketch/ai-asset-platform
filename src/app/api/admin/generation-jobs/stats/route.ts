@@ -3,7 +3,10 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { adminClient } from '@/lib/supabase';
 
-export async function GET() {
+export async function GET(request: Request) {
+  const authResult = verifyAdminRequest(request);
+  if (!authResult.ok) return authResult.response;
+
   const cookieStore = await cookies();
   const authKey = cookieStore.get('D_STRATEGY_KEY')?.value;
   

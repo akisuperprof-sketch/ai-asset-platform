@@ -5,7 +5,10 @@ import path from 'path';
 
 const configPath = path.join(process.cwd(), 'data', 'local-auto-config.json');
 
-export async function GET() {
+export async function GET(request: Request) {
+  const authResult = verifyAdminRequest(request);
+  if (!authResult.ok) return authResult.response;
+
   try {
 
     if (!fs.existsSync(configPath)) {

@@ -3,7 +3,10 @@ import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 import { adminClient } from '@/lib/supabase';
 
-export async function POST() {
+export async function POST(request: Request) {
+  const authResult = verifyAdminRequest(request);
+  if (!authResult.ok) return authResult.response;
+
   try {
     const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
     const privateKey = (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n');

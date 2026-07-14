@@ -2,10 +2,7 @@ import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 import { adminClient } from '@/lib/supabase';
 
-export async function GET(request: Request) {
-  const authResult = verifyAdminRequest(request);
-  if (!authResult.ok) return authResult.response;
-
+export async function GET() {
   try {
     // 1. Auth check
 
