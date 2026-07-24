@@ -1,13 +1,14 @@
-import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { adminClient } from '@/lib/supabase';
 
-export async function GET(request: Request) {
-  const authResult = verifyAdminRequest(request);
-  if (!authResult.ok) return authResult.response;
-
+export async function GET() {
+  const cookieStore = await cookies();
+  const authKey = cookieStore.get('D_STRATEGY_KEY')?.value;
   
+  if (authKey !== process.env.D_STRATEGY_KEY) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
   try {
     if (!adminClient) {

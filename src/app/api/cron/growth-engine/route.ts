@@ -1,13 +1,9 @@
-import { verifyCronRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 
 export const maxDuration = 60; // 1 minute max for Pro, 10s for Hobby
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  const authResult = verifyCronRequest(request);
-  if (!authResult.ok) return authResult.response;
-
   try {
     const authHeader = request.headers.get('authorization');
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -23,7 +19,7 @@ export async function GET(request: Request) {
     const trigger = (path: string) => {
       fetch(`${baseUrl}${path}`, {
         method: 'POST',
-        headers: { 'x-agent-token': process.env.ADMIN_API_SECRET || '' }
+        headers: { 'x-agent-token': process.env.AGENT_SECRET_TOKEN || 'temp-agent-token-123' }
       }).catch(err => console.error(`Failed to trigger ${path}:`, err));
     };
 

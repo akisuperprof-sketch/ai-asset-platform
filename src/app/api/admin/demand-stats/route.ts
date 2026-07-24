@@ -1,14 +1,18 @@
-import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 import { adminClient } from '@/lib/supabase';
+import { cookies } from 'next/headers';
 import fs from 'fs';
 import path from 'path';
 
-export async function GET(request: Request) {
-  const authResult = verifyAdminRequest(request);
-  if (!authResult.ok) return authResult.response;
-
+export async function GET() {
   try {
+    const cookieStore = await cookies();
+    const adminSession = cookieStore.get('d_strategy_session');
+    
+    const envKey = process.env.D_STRATEGY_KEY;
+    if (!envKey || !adminSession || adminSession.value !== envKey.trim()) {
+      return NextResponse.json({ success: false, error: 'UNAUTHORIZED' }, { status: 401 });
+    }
 
     let rawEvents: any[] = [];
     

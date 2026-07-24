@@ -1,6 +1,6 @@
-import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
 import { adminClient } from '@/lib/supabase';
+import { cookies } from 'next/headers';
 
 function inferCategory(query: string): string {
   const q = query.toLowerCase();
@@ -21,10 +21,14 @@ function generatePrompt(query: string): string {
 }
 
 export async function POST(request: Request) {
-  const authResult = verifyAdminRequest(request);
-  if (!authResult.ok) return authResult.response;
-
   try {
+    const cookieStore = await cookies();
+    const adminSession = cookieStore.get('d_strategy_session');
+    
+    const envKey = process.env.D_STRATEGY_KEY;
+    if (!envKey || !adminSession || adminSession.value !== envKey.trim()) {
+      return NextResponse.json({ success: false, error: 'UNAUTHORIZED' }, { status: 401 });
+    }
 
     if (!adminClient) {
       return NextResponse.json({ success: false, error: 'NO_DB' }, { status: 500 });

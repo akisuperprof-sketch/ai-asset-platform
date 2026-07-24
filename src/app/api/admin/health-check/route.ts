@@ -1,4 +1,3 @@
-import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from "next/server";
 import { adminClient } from "@/lib/supabase";
 import { checkFileExists } from "@/lib/r2";

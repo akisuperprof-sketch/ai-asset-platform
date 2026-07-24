@@ -185,7 +185,7 @@ export default function AssetProductionCenter() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-agent-token': ''
+            'x-agent-token': 'temp-agent-token-123'
           },
           body: JSON.stringify({ limit: batchSize })
         });

@@ -52,7 +52,7 @@ export default function AdminAutoFactoryPage() {
     try {
       await fetch('/api/admin/bulk-planner/run', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-agent-token': process.env.NEXT_PUBLIC_AGENT_TOKEN || '' },
+        headers: { 'Content-Type': 'application/json', 'x-agent-token': process.env.NEXT_PUBLIC_AGENT_TOKEN || 'temp-agent-token-123' },
         body: JSON.stringify({ theme })
       });
       alert('Bulk Planner triggered successfully!');

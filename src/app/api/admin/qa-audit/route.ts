@@ -1,4 +1,3 @@
-import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { adminClient } from "@/lib/supabase";
@@ -6,16 +5,18 @@ import { runVisionQA } from "@/lib/vision-qa";
 import { checkRateLimit, getIp } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
-  const authResult = verifyAdminRequest(req);
-  if (!authResult.ok) return authResult.response;
-
   if (process.env.QA_AUDIT_ENABLED === 'false') {
     return NextResponse.json({ success: false, error: "QA Audit is disabled" }, { status: 503 });
   }
 
   try {
     // 1. Verify Authentication
-    
+    const cookieStore = await cookies();
+    const strategyKey = cookieStore.get("D_STRATEGY_KEY")?.value;
+
+    if (!strategyKey || strategyKey !== process.env.D_STRATEGY_KEY) {
+      return NextResponse.json({ success: false, error: "Unauthorized QA Access" }, { status: 401 });
+    }
 
     // 2. Rate Limit (Admin but costly) - 5 per minute
     // Must pass NextRequest or polyfill getIp logic. req is standard Request in Next 13 API.

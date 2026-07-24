@@ -1,14 +1,22 @@
-import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { createClient } from '@supabase/supabase-js';
 import { PromptEngine } from '@/lib/prompt-engine';
 
 export async function POST(request: Request) {
-  const authResult = verifyAdminRequest(request);
-  if (!authResult.ok) return authResult.response;
-
   try {
     // 1. Auth check (D_STRATEGY_KEY cookie authentication)
+    const cookieStore = await cookies();
+    const adminSession = cookieStore.get('D_STRATEGY_KEY');
+    
+    const envKey = process.env.D_STRATEGY_KEY;
+    if (!envKey) {
+      return NextResponse.json({ success: false, error: 'SERVER_KEY_NOT_CONFIGURED' }, { status: 500 });
+    }
+
+    if (!adminSession || adminSession.value !== envKey.trim()) {
+      return NextResponse.json({ success: false, error: 'UNAUTHORIZED' }, { status: 401 });
+    }
 
     // 2. Feature flag check
     if (process.env.GENERATION_ENABLED === 'false') {

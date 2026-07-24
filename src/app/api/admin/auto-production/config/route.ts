@@ -1,15 +1,23 @@
-import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import fs from 'fs';
 import path from 'path';
 
 const configPath = path.join(process.cwd(), 'data', 'local-auto-config.json');
 
-export async function GET(request: Request) {
-  const authResult = verifyAdminRequest(request);
-  if (!authResult.ok) return authResult.response;
-
+export async function GET() {
   try {
+    const cookieStore = await cookies();
+    const adminSession = cookieStore.get('D_STRATEGY_KEY');
+    
+    const envKey = process.env.D_STRATEGY_KEY;
+    if (!envKey) {
+      return NextResponse.json({ success: false, error: 'SERVER_MISCONFIGURED' }, { status: 500 });
+    }
+
+    if (adminSession?.value !== envKey) {
+      return NextResponse.json({ success: false, error: 'UNAUTHORIZED' }, { status: 401 });
+    }
 
     if (!fs.existsSync(configPath)) {
       // Create default
@@ -37,10 +45,18 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const authResult = verifyAdminRequest(request);
-  if (!authResult.ok) return authResult.response;
-
   try {
+    const cookieStore = await cookies();
+    const adminSession = cookieStore.get('D_STRATEGY_KEY');
+    
+    const envKey = process.env.D_STRATEGY_KEY;
+    if (!envKey) {
+      return NextResponse.json({ success: false, error: 'SERVER_MISCONFIGURED' }, { status: 500 });
+    }
+
+    if (adminSession?.value !== envKey) {
+      return NextResponse.json({ success: false, error: 'UNAUTHORIZED' }, { status: 401 });
+    }
 
     const body = await request.json();
     

@@ -1,4 +1,3 @@
-import { verifyAdminRequest } from '@/lib/server/cron-auth';
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { adminClient } from "@/lib/supabase";
@@ -89,11 +88,13 @@ async function auditAssetBeforeApproval(asset: any): Promise<{ safe: boolean; re
 }
 
 export async function POST(request: Request) {
-  const authResult = verifyAdminRequest(request);
-  if (!authResult.ok) return authResult.response;
-
   try {
-    
+    const cookieStore = await cookies();
+    const strategyKey = cookieStore.get("D_STRATEGY_KEY")?.value;
+
+    if (!strategyKey || strategyKey !== process.env.D_STRATEGY_KEY) {
+      return NextResponse.json({ success: false, error: "Unauthorized QA Access" }, { status: 401 });
+    }
 
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "127.0.0.1";
     if (!checkRateLimit(`admin:${ip}`, 30, 60 * 1000)) {
